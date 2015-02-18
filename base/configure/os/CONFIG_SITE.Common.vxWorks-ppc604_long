@@ -1,0 +1,8 @@
+# CONFIG_SITE.Common.vxWorks-ppc604
+#
+# CONFIG_SITE.Common.vxWorks-ppc604_long,v 1.1 2003/01/07 21:13:20 jba Exp
+#
+# Site Specific definitions for vxWorks-ppc604 target
+# Only the local epics system manager should modify this file
+
+

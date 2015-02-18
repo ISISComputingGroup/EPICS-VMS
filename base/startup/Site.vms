@@ -1,0 +1,76 @@
+$ SET PROCESS/PARSE=EXTENDED
+$!
+$ if f$trnlnm("epics_root") .eqs. "" 
+$ then 
+$   define epics_root spear_root:[epics.3_14_8_2epics]/trans=conc
+$ endif
+$!
+$ if f$trnlnm("perlshr") .eqs. ""
+$ then
+$   define perlshr perl_root:[000000]perlshr.exe
+$ endif
+$!
+$ DEF := DEFINE/NOLOG
+$ DEF	DCL$PATH	EPICS_BIN:,EPICS_BIN_APP:,GNU:[BIN]
+$!
+$ DEF	EPICS_BASE 	EPICS_ROOT:[base]
+$ DEF	DECC$ARGV_PARSE_STYLE	1
+$ DEF	DECC$EFS_CASE_PRESERVE	1
+$! DEF	DECC$EFS_CASE_SPECIAL	1
+$ DEF	DECC$EFS_CHARSET	1
+$ DEF	DECC$FILE_SHARING	1
+$ DEF	DECC$PIPE_BUFFER_SIZE	65000
+$ DEF	DECC$FILENAME_UNIX_REPORT	1
+$! DEF	DECC$POSIX_COMPLIANT_PATHNAMES	3	! CW. taken out for bash to work
+$ DEF	DECC$DISABLE_TO_VMS_LOGNAME_TRANSLATION	1
+$ DEF	GNV_SUFFIX_MODE			UNIX	! use .obj and .exe VMS/UNIX
+$! DEF	GNV_CC_WARN_INFO_ALL		1
+$ DEF	GNV_CC_INCLUDE_LENGTH_MAX	1000
+$! DEF	GNV_CC_DEBUG			1
+$!
+$! if f$trnlnm("gnu") .nes. "" 
+$! then 
+$!   @GNU:[LIB]GNV_SETUP
+$! else
+$!   write sys$output "GNV not available"
+$! endif
+$!
+$ if f$search("EPICS_ROOT:[BASE]CXX_REPOSITORY.DIR") .EQS. "" then -
+	CREATE/DIR EPICS_ROOT:[base.cxx_repository]
+$!
+$ cmd = ""
+$ HOSTTYPE = f$getsyi("ARCH_NAME")
+$ if HOSTTYPE .EQS. "Alpha" 
+$ then
+$   cmd = "declare -x HOSTTYPE=Alpha;" + -
+	  "declare -x EPICS_HOST_ARCH=OpenVMS_Alpha;"
+$   if f$search("EPICS_ROOT:[BASE.CXX_REPOSITORY]OpenVMS_Alpha.DIR") .EQS. "" then -
+	CREATE/DIR EPICS_ROOT:[base.cxx_repository.OpenVMS_Alpha]
+$!
+$   DEF	CXX$DEMANGLER_DB EPICS_ROOT:[base.cxx_repository.OpenVMS_Alpha]
+$   EPICS_HOST_ARCH :== "OpenVMS_Alpha"
+$   DEF	EPICS_BIN	EPICS_ROOT:[BASE.BIN.OPENVMS_Alpha],-
+			EPICS_ROOT:[APP.BIN.OPENVMS_Alpha]
+$   DEF	EPICS_LIB	EPICS_ROOT:[BASE.LIB.OPENVMS_Alpha]
+$   DEF	HOST_ARCH 	"OpenVMS-Alpha"
+$ endif
+$ if HOSTTYPE .EQS. "IA64" 
+$ then
+$   cmd = "declare -x HOSTTYPE=IA64;" + -
+	  "declare -x EPICS_HOST_ARCH=OpenVMS_IA64;"
+$   if f$search("EPICS_ROOT:[BASE.CXX_REPOSITORY]OpenVMS_IA64.DIR") .EQS. "" then -
+	CREATE/DIR EPICS_ROOT:[base.cxx_repository.OpenVMS_IA64]
+$!
+$   DEF	CXX$DEMANGLER_DB EPICS_ROOT:[base.cxx_repository.OpenVMS_IA64]
+$   EPICS_HOST_ARCH :== "OpenVMS_IA64"
+$   DEF	EPICS_BIN	EPICS_ROOT:[BASE.BIN.OPENVMS_IA64],-
+			EPICS_ROOT:[APP.BIN.OPENVMS_IA64]
+$   DEF	EPICS_LIB	EPICS_ROOT:[BASE.LIB.OPENVMS_IA64]
+$   DEF	HOST_ARCH 	"OpenVMS-IA64"
+$ endif
+$!
+$ bash :== "$GNU:[BIN]BASH -c ""''cmd' bash"""
+$!
+$ if "''cc'" .NES. "" then delete/symbol/global cc
+$ if "''link'" .NES. "" then delete/symbol/global link
+$!

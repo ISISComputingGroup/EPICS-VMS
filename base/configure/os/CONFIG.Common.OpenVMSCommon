@@ -1,0 +1,77 @@
+# CONFIG.Common.OpenVMSCommon
+#
+# This file is maintained by the build community.
+#
+# Definitions for OpenVMS target builds
+# Sites may override these definitions in CONFIG_SITE.Common.OpenVMSCommon
+#-------------------------------------------------------
+#
+# The following logical names must be set externally before building:
+#$DEFINE   DECC$ARGV_PARSE_STYLE   1
+#$DEFINE   DECC$EFS_CASE_PRESERVE  1
+#$DEFINE   DECC$EFS_CHARSET        1
+#$DEFINE   DECC$FILE_SHARING       1
+#$DEFINE   DECC$PIPE_BUFFER_SIZE   65000
+#$DEFINE   DECC$FILENAME_UNIX_REPORT       1
+#$DEFINE   DECC$POSIX_COMPLIANT_PATHNAMES  3
+#$DEFINE   DECC$DISABLE_TO_VMS_LOGNAME_TRANSLATION 1
+#$DEFINE   GNV_SUFFIX_MODE                 UNIX
+#$DEFINE   GNV_CC_INCLUDE_LENGTH_MAX       1000
+#$DEFINE   CXX$DEMANGLER_DB  <location of demangler database>
+# GNV is required to build - set up for GNV before building:
+#$ @GNU:[LIB]GNV_SETUP
+
+# Include definitions common to all Unix target archs
+include $(CONFIG)/os/CONFIG.Common.UnixCommon
+
+# Override definitions common to all OpenVMS targets
+
+OS_CLASS = VMS
+
+CC=cc
+CCC=cxx
+CPP=$(CC) -x c -E
+AR = ar cr
+
+#-------------------------------------------------------
+# OpenVMS suffix definitions
+EXE = .exe
+HOSTEXE = .exe
+LIB_SUFFIX = .olb
+SHRLIB_SUFFIX = .exe$(addprefix .,$(SHRLIB_VERSION))
+LOADABLE_SHRLIB_SUFFIX = .exe$(addprefix .,$(LOADABLE_SHRLIB_VERSION))
+SHRLIB_LDLIBS = $(addprefix -l$(LIB_PREFIX), $($*_LDLIBS) $(LIB_LIBS) $(USR_LIBS) \
+ $($*_SYS_LIBS) $(LIB_SYS_LIBS) $(USR_SYS_LIBS)) $(LDLIBS)
+PROD_LDLIBS = $(addprefix -l$(LIB_PREFIX), $($*_LDLIBS) $(PROD_LIBS) $(USR_LIBS)\
+ $($*_SYS_LIBS) $(PROD_SYS_LIBS) $(USR_SYS_LIBS))
+
+#--------------------------------------------------
+# Compiler and linker definitions
+CONFORM_CFLAGS_ANSI = -ansi_alias
+CONFORM_CFLAGS_STRICT = -ansi_alias
+CONFORM_CFLAGS_TRAD = -traditional
+WARN_CFLAGS_YES = -w1
+WARN_CFLAGS_NO = -w1
+OPT_CFLAGS_YES = -O3
+OPT_CFLAGS_NO = -g
+
+CONFORM_CXXFLAGS_NORMAL = -ansi_alias
+CONFORM_CXXFLAGS_STRICT = -ansi_alias
+WARN_CXXFLAGS_YES = -w1
+WARN_CXXFLAGS_NO = -w1
+OPT_CXXFLAGS_YES =
+OPT_CXXFLAGS_NO = -g
+
+CODE_CPPFLAGS = -D_REENTRANT
+
+#--------------------------------------------------
+# Operating system definitions
+OP_SYS_CPPFLAGS += -DVMS -DODS5
+OP_SYS_CXXFLAGS += -Wc/TEMPLATE_DEFINE=IMPLICIT_LOCAL
+OP_SYS_LDLIBS =
+OP_SYS_LDFLAGS  += -pthread
+
+#--------------------------------------------------
+# Allow site overrides
+-include $(CONFIG)/os/CONFIG_SITE.Common.OpenVMSCommon
+-include $(CONFIG)/os/CONFIG_SITE.$(EPICS_HOST_ARCH).OpenVMSCommon

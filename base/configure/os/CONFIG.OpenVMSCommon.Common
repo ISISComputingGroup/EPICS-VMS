@@ -1,0 +1,24 @@
+# CONFIG.OpenVMSCommon.Common
+#
+# This file is maintained by the build community.
+#
+# Definitions common for OpenVMS hosts.
+# Sites may override these definitions in CONFIG_SITE.OpenVMSCommon.Common
+#-------------------------------------------------------
+
+# Include definitions common to all OpenVMS targets
+
+CP = cp
+MV = mv
+RM = rm -f
+LN = cp
+MKDIR = mkdir
+RMDIR = rm -rf
+BUILD_PREFIX = O_
+PERL=/perl_root/000000/perl
+# The following logical name must be set externally before building:
+#$   define perlshr perl_root:[000000]perlshr.exe
+
+#--------------------------------------------------
+# Allow site overrides
+-include $(CONFIG)/os/CONFIG_SITE.OpenVMSCommon.Common

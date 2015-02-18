@@ -1,0 +1,8 @@
+dbLoadDatabase("../../dbd/example.dbd")
+example_registerRecordDeviceDriver(pdbbase)
+dbLoadRecords("../../db/dbExample1.db","user=saa")
+dbLoadRecords("../../db/dbExample2.db","user=saa,no=1,scan=1 second")
+dbLoadRecords("../../db/dbExample2.db","user=saa,no=2,scan=2 second")
+dbLoadRecords("../../db/dbExample2.db","user=saa,no=3,scan=5 second")
+iocInit()
+#seq(&sncExample,"user=saa")

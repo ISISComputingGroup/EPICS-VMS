@@ -1,0 +1,101 @@
+Compiling EPICS and Building IOC Applications on OpenVMS 
+(OpenVMS-Alpha and OpenVMS-IA64)
+========================================================
+
+Please mail questions, comments, corrections, additional examples, etc.
+to wermelsk@slac.stanford.edu
+
+Tested under OpenVMS Alpha V7.3-2 using Multinet V4.4
+and OpenVMS IA64 V8.2-1 using TCP/IP Services for OpenVMS V5.5
+
+Tools needed
+------------
+
+ o GNV (Alpha or I64) (tested with V1.6-2)
+ 
+ o Perl for OpenVMS (Alpha or I64) (tested with V5.8-6)
+
+  - This version of Perl does not support full ODS-5 file names, resulting
+    in changing O.OpenVMS_Alpha to O_OpenVMS_Alpha. Names with embedded "@"
+    also not supported (files below base/src/makeBaseApp/top).  May change 
+    in future versions.  
+
+ o Recent version of C and C++ compiler (V7.1 or higher)
+
+  - V6.5 will have a problem with templates.
+
+ o Use gnutar to extract files from the delivered tar files.  Cannot use
+   VMS tar.
+
+ o Disk drive containing files must be ODS-5.
+
+
+Environment
+-----------
+
+An os-specific repository directory is needed for CXX and CXXLINK.
+The logical name CXX$DEMANGLER_DB is assigned to this directory.
+Example: DEFINE CXX$DEMANGLER_DB EPICS_ROOT:[base.cxx_repository.OpenVMS_Alpha]
+This directory is NOT created by the build and must be manually created before 
+the build starts.
+
+Assuming UCX (TCIP/IP Services for OpenVMS) can be installed, even if
+not run, the include files will be used and will work for Multinet as
+well. Other TCP/IP packages for VMS (like Wallongong(?)) have not been
+tested and will be ignored.
+
+A subset of DECC and GNV logical names must be set before the build starts.
+An example setup file is base/startup/Site.com - it will need modification
+for your site.
+
+
+Building
+--------
+
+Shareable library build is not yet implemented.  Before building,
+edit base/configure/CONFIG_SITE so that:
+	SHARED_LIBRARIES=NO
+	STATIC_BUILD=YES
+	USE_POSIX_THREAD_PRIORITY_SCHEDULING = YES
+
+Add base/configure/os/CONFIG_SITE.*OpenVMS* files to override any 
+definitions in CONFIG.*OpenVMS* files just like for any other platform.
+
+Building must be done using the bash shell, delivered with gnv. 
+There is a bug in GNV make that requires all MakefileInclude files
+be built first.  So the build requires two steps:
+$ set def <location of base>
+$ @[.startup]Site.com
+$ bash
+bash$ setenv EPICS_HOST_ARCH OpenVMS-<Alpha or IA64>
+bash$ make MakefileInclude
+bash$ make
+
+Make sure any existing symbols for cc, cxx, and link are deassigned before
+building.
+
+
+Shared Libraries
+----------------
+
+Later.
+
+
+Known Problems
+--------------
+
+ o Source changes are not yet made for auto-startup of CA repeater.
+   CA repeater must be started manually.  Add it to your system startup.
+
+ o base/config is not updated for VMS.  No 3.13 extension or
+   application can be built for VMS.
+
+ o GNV make has a problem where it can't find a file that is created by 
+   a previous rule.  So a two-step make is required - one to create all
+   the MakefileInclude files required by the build, and the second to do
+   the build.  The base/configure/RULES* files were changed to allow a
+   separate MakefileInclude build.
+
+ o makeBaseApp.pl and makeBaseExt.pl do not work with the current version 
+   of perl.  They also cannot be fully built since they have files with 
+   embedded "@"s and those files cannot be installed by perl.

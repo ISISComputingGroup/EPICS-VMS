@@ -1,0 +1,6 @@
+#
+# CONFIG_SITE.Common.Common,v 1.1.2.1 2003/09/19 16:08:03 jba Exp
+#
+# Site Specific Configuration Information
+# Only the local epics system manager should modify this file
+

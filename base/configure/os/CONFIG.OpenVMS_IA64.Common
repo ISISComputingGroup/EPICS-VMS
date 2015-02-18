@@ -1,0 +1,11 @@
+# CONFIG.OpenVMS_IA64.Common
+#
+# This file is maintained by the build community.
+#
+# Definitions for OpenVMS host builds
+# Sites may override these definitions in CONFIG_SITE.OpenVMS_IA64.Common
+#-------------------------------------------------------
+
+#Include definitions common to OpenVMS hosts
+include $(CONFIG)/os/CONFIG.OpenVMSCommon.Common
+-include $(CONFIG)/os/CONFIG_SITE.OpenVMS_IA64.Common

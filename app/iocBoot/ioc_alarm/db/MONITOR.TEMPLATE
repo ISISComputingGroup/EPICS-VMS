@@ -1,0 +1,53 @@
+#==============================================================================
+#
+# Abs:  Database template for Monitors.
+#
+# Name:  monitor.template
+#
+#==============================================================================
+#
+file db/monitor.db {
+# ACKT: 0=Automatically acknowledge all alarms and RTNs (return to normal)
+#       1=Automatically acknowledge when alarm returns to normal
+#       2=User must acknowledge alarm even if it returns to normal
+#
+#			 <-- Delays (sec) -->  Audio  Ack   Filter Audio
+#		  Name	  Count  Latch  Audio  Repeat Type  Mode   Output
+ pattern{   S   ,  N    , CDLY , LDLY , ADLY , ARPT , ACKT ,MODE , AOUT                        }
+	{ SPEAR , Fdbk  ,  10  ,  20  ,  0   ,  118 ,  0   , 0   , "MPS:Annunciator.B6 PP NMS" }
+	{ SPEAR , RF    ,   0  ,   0  ,  0   ,   0  ,  0   , 0   , "MPS:Annunciator.B8 PP NMS" }
+	{ SPEAR , Press ,   0  ,   0  ,  0   ,   0  ,  0   , 0   , "MPS:Annunciator.BC PP NMS" }
+	{ SPEAR , Beam  ,   0  ,   0  ,  0   ,   0  ,  0   , 0   , "MPS:Annunciator.BE PP NMS" }
+	{ SPEAR , Temp  ,   0  ,   0  ,  0   ,   0  ,  0   , 0   , "MPS:Annunciator.BF PP NMS" }
+}
+file db/monitorStatus.db {
+#
+# Define monitor statuses
+#			 
+#		  Name	
+ pattern{   S   ,  N     ,   T           }
+	{ SPEAR , Fdbk   ,  Status       }
+	{ SPEAR , Fdbk   ,  Latch        }
+	{ SPEAR , Fdbk   ,  AckedStatus  }
+	{ SPEAR , Fdbk   ,  AlarmStatus  }
+
+	{ SPEAR , RF     ,  Status       }
+	{ SPEAR , RF     ,  Latch        }
+	{ SPEAR , RF     ,  AckedStatus  }
+	{ SPEAR , RF     ,  AlarmStatus  }
+
+	{ SPEAR , Press  ,  Status       }
+	{ SPEAR , Press  ,  Latch        }
+	{ SPEAR , Press  ,  AckedStatus  }
+	{ SPEAR , Press  ,  AlarmStatus  }
+
+	{ SPEAR , Beam   ,  Status       }
+	{ SPEAR , Beam   ,  Latch        }
+	{ SPEAR , Beam   ,  AckedStatus  }
+	{ SPEAR , Beam   ,  AlarmStatus  }
+
+	{ SPEAR , Temp   ,  Status       }
+	{ SPEAR , Temp   ,  Latch        }
+	{ SPEAR , Temp   ,  AckedStatus  }
+	{ SPEAR , Temp   ,  AlarmStatus  }
+}

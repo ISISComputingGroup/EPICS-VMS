@@ -1,0 +1,271 @@
+record(mbbo, "BCS:B116RadLossMux1Setpt") {
+	field(DTYP, "Soft Channel")
+	field(ZRST, "OFF")
+	field(ZRVL, 0)
+	field(ONST, "G05 QF1/BL2")
+	field(ONVL, 1)
+	field(TWST, "G06 QF1/BL7")
+	field(TWVL, 2)
+	field(THST, "G07 QF1/BL8/BL10")
+	field(THVL, 4)
+	field(FRST, "G08 QF1/BL9")
+	field(FRVL, 8)
+	field(FVST, "G09 QDX/DW")
+	field(FVVL, 16)
+	field(SXST, "G13 QF1/BL5")
+	field(SXVL, 32)
+	field(SVST, "G12 QF1/BL6")
+	field(SVVL, 64)
+	field(EIST, "G11 QF1")
+	field(EIVL, 128)
+	field(NIST, "G10 QDX/BL12")
+	field(NIVL, 256)
+	field(TEST, "N/A")
+	field(TEVL, 512)
+}
+
+record(mbbi, "BCS:B116RadLossMux1") {
+	field(DTYP, "Soft Channel")
+	field(ZRST, "OFF")
+	field(ZRVL, 0)
+	field(ONST, "Chan 1")
+	field(ONVL, 1)
+	field(TWST, "Chan 2")
+	field(TWVL, 2)
+	field(THST, "Chan 3")
+	field(THVL, 4)
+	field(FRST, "Chan 4")
+	field(FRVL, 8)
+	field(FVST, "Chan 5")
+	field(FVVL, 16)
+	field(SXST, "Chan 6")
+	field(SXVL, 32)
+	field(SVST, "Chan 7")
+	field(SVVL, 64)
+	field(EIST, "Chan 8")
+	field(EIVL, 128)
+	field(NIST, "Chan 9")
+	field(NIVL, 256)
+	field(TEST, "Chan 10")
+	field(TEVL, 512)
+}
+
+record(mbbo, "BCS:B132RadLossMux1Setpt") {
+	field(DTYP, "Soft Channel")
+	field(ZRST, "OFF")
+	field(ZRVL, 0)
+	field(ONST, "G14 QF1")
+	field(ONVL, 1)
+	field(TWST, "G15 QF1")
+	field(TWVL, 2)
+	field(THST, "G16 QF1/BL11")
+	field(THVL, 4)
+	field(FRST, "G17 QF1/BL4/BL14")
+	field(FRVL, 8)                
+	field(FVST, "G18 QFZ/BL13")
+	field(FVVL, 16)        
+	field(SXST, "G04 QD1/BL1/Septum")
+	field(SXVL, 32)
+	field(SVST, "G03 QF2/BAD")
+	field(SVVL, 64)
+	field(EIST, "G02 QF1/Scrapers")
+	field(EIVL, 128)
+	field(NIST, "G01 QDX/RF cav.")
+	field(NIVL, 256)
+	field(TEST, "N/A")
+	field(TEVL, 512)
+}
+
+record(mbbi, "BCS:B132RadLossMux1") {
+	field(DTYP, "Soft Channel")
+	field(ZRST, "OFF")
+	field(ZRVL, 0)
+	field(ONST, "Chan 1")
+	field(ONVL, 1)
+	field(TWST, "Chan 2")
+	field(TWVL, 2)
+	field(THST, "Chan 3")
+	field(THVL, 4)
+	field(FRST, "Chan 4")
+	field(FRVL, 8)
+	field(FVST, "Chan 5")
+	field(FVVL, 16)
+	field(SXST, "Chan 6")
+	field(SXVL, 32)
+	field(SVST, "Chan 7")
+	field(SVVL, 64)
+	field(EIST, "Chan 8")
+	field(EIVL, 128)
+	field(NIST, "Chan 9")
+	field(NIVL, 256)
+	field(TEST, "Chan 10")
+	field(TEVL, 512)
+}
+
+
+!record(mbbi, "BOX-WC:FdbkStateSetpt") {
+!	field(DTYP, "Soft Channel")
+!	field(ZRST, "OFF")
+!	field(ONST, "Standby")
+!	field(TWST, "ON")
+!	field(THST, "Manual")
+!}
+
+!record(mbbo, "BOX-WC:FdbkState") {
+!	field(DTYP, "Soft Channel")
+!	field(ZRST, "OFF")
+!	field(ONST, "Standby")
+!	field(TWST, "ON")
+!	field(THST, "Manual")
+!	field(FRST, "FAILED")
+!	field(FVST, "STALLED")
+!}
+
+record(stringin, "BOX-WC:FdbkStateMsg") {
+	field(DTYP, "Soft Channel")
+}
+
+record(ao, "inj_BOO_AC_VOLT_AM") {
+        field(DTYP, "Soft Channel")
+	field(HOPR, "1200")
+	field(LOPR, "0")
+}
+
+record(ai, "inj_BOO_AC_VOLT_AS") {
+        field(DTYP, "Soft Channel")
+	field(HOPR, "1200")
+	field(LOPR, "0")
+}
+
+record(bo, "inj_BOO_AC_HV_ENABLE_DS") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bo, "inj_BOO_AC_HV_ON_DS") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bo, "inj_BOO_AC_HV_OFF_DS") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "inj_BOO_AC_HV_ON_DM") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "inj_BOO_AC_INTLK_DM") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "inj_BOO_AC_READY_DM") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "inj_BOO_AC_REMOTE_DM") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "inj_BOO_AC_GND_FAULT_DM") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+!record(ai, "BOX-WC:DanACSetptDes") {
+!        field(DTYP, "Soft Channel")
+!	field(HOPR, "380")
+!	field(LOPR, "0")
+!}
+
+!record(ao, "BOX-WC:DanAC") {
+!        field(DTYP, "Soft Channel")
+!	field(HOPR, "380")
+!	field(LOPR, "0")
+!}
+
+record(ao, "inj_BOO_DC_CURR_AM") {
+        field(DTYP, "Soft Channel")
+	field(HOPR, "300")
+	field(LOPR, "0")
+}
+
+record(ai, "inj_BOO_DC_CURR_AS") {
+        field(DTYP, "Soft Channel")
+	field(HOPR, "300")
+	field(LOPR, "0")
+}
+
+record(bo, "inj_BOO_DC_HV_ENABLE_DS") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bo, "inj_BOO_DC_HV_ON_DS") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bo, "inj_BOO_DC_HV_OFF_DS") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "inj_BOO_DC_HV_ON_DM") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "inj_BOO_DC_INTLK_DM") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "inj_BOO_DC_READY_DM") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "inj_BOO_DC_REMOTE_DM") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "inj_BOO_DC_GND_FAULT_DM") {
+        field(DTYP, "Soft Channel")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+!record(ai, "BOX-WC:DanDCSetptDes") {
+!        field(DTYP, "Soft Channel")
+!	field(HOPR, "360")
+!	field(LOPR, "0")
+!}
+
+!record(ao, "BOX-WC:DanDC") {
+!        field(DTYP, "Soft Channel")
+!	field(HOPR, "360")
+!	field(LOPR, "0")
+!}
+

@@ -1,0 +1,8 @@
+# CONFIG,v 1.1.2.1 2004/04/07 18:27:16 jba Exp
+
+include $(TOP)/configure/CONFIG_EXTENSIONS
+# Add any changes to make rules here
+
+#CROSS_COMPILER_TARGET_ARCHS =
+#SHARED_LIBRARIES = NO
+

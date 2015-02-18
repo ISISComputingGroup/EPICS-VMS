@@ -1,0 +1,22 @@
+# CONFIG.Common.vxWorks-ppc603
+#
+# CONFIG.Common.vxWorks-ppc603,v 1.4.2.1 2004/04/05 14:25:06 jba Exp
+# This file is maintained by the build community.
+#
+# Definitions for vxWorks-ppc603 target archs
+# Sites may override these definitions in CONFIG_SITE.Common.vxWorks-ppc603
+#-------------------------------------------------------
+
+# Include definitions common to all vxWorks target archs
+include $(CONFIG)/os/CONFIG.Common.vxWorksCommon
+
+# Vx GNU cross compiler suffix
+CMPLR_SUFFIX = ppc
+ 
+ARCH_CLASS = ppc
+
+# Architecture specific build flags
+ARCH_DEP_CPPFLAGS = -DCPU=PPC603  
+ARCH_DEP_CFLAGS = -mcpu=603 -mstrict-align
+
+GNU_TARGET = powerpc-wrs-vxworks

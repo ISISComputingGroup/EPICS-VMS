@@ -1,0 +1,45 @@
+#==============================================================================
+#
+# Abs:  Database template for the motor control centers.
+#
+# Name:  mcc.template
+#
+#==============================================================================
+#
+file db/mcc.db
+{
+  pattern {   mcc    , powerDrvh, currDrvh }
+          { 119-MCC1 ,  100.0   ,  300.0 }
+          { 119-MCC2A, 2500.0   , 3500.0 }
+          { 119-MCC2B, 2500.0   , 3500.0 }
+          { 119-MCC3 , 3500.0   , 3500.0 }
+          { 119-MCC4 , 1000.0   , 3500.0 }
+}
+file db/mccMinMax.db
+{
+  pattern {   mcc    , ch   }
+          { 119-MCC1 , A    }
+          { 119-MCC1 , B    }
+          { 119-MCC1 , C    }
+          { 119-MCC1 , Gnd  }
+
+          { 119-MCC2A, A    }
+          { 119-MCC2A, B    }
+          { 119-MCC2A, C    }
+          { 119-MCC2A, Gnd  }
+
+          { 119-MCC2B, A    }
+          { 119-MCC2B, B    }
+          { 119-MCC2B, C    }
+          { 119-MCC2B, Gnd  }
+
+          { 119-MCC3 , A    }
+          { 119-MCC3 , B    }
+          { 119-MCC3 , C    }
+          { 119-MCC3 , Gnd  }
+
+          { 119-MCC4 , A    }
+          { 119-MCC4 , B    }
+          { 119-MCC4 , C    }
+          { 119-MCC4 , Gnd  }
+}

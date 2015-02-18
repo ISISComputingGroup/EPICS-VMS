@@ -1,0 +1,86 @@
+#*************************************************************************
+# Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+#     National Laboratory.
+# Copyright (c) 2002 The Regents of the University of California, as
+#     Operator of Los Alamos National Laboratory.
+# EPICS BASE Versions 3.13.7
+# and higher are distributed subject to a Software License Agreement found
+# in file LICENSE that is included with this distribution. 
+#*************************************************************************
+#
+# RULES_ARCHS,v 1.23.2.2 2004/03/24 20:20:04 jba Exp
+#
+
+all: install
+
+build install buildInstall: $(CHECK_RELEASE_$(CHECK_RELEASE))
+
+rebuild: clean install
+
+ACTIONS =  MakefileInclude
+ACTIONS += inc
+ACTIONS += build
+ACTIONS += install
+ACTIONS += buildInstall 
+ACTIONS += browse 
+
+actionPart = $(word 1, $(subst $(DIVIDER), ,$@))
+archPart = $(word 2, $(subst $(DIVIDER), ,$@))
+
+actionArchTargets = $(foreach x, $(ACTIONS),\
+		$(foreach arch,$(BUILD_ARCHS), $(x)$(DIVIDER)$(arch)))
+
+cleanArchTargets = $(foreach arch,$(BUILD_ARCHS), clean$(DIVIDER)$(arch))
+
+buildDirs = $(addprefix $(BUILD_PREFIX),$(BUILD_ARCHS))
+
+$(actionArchTargets) : $(buildDirs) $(BUILD_PREFIX)Common
+	$(MAKE) -C $(BUILD_PREFIX)$(archPart) -f ../Makefile ACTIONPART=$(actionPart) TOP=$(TOP)/.. T_A=$(archPart) $(actionPart)
+
+$(BUILD_ARCHS) : % : $(BUILD_PREFIX)% $(BUILD_PREFIX)Common
+	$(MAKE) -C $(BUILD_PREFIX)$@ -f ../Makefile ACTIONPART=ALL TOP=$(TOP)/.. T_A=$@
+
+$(ACTIONS):%: $(foreach arch, $(BUILD_ARCHS), %$(DIVIDER)$(arch))
+
+$(buildDirs): 
+	$(PERL) $(TOOLS)/makeMakefile.pl $@ $(TOP)/.. $(BUILD_PREFIX)
+
+$(BUILD_PREFIX)Common:
+	$(MKDIR) $(BUILD_PREFIX)Common
+
+#
+# RELEASE consistency checking
+
+# The RELEASE.$(EPICS_HOST_ARCH) files don't need to be included here:
+targetReleaseFiles = $(wildcard $(foreach arch, $(BUILD_ARCHS), \
+		$(TOP)/configure/RELEASE.Common.$(arch) \
+		$(TOP)/configure/RELEASE.$(EPICS_HOST_ARCH).$(arch)))
+checkReleaseTargets = $(addprefix checkRelease, $(suffix $(targetReleaseFiles)))
+
+checkRelease: $(checkReleaseTargets)
+	$(PERL) $(TOOLS)/convertRelease.pl -b $(BUILD_PREFIX) -h $(EPICS_HOST_ARCH) $@
+
+$(checkReleaseTargets):checkRelease.%:
+	$(PERL) $(TOOLS)/convertRelease.pl -b $(BUILD_PREFIX) -h $(EPICS_HOST_ARCH) -a $* checkRelease
+
+#
+# special clean rule
+#
+clean ::
+	$(RMDIR) $(addprefix $(BUILD_PREFIX),$(BUILD_ARCHS)) $(BUILD_PREFIX)Common
+
+archclean ::
+	$(RMDIR) $(addprefix $(BUILD_PREFIX),$(BUILD_ARCHS))
+
+$(cleanArchTargets) ::
+	$(RMDIR) $(BUILD_PREFIX)$(archPart)
+
+realclean :: 
+	$(RMDIR) $(BUILD_PREFIX)*
+
+.PHONY : $(actionArchTargets)
+.PHONY : $(cleanArchTargets)
+.PHONY : $(BUILD_ARCHS)
+.PHONY : $(ACTIONS) clean realclean archclean all
+.PHONY : checkRelease $(checkReleaseTargets)
+
