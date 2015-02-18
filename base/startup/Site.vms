@@ -28,12 +28,11 @@ $! DEF	GNV_CC_WARN_INFO_ALL		1
 $ DEF	GNV_CC_INCLUDE_LENGTH_MAX	1000
 $! DEF	GNV_CC_DEBUG			1
 $!
-$! if f$trnlnm("gnu") .nes. "" 
-$! then 
-$!   @GNU:[LIB]GNV_SETUP
-$! else
-$!   write sys$output "GNV not available"
-$! endif
+$ if f$trnlnm("gnu") .eqs. "" 
+$ then 
+$   write sys$output "Please run GNV setup first"
+$   exit
+$ endif
 $!
 $ if f$search("EPICS_ROOT:[BASE]CXX_REPOSITORY.DIR") .EQS. "" then -
 	CREATE/DIR EPICS_ROOT:[base.cxx_repository]
@@ -43,7 +42,10 @@ $ HOSTTYPE = f$getsyi("ARCH_NAME")
 $ if HOSTTYPE .EQS. "Alpha" 
 $ then
 $   cmd = "declare -x HOSTTYPE=Alpha;" + -
-	  "declare -x EPICS_HOST_ARCH=OpenVMS_Alpha;"
+	  "declare -x EPICS_HOST_ARCH=OpenVMS_Alpha;" + -
+	  "declare -x SHELL=/GNU/BIN/BASH.EXE;" + -
+	  "declare -x MAKE=/GNU/BIN/MAKE.EXE;" + -
+	  "declare -x EPICS_BASE=/EPICS_BASE;"
 $   if f$search("EPICS_ROOT:[BASE.CXX_REPOSITORY]OpenVMS_Alpha.DIR") .EQS. "" then -
 	CREATE/DIR EPICS_ROOT:[base.cxx_repository.OpenVMS_Alpha]
 $!
@@ -57,7 +59,10 @@ $ endif
 $ if HOSTTYPE .EQS. "IA64" 
 $ then
 $   cmd = "declare -x HOSTTYPE=IA64;" + -
-	  "declare -x EPICS_HOST_ARCH=OpenVMS_IA64;"
+	  "declare -x EPICS_HOST_ARCH=OpenVMS_IA64;" + -
+	  "declare -x SHELL=/GNU/BIN/BASH.EXE;" + -
+	  "declare -x MAKE=/GNU/BIN/MAKE.EXE;" + -
+	  "declare -x EPICS_BASE=/EPICS_BASE;"
 $   if f$search("EPICS_ROOT:[BASE.CXX_REPOSITORY]OpenVMS_IA64.DIR") .EQS. "" then -
 	CREATE/DIR EPICS_ROOT:[base.cxx_repository.OpenVMS_IA64]
 $!

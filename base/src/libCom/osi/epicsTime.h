@@ -19,6 +19,8 @@
 #include "epicsTypes.h"
 #include "osdTime.h"
 
+#define POSIX_TIME_AT_EPICS_EPOCH 631152000u
+
 /* epics time stamp for C interface*/
 typedef struct epicsTimeStamp {
     epicsUInt32    secPastEpoch;   /* seconds since 0000 Jan 1, 1990 */

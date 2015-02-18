@@ -42,7 +42,7 @@ SHRLIB_SUFFIX = .exe$(addprefix .,$(SHRLIB_VERSION))
 LOADABLE_SHRLIB_SUFFIX = .exe$(addprefix .,$(LOADABLE_SHRLIB_VERSION))
 SHRLIB_LDLIBS = $(addprefix -l$(LIB_PREFIX), $($*_LDLIBS) $(LIB_LIBS) $(USR_LIBS) \
  $($*_SYS_LIBS) $(LIB_SYS_LIBS) $(USR_SYS_LIBS)) $(LDLIBS)
-PROD_LDLIBS = $(addprefix -l$(LIB_PREFIX), $($*_LDLIBS) $(PROD_LIBS) $(USR_LIBS)\
+PROD_LDLIBS = $(addprefix -l, $($*_LDLIBS) $(PROD_LIBS) $(USR_LIBS)\
  $($*_SYS_LIBS) $(PROD_SYS_LIBS) $(USR_SYS_LIBS))
 
 #--------------------------------------------------

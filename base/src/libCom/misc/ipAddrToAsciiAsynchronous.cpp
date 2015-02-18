@@ -23,7 +23,7 @@
  */
 
 #include <string>
-#include <climits>
+#include <limits>
 #include <stdexcept>
 #include <stdio.h>
 

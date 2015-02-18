@@ -111,8 +111,9 @@ void rsrv_online_notify_task(void *pParm)
     status = setsockopt (sock, SOL_SOCKET, SO_BROADCAST, 
                 (char *)&true, sizeof(true));
     if (status<0) {
-        errlogPrintf ("CAS: online socket set up error\n");
-        epicsThreadSuspendSelf ();
+        errlogPrintf ("CAS: online socket set up error (SO_BROADCAST)\n");
+        errlogPrintf ("CAS: will continue, but Beacon broadcasts unavailable\n");
+        /*epicsThreadSuspendSelf ();*/
     }
     
     memset((char *)&msg, 0, sizeof msg);

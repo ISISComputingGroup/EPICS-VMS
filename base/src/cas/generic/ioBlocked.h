@@ -41,7 +41,8 @@ private:
 	virtual void ioBlockedSignal ();
 };
 
-class ioBlockedList : private tsDLList<ioBlocked> {
+// need to change private to protected inheritance for OpenVMS compile
+class ioBlockedList : protected tsDLList<ioBlocked> {
 friend class ioBlocked;
 public:
 	ioBlockedList ();

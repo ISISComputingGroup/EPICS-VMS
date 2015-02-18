@@ -47,6 +47,9 @@ static const unsigned nSecPerSec = 1000u * uSecPerSec;
 static const unsigned nSecPerUSec = 1000u;
 static const unsigned secPerMin = 60u;
 
+static const unsigned long NTP_TIME_AT_POSIX_EPOCH = 2208988800ul;
+static const unsigned long NTP_TIME_AT_EPICS_EPOCH =
+     NTP_TIME_AT_POSIX_EPOCH + POSIX_TIME_AT_EPICS_EPOCH;
 //
 // force this module to include code that can convert
 // to GDD's aitTimeStamp, but dont require that it must
@@ -82,60 +85,34 @@ public:
     bool useDiffTimeOptimization;
 };
 
-static const epicsTimeLoadTimeInit lti;
-
 //
 // epicsTimeLoadTimeInit ()
 //
 epicsTimeLoadTimeInit::epicsTimeLoadTimeInit ()
 {
-    static const time_t ansiEpoch = 0;
-    double secWest;
+    // All we know about time_t is that it is an arithmetic type.
+    time_t t_zero = static_cast<time_t> (0);
+    time_t t_one  = static_cast<time_t> (1);
+    this->time_tSecPerTick = difftime (t_one, t_zero);
 
-    {
-        time_t current = time ( NULL );
-        time_t error;
-        struct tm date; // vxWorks 6.0 requires "struct" here 
+    /* The EPICS epoch (1/1/1990 00:00:00UTC) was 631152000 seconds after
+     * the ANSI epoch (1/1/1970 00:00:00UTC)
+     * Convert this offset into time_t units, however this must not be
+     * calculated using local time (i.e. using mktime() or similar), since
+     * in the UK the ANSI Epoch had daylight saving time in effect, and 
+     * the value calculated would be 3600 seconds wrong.*/
+    this->epicsEpochOffset =
+        (double) POSIX_TIME_AT_EPICS_EPOCH / this->time_tSecPerTick;
 
-        int status = epicsTime_gmtime ( &current, &date );
-        assert ( status == epicsTimeOK );
-        error = mktime ( &date );
-        assert ( error != (time_t) - 1 );
-        secWest =  difftime ( error, current );
-    }
-    
-    {
-        time_t first = static_cast<time_t> (0);
-        time_t last = static_cast<time_t> (1);
-        this->time_tSecPerTick = difftime (last, first);
-    }
-
-    {
-        struct tm tmEpicsEpoch;
-        time_t epicsEpoch;
-
-        tmEpicsEpoch.tm_sec = 0;
-        tmEpicsEpoch.tm_min = 0;
-        tmEpicsEpoch.tm_hour = 0;
-        tmEpicsEpoch.tm_mday = epicsEpocDayOfTheMonth;
-        tmEpicsEpoch.tm_mon = epicsEpocMonth;
-        tmEpicsEpoch.tm_year = epicsEpochYear - tmStructEpochYear;
-        // must not correct for DST because secWest does 
-        // not include a DST offset
-        tmEpicsEpoch.tm_isdst = 0; 
-
-        epicsEpoch = mktime (&tmEpicsEpoch);
-        assert (epicsEpoch!=(time_t)-1);
-        this->epicsEpochOffset = difftime ( epicsEpoch, ansiEpoch ) - secWest;
-    }
-
-    if ( this->time_tSecPerTick == 1.0 && this->epicsEpochOffset <= ULONG_MAX &&
-           this->epicsEpochOffset >= 0 ) {
+    if (this->time_tSecPerTick == 1.0 &&
+        this->epicsEpochOffset <= ULONG_MAX &&
+        this->epicsEpochOffset >= 0) {
+        // We can use simpler code on Posix-compliant systems
         this->useDiffTimeOptimization = true;
         this->epicsEpochOffsetAsAnUnsignedLong = 
-            static_cast < unsigned long > ( this->epicsEpochOffset );
-    }
-    else {
+            static_cast<unsigned long>(this->epicsEpochOffset);
+    } else {
+        // Forced to use the slower but correct code
         this->useDiffTimeOptimization = false;
         this->epicsEpochOffsetAsAnUnsignedLong = 0;
     }
@@ -157,6 +134,7 @@ inline void epicsTime::addNanoSec (long nSecAdj)
 //
 epicsTime::epicsTime ( const time_t_wrapper & ansiTimeTicks )
 {
+    static epicsTimeLoadTimeInit & lti = * new epicsTimeLoadTimeInit ();
     //
     // try to directly map time_t into an unsigned long integer because this is 
     // faster on systems w/o hardware floating point and a simple integer type time_t.
@@ -239,6 +217,7 @@ void epicsTime::synchronize () {} // depricated
 //
 epicsTime::operator time_t_wrapper () const
 {
+    static epicsTimeLoadTimeInit & lti = * new epicsTimeLoadTimeInit ();
     time_t_wrapper wrap;
 
     if ( lti.useDiffTimeOptimization ) {

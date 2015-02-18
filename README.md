@@ -5,4 +5,4 @@ This is a continuation of work done by [Clemens Wermelskirchen](wermelsk@slac.st
 EPICS base 3.14.8.2 to OpenVMS. See [original download](http://www.slac.stanford.edu/grp/ssrl/spear/epics/base/3.14.8.2/vms_epics.tar.gz) 
 and [original porting notes](http://www.slac.stanford.edu/grp/ssrl/spear/epics/base/3.14.8.2/README.VMS)
 
-
+See [readme_vms.txt](readme_vms.txt) for new porting notes
