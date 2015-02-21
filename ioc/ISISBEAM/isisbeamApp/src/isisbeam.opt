@@ -1,0 +1,3 @@
+con_library:isis_func_lib.olb/lib
+con_share:initialize_handle/share
+vsys_root:[library]vdb_shrlib.olb/lib

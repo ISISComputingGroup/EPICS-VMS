@@ -3,6 +3,6 @@ include $(TOP)/configure/CONFIG
 
 ACTIONS += uninstall
 
-DIRS = TEST
+DIRS = TEST ISISBEAM
 
 include $(TOP)/configure/RULES_DIRS

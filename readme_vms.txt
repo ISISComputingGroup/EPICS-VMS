@@ -2,7 +2,7 @@ Please see [.base.documentation]README.VMS for original notes and requirements
 
 Basically you need to be using an ODS5 filesystem with GNV and perl installed
 
-    unpack kit (using GNV tar not vmstar)
+    unpack kit (using GNV tar/zip, not vmstar or VMS zip as these will replace . with _ in some extracted path names)
     @setup
     bash
     make MakefileInclude
@@ -36,6 +36,7 @@ Main changes to original SLAC epics-vms distribution are:
 * needed to change private to protected inheritance in ioBlocked.h
 * explicitly set MAKE and SHELL environment variables
 * added note on use of BUILD_PREFIX to support/README_VMS.txt
+* Back ported fix for EPICS time epoch (only needed in UK) 
 
 Freddie Akeroyd (freddie.akeroyd@stfc.ac.uk)
 

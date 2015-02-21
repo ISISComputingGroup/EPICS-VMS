@@ -1,0 +1,10 @@
+
+record(stringin, "$(P)BL:$(BL):VAT:STAT")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn(isisbeam,0,0)$(BL)VAT")
+   field(SCAN, "I/O Intr")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(DESC, "VAT value status on beamline $(BL)")
+}
+

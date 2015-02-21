@@ -1,0 +1,13 @@
+
+record(stringin, "$(P)BL:$(BL):SHUTTER:MODE")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn(isisbeam,0,0)$(BL)SMODE")
+   field(SCAN, "I/O Intr")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(DESC, "Shutter mode on beamline $(BL)")
+}
+
+alias("$(P)BL:$(BL):SHUTTER:MODE","$(P)IN:$(INST):SHTR:MODE")
+$(IFINST2)alias("$(P)BL:$(BL):SHUTTER:MODE","$(P)IN:$(INST2):SHTR:MODE")
+$(IFINST3)alias("$(P)BL:$(BL):SHUTTER:MODE","$(P)IN:$(INST3):SHTR:MODE")
