@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include "epicsThread.h"
+#include "epicsExit.h"
 #include "iocsh.h"
 
 int main(int argc,char *argv[])
