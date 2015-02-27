@@ -24,6 +24,7 @@
 #include <epicsTimer.h>
 #include <epicsMutex.h>
 #include <epicsEvent.h>
+#include <epicsExit.h>
 #include <iocsh.h>
 
 #include "isisbeamDriver.h"
@@ -51,11 +52,12 @@ isisbeamDriver::isisbeamDriver(const char *portName, const std::list<BeamParam*>
 	1, /* Autoconnect */
 	0, /* Default priority */
 	0),	/* Default stack size*/
-	m_params(params), m_pollTime(pollTime)
+	m_params(params), m_pollTime(pollTime), m_shutdown(false)
 {
 
 	const char *functionName = "isisbeamDriver";
-	int i=0;
+	int i = 0;
+	epicsAtExit(epicsExitFunc, this);
 	if (pollTime <= 1.0e-3)
 	{
 		m_pollTime = 3.0;
@@ -102,6 +104,11 @@ isisbeamDriver::isisbeamDriver(const char *portName, const std::list<BeamParam*>
 	}
 }
 
+void isisbeamDriver::epicsExitFunc(void* arg)
+{
+    isisbeamDriver* driver = (isisbeamDriver*)arg;
+	delete driver;
+}
 
 asynStatus isisbeamDriver::drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
 	const char **pptypeName, size_t *psize)
@@ -116,13 +123,27 @@ void isisbeamDriver::pollerThreadC(void* arg)
 	driver->pollerThread();
 }
 
+isisbeamDriver::~isisbeamDriver()
+{
+	m_shutdown = true;
+	while(m_shutdown)
+	{
+		epicsThreadSleep(0.5); // wait for pollerThread() to exit
+	}
+	delete []m_driverParamString;
+	for(std::list<BeamParam*>::iterator it=m_params.begin(); it != m_params.end(); ++it)
+	{
+		delete *it;
+	}
+}
+
 void isisbeamDriver::pollerThread()
 {
 	//    static const char* functionName = "isisbeamPoller";
 #if defined(__VMS) && !defined(TESTING)
 	user_initialize_nofins();
-#endif /* __VMS */
-	while(true)
+#endif /* defined(__VMS) && !defined(TESTING) */
+	while(!m_shutdown)
 	{
 		for(std::list<BeamParam*>::iterator it=m_params.begin(); it != m_params.end(); ++it)
 		{
@@ -137,6 +158,7 @@ void isisbeamDriver::pollerThread()
 		unlock();
 		epicsThreadSleep(m_pollTime);
 	}
+	m_shutdown = false; // signal we have finished
 }	
 
 extern "C" {
@@ -145,7 +167,7 @@ extern "C" {
 	/// \param[in] portName @copydoc initArg0
 	int isisbeamConfigure(const char *portName, const char* paramFile, double pollTime)
 	{
-		std::list<BeamParam*> params;
+		std::list<BeamParam*> params; // a copy of this list's contents will be kept by isisbeamDriver when we go out of scope
 		char param_name[129], param_type[129], vista_name[129];
 		FILE* f = fopen(paramFile, "r"); // VMS does not support "rt"
 		if (f == NULL)
@@ -184,7 +206,7 @@ extern "C" {
 
 	static void initCallFunc(const iocshArgBuf *args)
 	{
-		isisbeamConfigure(args[0].sval, args[1].sval, args[2].dval );
+		isisbeamConfigure(args[0].sval, args[1].sval, args[2].dval);
 	}
 
 	static void isisbeamRegister(void)
@@ -195,4 +217,3 @@ extern "C" {
 	epicsExportRegistrar(isisbeamRegister);
 
 }
-

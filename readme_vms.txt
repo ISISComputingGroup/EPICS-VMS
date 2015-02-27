@@ -27,7 +27,7 @@ so will need to set EPICS_CA_AUTO_ADDR_LIST=NO
 
 Main changes to original SLAC epics-vms distribution are:
 
-* back merged to full EPICS 3.14.8.2 so it has other files not used on VMS
+* back merged to full EPICS 3.14.8.2 so it has other files not used by VMS
 * made setup.com more generic
 * added asyn and devIocStats modules to support and msi to extensions
 * added -fpermissive to CONFIG.gnuCommon to allow building on Linux
@@ -38,5 +38,11 @@ Main changes to original SLAC epics-vms distribution are:
 * added note on use of BUILD_PREFIX to support/README_VMS.txt
 * Back ported fix for EPICS time epoch (only needed in UK) 
 
-Freddie Akeroyd (freddie.akeroyd@stfc.ac.uk)
+Two iocs are provided - a simple TEST and ISISBEAM. Note that ISISBEAM will only 
+compile on a non-ISIS VMS system with the TESTING macro defined in the Makefile.
+ 
+At the moment the VMS port is tied to EPICS 3.14.8.2 as later versions
+of the EPICS build system make use of the 'eval' function in GNU make and
+this is currently not available in the version of Make provided by GNV on VMS
 
+Freddie Akeroyd (freddie.akeroyd@stfc.ac.uk)

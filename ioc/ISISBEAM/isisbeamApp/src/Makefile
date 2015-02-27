@@ -8,11 +8,24 @@ include $(TOP)/configure/CONFIG
 #=============================
 # build an ioc application
 
+## we can only build a full IOC on VMS, so defines TESTING=YES 
+## when not on VMS. If you are building on an non-ISIS VMS machine you
+## will also need to define TESTING=YES
+ifeq ($(findstring OpenVMS,$(EPICS_HOST_ARCH)),) 
+# not on VMS, so define TESTING as YES
+TESTING=YES
+else
+# change to YES if on a non ISIS VMS machine 
+TESTING=NO
+endif
+
 PROD_IOC = isisbeam
 
-# we can only build a full IOC on VMS, so define TESTING elsewhere
-USR_CXXFLAGS_DEFAULT += -DTESTING
+ifeq ($(TESTING),YES) 
+USR_CXXFLAGS += -DTESTING
+else
 USR_CXXFLAGS_VMS += -Wc/warn -Wc/reentrancy=multithread
+endif
 
 DBD += isisbeam.dbd
 
@@ -28,11 +41,13 @@ isisbeam_SRCS += isisbeam_registerRecordDeviceDriver.cpp
 
 isisbeam_SRCS_DEFAULT += isisbeamMain.cpp isisbeamDriver.cpp
 
-#add a definition for each support application used by this application
 isisbeam_LIBS += asyn devIocStats
-
 isisbeam_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+# ISIS specific linker options
+ifneq ($(TESTING),YES) 
 isisbeam_LDFLAGS_VMS += -input_to_ld ../isisbeam.opt -Wl/threads=upcalls
+endif
 
 #===========================
 

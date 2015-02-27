@@ -9,31 +9,32 @@
 #ifndef ISISBEAMDRIVER_H
 #define ISISBEAMDRIVER_H
 
-#ifdef __VMS
+#if defined(__VMS) && !defined(TESTING)
 extern "C" {
-#include        <vsys$include:vdb_descrip.h>
-#include        <vsys$include:vdb_routines.h>
-#include        <vsys$include:vdb_structure.h>
-#include        <include:usrlib.h>
-#include        <include:hndlib.h>
+#include    <vsys$include:vdb_descrip.h>
+#include    <vsys$include:vdb_routines.h>
+#include    <vsys$include:vdb_structure.h>
+#include    <include:usrlib.h>
+#include    <include:hndlib.h>
 #include	<descrip.h>
 }
-#endif /* __VMS */
+#endif /* defined(__VMS) && !defined(TESTING) */
 
 #include <list>
 #include <string>
 
 #include "asynPortDriver.h"
 
+/// Describes a beam/accelerator parameter in VSystem/VISTA 
 class BeamParam
 {
 private:
-#ifdef __VMS
+#if defined(__VMS) && !defined(TESTING)
 	struct vdb_descrip_s vista_name_dsc;
 	struct vdb_descrip_v lval_dsc;
 	struct vdb_descrip_v fval_dsc;
 	struct vdb_descrip_v sval_dsc;
-#endif /* __VMS */
+#endif /* defined(__VMS) && !defined(TESTING) */
 	BeamParam(const BeamParam&) { }
 	void operator=(const BeamParam&) { }
 public:
@@ -53,7 +54,7 @@ public:
 		{
 			throw std::runtime_error("Invalid parameter data type in input file");
 		}
-#ifdef __VMS
+#if defined(__VMS) && !defined(TESTING)
 		vista_name_dsc.dsc_w_length = vista_name.size();
 		vista_name_dsc.dsc_b_dtype = DSC$K_DTYPE_T;
 		vista_name_dsc.dsc_b_class =  DSC$K_CLASS_S;
@@ -70,7 +71,7 @@ public:
 		sval_dsc.dsc_b_dtype = DSC$K_DTYPE_T;
 		sval_dsc.dsc_b_class =  DSC$K_CLASS_S;
 		sval_dsc.dsc_a_pointer = sval;
-#endif /* __VMS */
+#endif /* defined(__VMS) && !defined(TESTING) */
 	}
 	void read()
 	{
@@ -82,7 +83,7 @@ public:
 			read_chan_status = read_chan(&vista_name_dsc, &fval_dsc);
 #else
 			fval = rand();
-#endif /* __VMS */
+#endif /* defined(__VMS) && !defined(TESTING) */
 		}
 		else if (type == "long")
 		{
@@ -90,7 +91,7 @@ public:
 			read_chan_status = read_chan(&vista_name_dsc, &lval_dsc);
 #else
 			lval = rand();
-#endif /* __VMS */
+#endif /* defined(__VMS) && !defined(TESTING) */
 		}
 		else if (type == "string")
 		{
@@ -98,7 +99,7 @@ public:
 			read_chan_status = read_chan(&vista_name_dsc, &sval_dsc);
 #else
 			sprintf(sval, "%d", rand());
-#endif /* __VMS */
+#endif /* defined(__VMS) && !defined(TESTING) */
 			sval[sizeof(sval)-1] = '\0';
 		}
 		if (!(read_chan_status & 0x1)) // errors are even numbers on VMS
@@ -131,11 +132,14 @@ public:
 		const char **pptypeName, size_t *psize);
 
 	static void pollerThreadC(void* arg);
+	static void epicsExitFunc(void* arg);
+	~isisbeamDriver();
 
 private:
 	std::list<BeamParam*> m_params;
 	asynParamString_t* m_driverParamString;
 	double m_pollTime;
+	bool m_shutdown;  ///< false initially, set to true to request shutdown, and then wait until it goes false again
 
 	void pollerThread();
 };

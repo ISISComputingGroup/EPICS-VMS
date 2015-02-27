@@ -31,7 +31,7 @@ e6_shut long   t2shut::e6:status
 e7_shut long   t2shut::e7:status
 e8_shut long   t2shut::wish:status
 e9_shut long   t2shut::e9:status
-w1_shut long   t2shut::w1:status
+w1_shut long   t2shut::chipir:status
 w2_shut long   t2shut::w2:status
 w3_shut long   t2shut::w3:status
 w4_shut long   t2shut::w4:status
@@ -49,7 +49,7 @@ e6_mode long   t2shut::e6:mode
 e7_mode long   t2shut::e7:mode
 e8_mode long   t2shut::wish:mode
 e9_mode long   t2shut::e9:mode
-w1_mode long   t2shut::w1:mode
+w1_mode long   t2shut::chipir:mode
 w2_mode long   t2shut::w2:mode
 w3_mode long   t2shut::w3:mode
 w4_mode long   t2shut::w4:mode
