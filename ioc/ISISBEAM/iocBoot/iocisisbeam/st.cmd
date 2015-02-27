@@ -21,9 +21,9 @@ isisbeamConfigure("isisbeam","${TOP}/iocBoot/${IOC}/params.txt",3.0)
 ## Load record instances
 dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db","IOC=ICS:IOCSTATS")
 dbLoadRecords("db/isisbeam.db","P=ICS:AC:")
-#dbLoadRecords("db/shutter_mode.db","P=ICS:AC:")
-#dbLoadRecords("db/shutter_status.db","P=ICS:AC:")
-#dbLoadRecords("db/vat.db","P=ICS:AC:")
+dbLoadRecords("db/shutter_mode.db","P=ICS:AC:")
+dbLoadRecords("db/shutter_status.db","P=ICS:AC:")
+dbLoadRecords("db/vat.db","P=ICS:AC:")
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()

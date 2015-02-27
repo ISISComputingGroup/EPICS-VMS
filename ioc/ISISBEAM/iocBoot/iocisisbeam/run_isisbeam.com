@@ -5,6 +5,8 @@ $!
 $ set noon
 $ myproc = f$environment("PROCEDURE")
 $ myprocdir = f$parse("A.A;1",myproc,,,"SYNTAX_ONLY") - "A.A;1"
+$ myroot = "''myprocdir'" - "]" + ".-.-.-.-]"
+$ @'myroot'setup
 $ ARCH = f$getsyi("ARCH_NAME")
 $! we cannot use broadcasts on VMS if we run non-privileged
 $! so turn off auto addressing
