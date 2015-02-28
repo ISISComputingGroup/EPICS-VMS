@@ -1,0 +1,8 @@
+
+record(longin, "$(P)BL:$(BL):SHUTTER:STATUS")
+{
+   field(DESC, "Shutter status on BL $(BL)")
+   field(INP,  "$(P)BL:SHUTTER:SHUT$(NS) CP")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+}
+

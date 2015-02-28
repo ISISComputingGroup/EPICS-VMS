@@ -129,8 +129,9 @@ else
 ifeq ($(OS_CLASS), VMS)
 asyn_SRCS += drvVxi11Win32.c
 else
-asyn_SRCS += vxi11core_xdr.c
-asyn_SRCS += drvVxi11.c
+#asyn_SRCS += vxi11core_xdr.c
+#asyn_SRCS += drvVxi11.c
+asyn_SRCS += drvVxi11Win32.c
 endif
 endif
 asyn_SRCS += E5810Reboot.c

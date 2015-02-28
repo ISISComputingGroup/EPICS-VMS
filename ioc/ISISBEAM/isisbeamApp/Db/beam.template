@@ -1,0 +1,60 @@
+
+record(ai, "$(P)AC:$(BEAM):BEAM:CURR")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn(isisbeam,0,0)$(PARAM)")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+   field(DESC, "$(BEAM) Beam Current")
+   field(EGU, "uA")
+   field(HOPR, "$(HOPR)")
+   field(LOPR, "$(LOPR)")
+   field(LOW, "$(LOW)")
+   field(LSV, "MINOR")
+   field(SIOL, "10")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(FLNK, "$(P)AC:$(BEAM):BEAM:STAT")
+}
+
+record(bi, "$(P)AC:$(BEAM):BEAM:STAT")
+{
+    field(DESC, "$(BEAM) Beam Status")
+	field(DTYP, "Soft Channel")
+	field(INP, "$(P)AC:$(BEAM):BEAM:ONCALC PP")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(calcout, "$(P)AC:$(BEAM):BEAM:ONCALC")
+{
+	field(INPA, "$(P)AC:$(BEAM):BEAM:CURR NPP")
+	field(CALC, "A>0?1:0")
+    field(OOPT,	"On Change")
+	field(DOPT, "Use OCAL")
+	field(OCAL, "A>0?2:1")
+	field(OUT, "$(P)AC:$(BEAM):BEAM:ONCALC:FAN.SELN")
+	field(FLNK, "$(P)AC:$(BEAM):BEAM:ONCALC:FAN")
+}
+
+record(fanout, "$(P)AC:$(BEAM):BEAM:ONCALC:FAN")
+{
+    field(SELM, "Specified")
+	field(LNK1, "$(P)AC:$(BEAM):BEAMOFF:TIME")
+	field(LNK2, "$(P)AC:$(BEAM):BEAMON:TIME")
+}
+
+record(stringin, "$(P)AC:$(BEAM):BEAMON:TIME")
+{
+   field(DESC, "$(BEAM) Beam on Time")
+   field(DTYP, "Soft Timestamp")
+   field(INP, "@%m/%d/%Y %H:%M:%S")
+}
+
+record(stringin, "$(P)AC:$(BEAM):BEAMOFF:TIME")
+{
+   field(DESC, "$(BEAM) Beam off Time")
+   field(DTYP, "Soft Timestamp")
+   field(INP, "@%m/%d/%Y %H:%M:%S")
+}
+

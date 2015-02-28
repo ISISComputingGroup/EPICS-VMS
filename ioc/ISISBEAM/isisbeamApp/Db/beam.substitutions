@@ -1,0 +1,5 @@
+pattern { BEAM, PARAM, LOW, LOPR, HOPR }
+{ "TS1", "beam_tgt", "1", "0", "250" }
+{ "TS2", "beam_tgt2", "1", "0", "60" }
+{ "EPB1", "beam_e1", "1", "0", "300" }
+{ "SYNCH", "beam_sync", "1", "0", "300" }

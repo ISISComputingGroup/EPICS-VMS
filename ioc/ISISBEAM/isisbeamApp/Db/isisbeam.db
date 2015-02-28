@@ -1,3 +1,4 @@
+
 record(bo, "$(P)ISISBEAM:SIM")
 {
     field(DTYP, "Soft Channel")
@@ -15,60 +16,6 @@ record(bo, "$(P)ISISBEAM:DISABLE")
     field(OMSL, "supervisory")
     field(ZNAM, "COMMS ENABLED")
     field(ONAM, "COMMS DISABLED")
-}
-
-
-record(ai, "$(P)AC:TS1:BEAM:CURR")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)beam_tgt")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-   field(DESC, "TS1 Beam Current")
-   field(EGU, "uA")
-   field(HOPR, "250")
-   field(LOPR, "0")
-   field(LOW, "1")
-   field(LSV, "MINOR")
-   field(SIOL, "180")
-   field(SIML, "$(P)ISISBEAM:SIM")
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
-#   field(FLNK, "$(P)AC:TS1:BEAM:STAT")
-}
-
-record(ai, "$(P)AC:TS2:BEAM:CURR")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)beam_tgt2")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-   field(DESC, "TS2 Beam Current")
-   field(EGU, "uA")
-   field(HOPR, "60")
-   field(LOPR, "0")
-   field(LOW, "1")
-   field(LSV, "MINOR")
-   field(SIOL, "20")
-   field(SIML, "$(P)ISISBEAM:SIM")
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
-#   field(FLNK, "$(P)AC:TS2:BEAM:STAT")
-}
-
-record(ai, "$(P)AC:EPB1:BEAM:CURR")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)beam_e1")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-   field(DESC, "EPB1 Beam Current")
-   field(EGU, "uA")
-   field(HOPR, "300")
-   field(LOPR, "0")
-   field(LOW, "1")
-   field(LSV, "MINOR")
-   field(SIOL, "200")
-   field(SIML, "$(P)ISISBEAM:SIM")
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
 record(ai, "$(P)TG:TS1:MOD:METH:TEMP")
@@ -105,22 +52,6 @@ record(ai, "$(P)TG:TS1:MOD:HDGN:TEMP")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-record(ai, "$(P)AC:SYNCH:BEAM:CURR")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)beam_sync")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-   field(DESC, "Synchrotron Beam Current")
-   field(EGU, "uA")
-   field(HOPR, "300")
-   field(LOPR, "0")
-   field(LOW, "1")
-   field(LSV, "MINOR")
-   field(SIOL, "250")
-   field(SIML, "$(P)ISISBEAM:SIM")
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
-}
 
 record(ai, "$(P)AC:SYNCH:FREQ")
 {
@@ -135,7 +66,7 @@ record(ai, "$(P)AC:SYNCH:FREQ")
    field(LOPR, "0")
    field(LOW, "1")
    field(LSV, "MINOR")
-   field(SIOL, "250")
+   field(SIOL, "30")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
@@ -197,6 +128,7 @@ record(ai, "$(P)AC:TS2:BEAM:TOTAL")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
    field(DESC, "TS2 Total uAh since midnight")
    field(EGU, "uAH")
    field(SIOL, "40")
@@ -207,31 +139,35 @@ record(ai, "$(P)AC:TS2:BEAM:TOTAL")
 record(ai, "$(P)AC:TS2:DMOD:METH:TEMP")
 {
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)DEMETHTS2")
+   field(INP,  "@asyn(isisbeam,0,0)t2_mtemp1")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
    field(DESC, "TS2 Decoupled Methane Temp")
    field(EGU, "K")
    field(HOPR, "300")
    field(LOPR, "40")
    field(HIGH, "65")
    field(HSV, "MINOR")
+   field(SIOL, "100")
 }
 
 record(ai, "$(P)TG:TS2:CMOD:METH:TEMP")
 {
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)METHTS2")
+   field(INP,  "@asyn(isisbeam,0,0)t2_mtemp2")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
    field(DESC, "TS2 Coupled Methane Temp")
    field(EGU, "K")
    field(HOPR, "300")
    field(LOPR, "40")
    field(HIGH, "65")
    field(HSV, "MINOR")
+   field(SIOL, "100")
 }
 
 record(ai, "$(P)TG:TS2:CMOD:HDGN:TEMP")
@@ -241,80 +177,59 @@ record(ai, "$(P)TG:TS2:CMOD:HDGN:TEMP")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
    field(DESC, "TS2 Coupled Hydrogen Temp")
    field(EGU, "K")
    field(HOPR, "300")
    field(LOPR, "10")
    field(HIGH, "30")
    field(HSV, "MINOR")
+   field(SIOL, "100")
 }
 
-record(ai, "$(P)AC:TS2:DMOD:RTIME:DUR")
+record(longin, "$(P)AC:TS2:DMOD:RTIME:DUR")
 {
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)DRUNTS2")
-   field(PREC, "3")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)dmod_runtime")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(SIOL, "100")
    field(EGU, "s")
+   field(DESC, "DMOD runtime")
 }
 
-record(ai, "$(P)AC:TS2:DMOD:RTLIM")
+record(longin, "$(P)AC:TS2:DMOD:RTLIM")
 {
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)DRLIMTS2")
-   field(PREC, "3")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)dmod_runtime_lim")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
    field(EGU, "s")
+   field(DESC, "DMOD runtime limit")
 }
 
 record(ai, "$(P)AC:TS2:DMOD:BEAM")
 {
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)BEAMDMODTS2")
+   field(INP,  "@asyn(isisbeam,0,0)dmod_uabeam")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
    field(EGU, "uAh")
+   field(DESC, "DMOD uAh")
 }
 
-record(bi, "$(P)AC:TS1:BEAM:STAT")
+record(longin, "$(P)BL:MUON:KICKR")
 {
-	field(DTYP, "Soft Channel")
-	field(INP, "$(P)AC:TS1:BEAM:ONCALC PP")
-	field(ZNAM, "OFF")
-	field(ONAM, "ON")
-}
-
-record(calc, "$(P)AC:TS1:BEAM:ONCALC")
-{
-	field(INPA, "$(P)AC:TS1:BEAM:CURR NPP")
-	field(CALC, "A>0?1:0")
-}
-
-record(bi, "$(P)AC:TS2:BEAM:STAT")
-{
-	field(DTYP, "Soft Channel")
-	field(INP, "$(P)AC:TS2:BEAM:ONCALC PP")
-	field(ZNAM, "OFF")
-	field(ONAM, "ON")
-}
-
-record(calc, "$(P)AC:TS2:BEAM:ONCALC")
-{
-	field(INPA, "$(P)AC:TS2:BEAM:CURR NPP")
-	field(CALC, "A>0?1:0")
-}
-
-record(ai, "$(P)BL:MUON:KICKR")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)MUKICK")
-   field(PREC, "3")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)muon_kicker")
    field(SCAN, "I/O Intr")
-#   field(FLNK, "$(P)BL:MUON:KICKR:STAT")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(FLNK, "$(P)BL:MUON:KICKR:STAT")
 }
 
 record(bi, "$(P)BL:MUON:KICKR:STAT")
@@ -323,6 +238,7 @@ record(bi, "$(P)BL:MUON:KICKR:STAT")
 	field(INP, "$(P)AC:MUON:KICKR:ONCALC PP")
 	field(ZNAM, "OFF")
 	field(ONAM, "ON")
+    field(DESC, "Muon kicker status")
 }
 
 record(calc, "$(P)AC:MUON:KICKR:ONCALC")
@@ -346,50 +262,42 @@ record(calc, "$(P)AC:TS2:DMOD:ANCLC")
 	field(CALC, "A>0?1:0")
 }
 
-record(ai, "$(P)AC:TS2:DMOD:ANN")
+record(longin, "$(P)AC:TS2:DMOD:ANN")
 {
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)DMODANNLOWTS2")
-   field(PREC, "3")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)dmod_annlow1")
    field(SCAN, "I/O Intr")
-#   field(FLNK, "$(P)AC:TS2:DMOD:ANNPLOW:STAT")
+   field(FLNK, "$(P)AC:TS2:DMOD:ANNPLOW:STAT")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-record(stringin, "$(P)AC:TS1:BEAMON:TIME")
+record(longin, "$(P)BL:SHUTTER:SHUTN:INP")
 {
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn(isisbeam,0,0)ONTS1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)shut_north")
    field(SCAN, "I/O Intr")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(FLNK, "$(P)BL:SHUTTER:SHUTN")
+}
+
+record(mbbiDirect, "$(P)BL:SHUTTER:SHUTN")
+{
+   field(INP,  "$(P)BL:SHUTTER:SHUTN:INP")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-record(stringin, "$(P)AC:TS1:BEAMOFF:TIME")
+record(longin, "$(P)BL:SHUTTER:SHUTS:INP")
 {
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn(isisbeam,0,0)OFFTS1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)shut_south")
    field(SCAN, "I/O Intr")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(FLNK, "$(P)BL:SHUTTER:SHUTS")
+}
+
+record(mbbiDirect, "$(P)BL:SHUTTER:SHUTS")
+{
+   field(INP,  "$(P)BL:SHUTTER:SHUTS:INP")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-record(stringin, "$(P)AC:TS2:BEAMON:TIME")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn(isisbeam,0,0)ONTS2")
-   field(SCAN, "I/O Intr")
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
-}
-
-record(stringin, "$(P)AC:TS2:BEAMOFF:TIME")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn(isisbeam,0,0)OFFTS2")
-   field(SCAN, "I/O Intr")
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
-}
-
-# Renamed certain PVs for correctness, corrected CSS screen, but just in case have aliased as well
-#alias("$(P)TG:TS2:CMOD:METH:TEMP","$(P)AC:TS2:CMOD:METH:TEMP")
-#alias("$(P)TG:TS2:CMOD:HDGN:TEMP","$(P)AC:TS2:CMOD:HDGN:TEMP")
-#alias("$(P)BL:MUON:KICKR","$(P)AC:MUON:KICKR")
-#alias("$(P)BL:MUON:KICKR:STAT","$(P)AC:MUON:KICKR:STAT")
