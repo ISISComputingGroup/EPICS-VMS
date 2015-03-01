@@ -1,5 +1,5 @@
 
-record(longin, "$(P)BL:$(BL):SHUTTER:STATUS")
+record(mbbi, "$(P)BL:$(BL):SHUTTER:STATUS")
 {
    field(DESC, "Shutter status on BL $(BL)")
    field(DTYP, "asynInt32")
@@ -7,5 +7,14 @@ record(longin, "$(P)BL:$(BL):SHUTTER:STATUS")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(SIML, "$(P)ISISBEAM:SIM")
+   field(ONVL, 0)
+   field(TWVL, 1)
+   field(THVL, 2)
+   field(FRVL, 3)
+   field(FVVL, 4)
+   field(ONST, "DEACT")
+   field(TWST, "OPEN")
+   field(THST, "CLOSED")
+   field(FRST, "MOVING")
+   field(FVST, "FAULT")	
 }
-

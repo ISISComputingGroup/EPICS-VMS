@@ -1,8 +1,10 @@
-
-record(longin, "$(P)BL:$(BL):SHUTTER:STATUS")
+# TS1 shutter is only open or closed
+record(bi, "$(P)BL:$(BL):SHUTTER:STATUS")
 {
    field(DESC, "Shutter status on BL $(BL)")
-   field(INP,  "$(P)BL:SHUTTER:SHUT$(NS) CP")
+   field(INP,  "$(P)BL:SHUTTER:SHUT$(NS).$(BIT) CP")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(ZNAM, "CLOSED")
+   field(ONAM, "OPEN")
 }
 

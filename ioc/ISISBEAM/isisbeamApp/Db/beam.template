@@ -14,16 +14,7 @@ record(ai, "$(P)AC:$(BEAM):BEAM:CURR")
    field(SIOL, "10")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
-   field(FLNK, "$(P)AC:$(BEAM):BEAM:STAT")
-}
-
-record(bi, "$(P)AC:$(BEAM):BEAM:STAT")
-{
-    field(DESC, "$(BEAM) Beam Status")
-	field(DTYP, "Soft Channel")
-	field(INP, "$(P)AC:$(BEAM):BEAM:ONCALC PP")
-	field(ZNAM, "OFF")
-	field(ONAM, "ON")
+   field(FLNK, "$(P)AC:$(BEAM):BEAM:ONCALC")
 }
 
 record(calcout, "$(P)AC:$(BEAM):BEAM:ONCALC")
@@ -33,11 +24,71 @@ record(calcout, "$(P)AC:$(BEAM):BEAM:ONCALC")
     field(OOPT,	"On Change")
 	field(DOPT, "Use OCAL")
 	field(OCAL, "A>0?2:1")
-	field(OUT, "$(P)AC:$(BEAM):BEAM:ONCALC:FAN.SELN")
-	field(FLNK, "$(P)AC:$(BEAM):BEAM:ONCALC:FAN")
+	field(OUT, "$(P)AC:$(BEAM):BEAM:ONCALC:FAN.SELN PP")
 }
 
 record(fanout, "$(P)AC:$(BEAM):BEAM:ONCALC:FAN")
+{
+    field(SELM, "Specified")
+	field(LNK1, "$(P)AC:$(BEAM):BEAMOFF:ETIME")
+	field(LNK2, "$(P)AC:$(BEAM):BEAMON:ETIME")
+}
+
+record(longin, "$(P)AC:$(BEAM):BEAMON:ETIME")
+{
+   field(DESC, "$(BEAM) Beam on Time")
+   field(INP, "$(IOC):HEARTBEAT NPP")
+   field(PINI, "YES")
+}
+
+record(longin, "$(P)AC:$(BEAM):BEAMOFF:ETIME")
+{
+   field(DESC, "$(BEAM) Beam off Time")
+   field(INP, "$(IOC):HEARTBEAT NPP")
+   field(PINI, "YES")
+}
+
+record(calcout, "$(P)AC:$(BEAM):BEAMOFF:DUR")
+{
+    field(DESC, "$(BEAM) Beam off duration")
+	field(INPA, "$(P)AC:$(BEAM):BEAM:STAT NPP")
+	field(INPB, "$(IOC):HEARTBEAT NPP")
+	field(INPC, "$(P)AC:$(BEAM):BEAMOFF:ETIME NPP")
+	field(CALC, "A = 0 ? (B - C) : 0")
+    field(HIGH, "300")
+    field(HSV, "MINOR")
+	field(SCAN, "1 second")
+	field(EGU, "s")
+}
+
+record(calcout, "$(P)AC:$(BEAM):BEAMON:DUR")
+{
+    field(DESC, "$(BEAM) Beam on duration")
+	field(INPA, "$(P)AC:$(BEAM):BEAM:STAT NPP")
+	field(INPB, "$(IOC):HEARTBEAT NPP")
+	field(INPC, "$(P)AC:$(BEAM):BEAMON:ETIME NPP")
+	field(CALC, "A = 1 ? (B - C) : 0")
+    field(LOW, "0")
+    field(LSV, "MINOR")
+	field(SCAN, "1 second")
+	field(EGU, "s")
+}
+
+record(calcout, "$(P)AC:$(BEAM):BEAM:ONCALC2")
+{
+	field(INPA, "$(IOC):HEARTBEAT NPP")
+	field(INPB, "$(P)AC:$(BEAM):BEAMON:ETIME NPP")
+	field(INPC, "$(P)AC:$(BEAM):BEAMOFF:ETIME NPP")
+	field(INPD, "$(P)AC:$(BEAM):BEAM:ONCALC NPP")
+	field(CALC, "(A - MAX(B,C)) > 5")
+    field(OOPT,	"Transition To Non-zero")
+	field(DOPT, "Use OCAL")
+	field(OCAL, "D>0?2:1")
+	field(OUT, "$(P)AC:$(BEAM):BEAM:ONCALC2:FAN.SELN PP")
+	field(SCAN, "1 second")
+}
+
+record(fanout, "$(P)AC:$(BEAM):BEAM:ONCALC2:FAN")
 {
     field(SELM, "Specified")
 	field(LNK1, "$(P)AC:$(BEAM):BEAMOFF:TIME")
@@ -48,13 +99,25 @@ record(stringin, "$(P)AC:$(BEAM):BEAMON:TIME")
 {
    field(DESC, "$(BEAM) Beam on Time")
    field(DTYP, "Soft Timestamp")
-   field(INP, "@%m/%d/%Y %H:%M:%S")
+   field(INP, "@%Y-%m-%dT%H:%M:%S")
+   field(FLNK, "$(P)AC:$(BEAM):BEAM:STAT")
+   field(PINI, "YES")
 }
 
 record(stringin, "$(P)AC:$(BEAM):BEAMOFF:TIME")
 {
    field(DESC, "$(BEAM) Beam off Time")
    field(DTYP, "Soft Timestamp")
-   field(INP, "@%m/%d/%Y %H:%M:%S")
+   field(INP, "@%Y-%m-%dT%H:%M:%S")
+   field(FLNK, "$(P)AC:$(BEAM):BEAM:STAT")
+   field(PINI, "YES")
 }
 
+record(bi, "$(P)AC:$(BEAM):BEAM:STAT")
+{
+    field(DESC, "$(BEAM) Beam Status")
+	field(INP, "$(P)AC:$(BEAM):BEAM:ONCALC2.D NPP")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+	field(ZSV, "MINOR")
+}

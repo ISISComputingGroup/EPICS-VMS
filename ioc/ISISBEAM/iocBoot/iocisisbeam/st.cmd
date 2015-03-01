@@ -19,13 +19,13 @@ isisbeam_registerRecordDeviceDriver(pdbbase)
 isisbeamConfigure("isisbeam","${TOP}/iocBoot/${IOC}/params.txt",3.0)
 
 ## Load record instances
-dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db","IOC=ICS:ISISBEAM:IOCSTATS")
-dbLoadRecords("db/isisbeam.db","P=ICS:ISISBEAM:")
-dbLoadRecords("db/beam.db","P=ICS:ISISBEAM:")
-dbLoadRecords("db/shutter_mode.db","P=ICS:ISISBEAM:")
-dbLoadRecords("db/shutter_status.db","P=ICS:ISISBEAM:")
-dbLoadRecords("db/shutter_status_ts1.db","P=ICS:ISISBEAM:")
-dbLoadRecords("db/vat.db","P=ICS:ISISBEAM:")
+dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db","IOC=ICS:IB:IOCSTATS")
+dbLoadRecords("db/isisbeam.db","P=ICS:IB:")
+dbLoadRecords("db/beam.db","P=ICS:IB:,IOC=ICS:IB:IOCSTATS")
+dbLoadRecords("db/shutter_mode.db","P=ICS:IB:")
+dbLoadRecords("db/shutter_status.db","P=ICS:IB:")
+dbLoadRecords("db/shutter_status_ts1.db","P=ICS:IB:")
+dbLoadRecords("db/vat.db","P=ICS:IB:")
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()

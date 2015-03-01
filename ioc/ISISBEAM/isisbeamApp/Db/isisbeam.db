@@ -6,6 +6,7 @@ record(bo, "$(P)ISISBEAM:SIM")
     field(ONAM, "YES")
     field(VAL, "0")
     field(DESC, "Simulation Mode")
+	field(PINI, "YES")
 }
 
 record(bo, "$(P)ISISBEAM:DISABLE") 
@@ -53,20 +54,15 @@ record(ai, "$(P)TG:TS1:MOD:HDGN:TEMP")
 }
 
 
-record(ai, "$(P)AC:SYNCH:FREQ")
+record(bi, "$(P)AC:SYNCH:MODE")
 {
-   field(DTYP, "asynFloat64")
+   field(DTYP, "asynInt32")
    field(INP,  "@asyn(isisbeam,0,0)mode")
-   field(PREC, "3")
    field(SCAN, "I/O Intr")
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
-   field(DESC, "Synchrotron Frequency")
-   field(EGU, "Hz")
-   field(HOPR, "50")
-   field(LOPR, "0")
-   field(LOW, "1")
-   field(LSV, "MINOR")
-   field(SIOL, "30")
+   field(DESC, "Synchrotron Mode")
+   field(ZNAM, "40Hz")
+   field(ONAM, "50Hz")
+   field(SIOL, "0")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
@@ -136,6 +132,7 @@ record(ai, "$(P)AC:TS2:BEAM:TOTAL")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
+#  TE842
 record(ai, "$(P)AC:TS2:DMOD:METH:TEMP")
 {
    field(DTYP, "asynFloat64")
@@ -153,6 +150,7 @@ record(ai, "$(P)AC:TS2:DMOD:METH:TEMP")
    field(SIOL, "100")
 }
 
+#  TE852
 record(ai, "$(P)TG:TS2:CMOD:METH:TEMP")
 {
    field(DTYP, "asynFloat64")
@@ -170,6 +168,7 @@ record(ai, "$(P)TG:TS2:CMOD:METH:TEMP")
    field(SIOL, "100")
 }
 
+#  TT706
 record(ai, "$(P)TG:TS2:CMOD:HDGN:TEMP")
 {
    field(DTYP, "asynFloat64")
@@ -195,7 +194,7 @@ record(longin, "$(P)AC:TS2:DMOD:RTIME:DUR")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SIOL, "100")
-   field(EGU, "s")
+   field(EGU, "minute")
    field(DESC, "DMOD runtime")
 }
 
@@ -206,7 +205,7 @@ record(longin, "$(P)AC:TS2:DMOD:RTLIM")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(SIML, "$(P)ISISBEAM:SIM")
-   field(EGU, "s")
+   field(EGU, "minute")
    field(DESC, "DMOD runtime limit")
 }
 
@@ -222,53 +221,28 @@ record(ai, "$(P)AC:TS2:DMOD:BEAM")
    field(DESC, "DMOD uAh")
 }
 
-record(longin, "$(P)BL:MUON:KICKR")
+record(bi, "$(P)BL:MUON:KICKR:STAT")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn(isisbeam,0,0)muon_kicker")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(SIML, "$(P)ISISBEAM:SIM")
-   field(FLNK, "$(P)BL:MUON:KICKR:STAT")
-}
-
-record(bi, "$(P)BL:MUON:KICKR:STAT")
-{
-	field(DTYP, "Soft Channel")
-	field(INP, "$(P)AC:MUON:KICKR:ONCALC PP")
-	field(ZNAM, "OFF")
-	field(ONAM, "ON")
-    field(DESC, "Muon kicker status")
-}
-
-record(calc, "$(P)AC:MUON:KICKR:ONCALC")
-{
-	field(INPA, "$(P)AC:MUON:KICKR NPP")
-	field(CALC, "A#0?1:0")
+   field(ZNAM, "OFF")
+   field(ONAM, "ON")
+   field(DESC, "Muon kicker status")
 }
 
 record(bi, "$(P)AC:TS2:DMOD:ANNPLOW:STAT")
 {
-    field(DESC, "TS2 DMOD Meth Ann Press Low")
-	field(DTYP, "Soft Channel")
-	field(INP, "$(P)AC:TS2:DMOD:ANCLC PP")
-	field(ZNAM, "NO")
-	field(ONAM, "YES")
-}
-
-record(calc, "$(P)AC:TS2:DMOD:ANCLC")
-{
-	field(INPA, "$(P)AC:TS2:DMOD:ANN NPP")
-	field(CALC, "A>0?1:0")
-}
-
-record(longin, "$(P)AC:TS2:DMOD:ANN")
-{
    field(DTYP, "asynInt32")
    field(INP,  "@asyn(isisbeam,0,0)dmod_annlow1")
    field(SCAN, "I/O Intr")
-   field(FLNK, "$(P)AC:TS2:DMOD:ANNPLOW:STAT")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(DESC, "TS2 DMOD Meth Ann Press Low")
+   field(ZNAM, "YES")
+   field(ONAM, "NO")
 }
 
 record(longin, "$(P)BL:SHUTTER:SHUTN:INP")
@@ -280,12 +254,6 @@ record(longin, "$(P)BL:SHUTTER:SHUTN:INP")
    field(FLNK, "$(P)BL:SHUTTER:SHUTN")
 }
 
-record(mbbiDirect, "$(P)BL:SHUTTER:SHUTN")
-{
-   field(INP,  "$(P)BL:SHUTTER:SHUTN:INP")
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
-}
-
 record(longin, "$(P)BL:SHUTTER:SHUTS:INP")
 {
    field(DTYP, "asynInt32")
@@ -293,6 +261,12 @@ record(longin, "$(P)BL:SHUTTER:SHUTS:INP")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(FLNK, "$(P)BL:SHUTTER:SHUTS")
+}
+
+record(mbbiDirect, "$(P)BL:SHUTTER:SHUTN")
+{
+   field(INP,  "$(P)BL:SHUTTER:SHUTN:INP")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
 record(mbbiDirect, "$(P)BL:SHUTTER:SHUTS")
