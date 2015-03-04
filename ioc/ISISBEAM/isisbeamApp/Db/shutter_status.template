@@ -1,5 +1,5 @@
 
-record(mbbi, "$(P)BL:$(BL):SHUTTER:STATUS")
+record(mbbi, "$(P)BL:$(BL):SHTR:STAT")
 {
    field(DESC, "Shutter status on BL $(BL)")
    field(DTYP, "asynInt32")

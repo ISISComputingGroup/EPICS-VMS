@@ -17,10 +17,14 @@ $! or EPICS_CAS_BEACON_ADDR_LIST to achieve this
 $! 130.246.39.24 is isis nagios monitoring server, the others are the ISIS beam gateways
 $ define/nolog EPICS_CA_ADDR_LIST "130.246.39.24 130.246.39.152 130.246.51.171 130.246.54.107"
 $ set def 'myprocdir'
+$loop:
 $ write sys$output "$Id: run_isisbeam.com 58 2014-06-29 23:58:46Z FreddieAkeroyd $"
+$ write sys$output f$time()
 $! start a caRepeater
 $ spawn/nowait/input=NL:/proc=CAREPEATER -
     run EPICS_ROOT:[BASE.BIN.OpenVMS_'ARCH']caRepeater.exe
 $! Finally start real server
 $ define/user sys$input sys$command
 $ mc [-.-.bin.OpenVMS_'ARCH']isisbeam.exe st.cmd
+$ wait 00:00:30
+$ goto loop

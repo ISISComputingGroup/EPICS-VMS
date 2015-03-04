@@ -261,7 +261,7 @@ record(ai, "$(P)AC:TS2:BEAM:YEST")
 }
 
 #  TE842
-record(ai, "$(P)AC:TS2:DMOD:METH:TEMP")
+record(ai, "$(P)TG:TS2:DMOD:METH:TEMP")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn(isisbeam,0,0)t2_mtemp1")
@@ -314,7 +314,7 @@ record(ai, "$(P)TG:TS2:CMOD:HDGN:TEMP")
    field(SIOL, "100")
 }
 
-record(longin, "$(P)AC:TS2:DMOD:RTIME:DUR")
+record(longin, "$(P)TG:TS2:DMOD:RTIME:DUR")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn(isisbeam,0,0)dmod_runtime")
@@ -326,7 +326,7 @@ record(longin, "$(P)AC:TS2:DMOD:RTIME:DUR")
    field(DESC, "DMOD runtime")
 }
 
-record(longin, "$(P)AC:TS2:DMOD:RTLIM")
+record(longin, "$(P)TG:TS2:DMOD:RTLIM")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn(isisbeam,0,0)dmod_runtime_lim")
@@ -337,7 +337,7 @@ record(longin, "$(P)AC:TS2:DMOD:RTLIM")
    field(DESC, "DMOD runtime limit")
 }
 
-record(ai, "$(P)AC:TS2:DMOD:BEAM")
+record(ai, "$(P)TG:TS2:DMOD:BEAM")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn(isisbeam,0,0)dmod_uabeam")
@@ -369,7 +369,7 @@ record(ai, "$(P)BL:MUON:KICKR")
    field(PREC, "3")
 }
 
-record(bi, "$(P)AC:TS2:DMOD:ANNPLOW:STAT")
+record(bi, "$(P)TG:TS2:DMOD:ANNPLOW:STAT")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn(isisbeam,0,0)dmod_annlow1")
@@ -385,7 +385,7 @@ record(bi, "$(P)AC:TS2:DMOD:ANNPLOW:STAT")
 record(ai, "$(P)TG:TS2:DMOD:ANN")
 {
    field(DTYP, "Soft Channel")
-   field(INP,  "$(P)AC:TS2:DMOD:ANNPLOW:STAT CP")
+   field(INP,  "$(P)TG:TS2:DMOD:ANNPLOW:STAT CP")
    field(PREC, "3")
 }
 

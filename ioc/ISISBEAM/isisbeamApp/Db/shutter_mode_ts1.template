@@ -1,6 +1,6 @@
 ## dummy shutter mode for TS1
 
-record(mbbi, "$(P)BL:$(BL):SHUTTER:MODE")
+record(mbbi, "$(P)BL:$(BL):SHTR:MODE")
 {
    field(DESC, "Shutter mode on BL $(BL)")
    field(VAL, 0)
