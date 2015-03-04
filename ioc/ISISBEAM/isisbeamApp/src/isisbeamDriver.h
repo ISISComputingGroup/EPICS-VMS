@@ -25,6 +25,11 @@ extern "C" {
 
 #include "asynPortDriver.h"
 
+static const char* TS1_INST_LIST = "ALF,ARGUS,CHRONUS,CRISP,EMMA,EMU,ENGINX,EVS,GEM,HIFI,HRPD,INES,IRIS,LOQ,MAPS,MARI,"
+                  "MERLIN,MUSR,OSIRIS,PEARL,POLARIS,PRISMA,ROTAX,SANDALS,SURF,SXD,TOSCA,VESUVIO";
+
+static const char* TS2_INST_LIST = "CHIPIR,IMAT,INTER,LARMOR,LET,NIMROD,OFFSPEC,POLREF,SANS2D,WISH,ZOOM";
+
 /// Describes a beam/accelerator parameter in VSystem/VISTA 
 class BeamParam
 {
@@ -44,7 +49,8 @@ public:
 	int param_id;
 	long lval;
 	float fval;
-	char sval[256];
+	static time_t updtime;   // used by UPDTIME and UPDTIMET
+	char sval[512];
 	BeamParam(const char* pn, const char* t, const char* vn) :
 	param_name(pn), type(t), vista_name(vn), param_id(-1), lval(0), fval(0.0)
 	{
@@ -87,19 +93,43 @@ public:
 		}
 		else if (type == "long")
 		{
+			if (param_name == "UPDTIMET")
+			{
+			    time(&updtime);
+				lval = updtime;
+			}
+			else
+			{
 #if defined(__VMS) && !defined(TESTING)
-			read_chan_status = read_chan(&vista_name_dsc, &lval_dsc);
+			    read_chan_status = read_chan(&vista_name_dsc, &lval_dsc);
 #else
-			lval = rand();
+			    lval = rand();
 #endif /* defined(__VMS) && !defined(TESTING) */
+			}
 		}
 		else if (type == "string")
 		{
+			if (param_name == "INSTTS1")
+			{
+			    strncpy(sval, TS1_INST_LIST, sizeof(sval)); 
+			}
+			else if (param_name == "INSTTS2")
+			{
+			    strncpy(sval, TS2_INST_LIST, sizeof(sval)); 
+			}
+			else if (param_name == "UPDTIME")
+			{
+			    // relies on being called after UPDTIMET whihc sets updtime
+				strftime(sval, sizeof(sval), "%Y-%m-%dT%H:%M:%S", localtime(&updtime));
+			}
+			else
+			{
 #if defined(__VMS) && !defined(TESTING)
-			read_chan_status = read_chan(&vista_name_dsc, &sval_dsc);
+			    read_chan_status = read_chan(&vista_name_dsc, &sval_dsc);
 #else
-			sprintf(sval, "%d", rand());
+			    sprintf(sval, "%d", rand());
 #endif /* defined(__VMS) && !defined(TESTING) */
+			}
 			sval[sizeof(sval)-1] = '\0';
 		}
 		if (!(read_chan_status & 0x1)) // errors are even numbers on VMS
@@ -140,7 +170,7 @@ private:
 	asynParamString_t* m_driverParamString;
 	double m_pollTime;
 	bool m_shutdown;  ///< false initially, set to true to request shutdown, and then wait until it goes false again
-
+	
 	void pollerThread();
 };
 

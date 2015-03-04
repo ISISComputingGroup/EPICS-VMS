@@ -74,6 +74,10 @@ record(calcout, "$(P)AC:$(BEAM):BEAMON:DUR")
 	field(EGU, "s")
 }
 
+## the comparison in CALC is how long a state (off or on) needs to have existed before
+## we treat it as the new norm. This should take account of the polling frequence defined 
+## by isisbeamConfigure() in st.cmd. Currently we poll every 3 seconds, so 5 seconds
+## means that two successive polls must agree
 record(calcout, "$(P)AC:$(BEAM):BEAM:ONCALC2")
 {
 	field(INPA, "$(IOC):HEARTBEAT NPP")

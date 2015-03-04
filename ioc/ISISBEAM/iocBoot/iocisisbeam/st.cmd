@@ -5,8 +5,8 @@
 
 < envPaths
 
-# 130.246.39.24 is isis nagios monitoring server, 130.246.51.165 is ISIS beam gateway
-epicsEnvSet("EPICS_IOC_LOG_INET", "130.246.39.24")
+# 130.246.39.152 is ISIS beam gateway
+epicsEnvSet("EPICS_IOC_LOG_INET", "130.246.39.152")
 iocLogInit()
 
 cd ${TOP}
@@ -18,17 +18,24 @@ isisbeam_registerRecordDeviceDriver(pdbbase)
 ## portName, paramFile, pollTime
 isisbeamConfigure("isisbeam","${TOP}/iocBoot/${IOC}/params.txt",3.0)
 
+epicsEnvSet("MYPVPREFIX", "faa59")
+
 ## Load record instances
 dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db","IOC=ICS:IB:IOCSTATS")
-dbLoadRecords("db/isisbeam.db","P=ICS:IB:")
-dbLoadRecords("db/beam.db","P=ICS:IB:,IOC=ICS:IB:IOCSTATS")
-dbLoadRecords("db/shutter_mode.db","P=ICS:IB:")
-dbLoadRecords("db/shutter_status.db","P=ICS:IB:")
-dbLoadRecords("db/shutter_status_ts1.db","P=ICS:IB:")
-dbLoadRecords("db/vat.db","P=ICS:IB:")
+dbLoadRecords("db/isisbeam.db","P=$(MYPVPREFIX)")
+dbLoadRecords("db/beam.db","P=$(MYPVPREFIX),IOC=ICS:IB:IOCSTATS")
+dbLoadRecords("db/shutter_mode.db","P=$(MYPVPREFIX)")
+dbLoadRecords("db/shutter_mode_ts1.db","P=$(MYPVPREFIX)")
+dbLoadRecords("db/shutter_status.db","P=$(MYPVPREFIX)")
+dbLoadRecords("db/shutter_status_ts1.db","P=$(MYPVPREFIX)")
+dbLoadRecords("db/vat.db","P=$(MYPVPREFIX)")
+dbLoadRecords("db/vat_ts1.db","P=$(MYPVPREFIX)")
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
+
+## list out PVs
+#dbl
 
 ## Start any sequence programs
 #seq sncxxx,"user=faa59Host"

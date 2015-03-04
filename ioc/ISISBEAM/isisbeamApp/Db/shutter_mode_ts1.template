@@ -1,13 +1,10 @@
+## dummy shutter mode for TS1
 
 record(mbbi, "$(P)BL:$(BL):SHUTTER:MODE")
 {
    field(DESC, "Shutter mode on BL $(BL)")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn(isisbeam,0,0)$(BL)_mode")
-   field(SCAN, "I/O Intr")
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
-   field(SIML, "$(P)ISISBEAM:SIM")
-   field(UNSV, "MINOR")
+   field(VAL, 0)
+   field(PINI, "YES")
    field(ZRVL, 0)
    field(ONVL, 1)
    field(TWVL, 2)

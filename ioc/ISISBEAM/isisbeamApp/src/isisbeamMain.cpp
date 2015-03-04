@@ -13,11 +13,23 @@
 
 int main(int argc,char *argv[])
 {
+#ifdef __VMS
+    bool non_interactive = true;
+#else
+    bool non_interactive = false;
+#endif
     if(argc>=2) {    
         iocsh(argv[1]);
         epicsThreadSleep(.2);
     }
-    iocsh(NULL);
+	if (non_interactive)
+	{
+        epicsThreadSleep(1e9);
+	}
+	else
+	{
+        iocsh(NULL);
+	}
 	epicsExit(EXIT_SUCCESS);
     return(0);
 }
