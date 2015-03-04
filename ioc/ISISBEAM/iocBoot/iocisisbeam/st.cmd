@@ -18,7 +18,8 @@ isisbeam_registerRecordDeviceDriver(pdbbase)
 ## portName, paramFile, pollTime
 isisbeamConfigure("isisbeam","${TOP}/iocBoot/${IOC}/params.txt",3.0)
 
-epicsEnvSet("MYPVPREFIX", "faa59")
+#epicsEnvSet("MYPVPREFIX", "faa59:")
+epicsEnvSet("MYPVPREFIX", "")
 
 ## Load record instances
 dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db","IOC=ICS:IB:IOCSTATS")
