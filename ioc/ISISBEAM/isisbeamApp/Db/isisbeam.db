@@ -187,31 +187,59 @@ record(ai, "$(P)AC:TS1:FREQ")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-record(ai, "$(P)AC:TS1:BEAM:TOTAL")
+# today and yesterday refer to the ISIS accounting dat which starts at 0830
+record(ai, "$(P)AC:TS1:BEAM:_TOTAL")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn(isisbeam,0,0)ts1_total")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
-   field(DESC, "TS1 Total uAh since midnight")
-   field(EGU, "uAh")
+   field(DESC, "TS1 Total uA.day today")
+   field(EGU, "uA.day")
    field(SIOL, "40")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(FLNK, "$(P)AC:TS1:BEAM:TOTAL")
 }
 
-record(ai, "$(P)AC:TS1:BEAM:YEST")
+# today and yesterday refer to the ISIS accounting dat which starts at 0830
+record(calc, "$(P)AC:TS1:BEAM:TOTAL")
+{
+   field(INPA,  "$(P)AC:TS1:BEAM:_TOTAL NPP")
+   field(CALC, "A * 24.0")
+   field(PREC, "3")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(DESC, "TS1 uAh since 08:30")
+   field(EGU, "uAh")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+}
+
+# today and yesterday refer to the ISIS accounting dat which starts at 0830
+record(ai, "$(P)AC:TS1:BEAM:_YEST")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn(isisbeam,0,0)ts1_total_yest")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
-   field(DESC, "TS1 Total uAh yesterday")
-   field(EGU, "uAh")
+   field(DESC, "TS1 uA.day yesterday")
+   field(EGU, "uA.day")
    field(SIOL, "40")
    field(SIML, "$(P)ISISBEAM:SIM")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(FLNK, "$(P)AC:TS1:BEAM:YEST")
+}
+
+# today and yesterday refer to the ISIS accounting dat which starts at 0830
+record(calc, "$(P)AC:TS1:BEAM:YEST")
+{
+   field(INPA,  "$(P)AC:TS1:BEAM:_YEST NPP")
+   field(CALC, "A * 24.0")
+   field(PREC, "3")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(DESC, "TS1 uAh yesterday")
+   field(EGU, "uAh")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
@@ -233,7 +261,8 @@ record(ai, "$(P)AC:TS2:FREQ")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-record(ai, "$(P)AC:TS2:BEAM:TOTAL")
+# today and yesterday refer to the ISIS accounting dat which starts at 0830
+record(ai, "$(P)AC:TS2:BEAM:_TOTAL")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn(isisbeam,0,0)ts2_total")
@@ -241,14 +270,28 @@ record(ai, "$(P)AC:TS2:BEAM:TOTAL")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(SIML, "$(P)ISISBEAM:SIM")
-   field(DESC, "TS2 Total uAh since midnight")
-   field(EGU, "uAh")
+   field(DESC, "TS2 uAh.day today")
+   field(EGU, "uA.day")
    field(SIOL, "40")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(FLNK, "$(P)AC:TS2:BEAM:TOTAL")
 }
 
-record(ai, "$(P)AC:TS2:BEAM:YEST")
+# today and yesterday refer to the ISIS accounting dat which starts at 0830
+record(calc, "$(P)AC:TS2:BEAM:TOTAL")
+{
+   field(INPA,  "$(P)AC:TS2:BEAM:_TOTAL NPP")
+   field(CALC, "A * 24.0")
+   field(PREC, "3")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(DESC, "TS2 uAh since 08:30")
+   field(EGU, "uAh")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+}
+
+# today and yesterday refer to the ISIS accounting dat which starts at 0830
+record(ai, "$(P)AC:TS2:BEAM:_YEST")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn(isisbeam,0,0)ts2_total_yest")
@@ -256,10 +299,23 @@ record(ai, "$(P)AC:TS2:BEAM:YEST")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(SIML, "$(P)ISISBEAM:SIM")
-   field(DESC, "TS2 Total uAh yesterday")
-   field(EGU, "uAh")
+   field(DESC, "TS2 uAh.day yesterday")
+   field(EGU, "uA.day")
    field(SIOL, "40")
    field(SIML, "$(P)ISISBEAM:SIM")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(FLNK, "$(P)AC:TS2:BEAM:YEST")
+}
+
+# today and yesterday refer to the ISIS accounting dat which starts at 0830
+record(calc, "$(P)AC:TS2:BEAM:YEST")
+{
+   field(INPA,  "$(P)AC:TS2:BEAM:_YEST NPP")
+   field(CALC, "A * 24.0")
+   field(PREC, "3")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(DESC, "TS2 uAh yesterday")
+   field(EGU, "uAh")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
