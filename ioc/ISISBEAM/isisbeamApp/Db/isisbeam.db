@@ -79,8 +79,10 @@ record(ai, "$(P)TG:TS1:MOD:METH:TEMP")
    field(SIOL, "100")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(ADEL, "0.1")
 }
 
+## use ADEL of 0.11 as it seems to bobble around 0.1 as the read value looks to have only one decimal place
 record(ai, "$(P)TG:TS1:MOD:HDGN:TEMP")
 {
    field(DTYP, "asynFloat64")
@@ -96,6 +98,7 @@ record(ai, "$(P)TG:TS1:MOD:HDGN:TEMP")
    field(SIOL, "25")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(ADEL, "0.11")
 }
 
 record(ai, "$(P)AC:TS1:FREQ")
@@ -276,6 +279,7 @@ record(ai, "$(P)TG:TS2:DMOD:METH:TEMP")
    field(HIGH, "65")
    field(HSV, "MINOR")
    field(SIOL, "100")
+   field(ADEL, "0.1")
 }
 
 #  TE852
@@ -294,6 +298,7 @@ record(ai, "$(P)TG:TS2:CMOD:METH:TEMP")
    field(HIGH, "65")
    field(HSV, "MINOR")
    field(SIOL, "100")
+   field(ADEL, "0.1")
 }
 
 #  TT706
@@ -312,6 +317,7 @@ record(ai, "$(P)TG:TS2:CMOD:HDGN:TEMP")
    field(HIGH, "30")
    field(HSV, "MINOR")
    field(SIOL, "100")
+   field(ADEL, "0.1")
 }
 
 record(longin, "$(P)TG:TS2:DMOD:RTIME:DUR")
@@ -389,33 +395,33 @@ record(ai, "$(P)TG:TS2:DMOD:ANN")
    field(PREC, "3")
 }
 
-record(longin, "$(P)BL:SHUTTER:SHUTN:INP")
+record(longin, "$(P)BL:SHTR:SHUTN:INP")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn(isisbeam,0,0)shut_north")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
-   field(FLNK, "$(P)BL:SHUTTER:SHUTN")
+   field(FLNK, "$(P)BL:SHTR:SHUTN")
 }
 
-record(longin, "$(P)BL:SHUTTER:SHUTS:INP")
+record(longin, "$(P)BL:SHTR:SHUTS:INP")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn(isisbeam,0,0)shut_south")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
-   field(FLNK, "$(P)BL:SHUTTER:SHUTS")
+   field(FLNK, "$(P)BL:SHTR:SHUTS")
 }
 
-record(mbbiDirect, "$(P)BL:SHUTTER:SHUTN")
+record(mbbiDirect, "$(P)BL:SHTR:SHUTN")
 {
-   field(INP,  "$(P)BL:SHUTTER:SHUTN:INP")
+   field(INP,  "$(P)BL:SHTR:SHUTN:INP")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-record(mbbiDirect, "$(P)BL:SHUTTER:SHUTS")
+record(mbbiDirect, "$(P)BL:SHTR:SHUTS")
 {
-   field(INP,  "$(P)BL:SHUTTER:SHUTS:INP")
+   field(INP,  "$(P)BL:SHTR:SHUTS:INP")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 

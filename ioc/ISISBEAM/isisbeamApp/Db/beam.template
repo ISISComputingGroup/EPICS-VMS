@@ -15,6 +15,7 @@ record(ai, "$(P)AC:$(BEAM):BEAM:CURR")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(FLNK, "$(P)AC:$(BEAM):BEAM:ONCALC")
+   field(ADEL, "0.1")
 }
 
 record(calcout, "$(P)AC:$(BEAM):BEAM:ONCALC")
