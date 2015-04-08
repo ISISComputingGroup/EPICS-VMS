@@ -224,3 +224,4 @@ extern "C" {
 }
 
 time_t BeamParam::updtime = 0;   // used by UPDTIME and UPDTIMET
+unsigned long BeamParam::error_count = 0;

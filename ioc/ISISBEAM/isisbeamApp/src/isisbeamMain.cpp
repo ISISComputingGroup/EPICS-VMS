@@ -7,9 +7,14 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <stdexcept>
+
 #include "epicsThread.h"
 #include "epicsExit.h"
 #include "iocsh.h"
+#include "errlog.h"
+
+#include "isisbeamDriver.h"
 
 int main(int argc,char *argv[])
 {
@@ -24,7 +29,11 @@ int main(int argc,char *argv[])
     }
 	if (non_interactive)
 	{
-        epicsThreadSleep(1e9);
+        while(BeamParam::error_count < 20)
+        {
+            epicsThreadSleep(10.0);
+        }
+        errlogPrintf("Exiting IOC as error count=%lu too high\n", BeamParam::error_count);
 	}
 	else
 	{

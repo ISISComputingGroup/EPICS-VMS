@@ -50,6 +50,7 @@ public:
 	long lval;
 	float fval;
 	static time_t updtime;   // used by UPDTIME and UPDTIMET
+    static unsigned long error_count;
 	char sval[512];
 	BeamParam(const char* pn, const char* t, const char* vn) :
 	param_name(pn), type(t), vista_name(vn), param_id(-1), lval(0), fval(0.0)
@@ -135,6 +136,7 @@ public:
 		if (!(read_chan_status & 0x1)) // errors are even numbers on VMS
 		{
 			errlogPrintf("isisbeamDriver:BeamParam:read: Error %d reading channel \"%s\"\n", read_chan_status, vista_name.c_str());
+            ++error_count;
 		}
 	}
 	void update(asynPortDriver* driver) const
