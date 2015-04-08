@@ -28,3 +28,4 @@ $ define/user sys$input sys$command
 $ mc [-.-.bin.OpenVMS_'ARCH']isisbeam.exe st.cmd
 $ wait 00:00:30
 $ goto loop
+$!
