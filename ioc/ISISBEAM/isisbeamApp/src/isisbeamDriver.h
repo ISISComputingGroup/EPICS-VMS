@@ -51,9 +51,12 @@ public:
 	float fval;
 	static time_t updtime;   // used by UPDTIME and UPDTIMET
     static unsigned long error_count;
+    int read_chan_status;
+    static const int READCHAN_SUCCESS;
 	char sval[512];
 	BeamParam(const char* pn, const char* t, const char* vn) :
-	param_name(pn), type(t), vista_name(vn), param_id(-1), lval(0), fval(0.0)
+	    param_name(pn), type(t), vista_name(vn), param_id(-1), lval(0), 
+        fval(0.0), read_chan_status(READCHAN_SUCCESS)
 	{
 		sval[0] = '\0';
 		bool valid_type = (type == "long" || type == "float" || type == "string");
@@ -82,8 +85,7 @@ public:
 	}
 	void read()
 	{
-		const int READCHAN_SUCCESS = 0x1;  /* on VMS 1 is success, errors are even numbers */
-		int read_chan_status = READCHAN_SUCCESS;
+		read_chan_status = READCHAN_SUCCESS;
 		if (type == "float")
 		{
 #if defined(__VMS) && !defined(TESTING)
@@ -120,7 +122,7 @@ public:
 			}
 			else if (param_name == "UPDTIME")
 			{
-			    // relies on being called after UPDTIMET whihc sets updtime
+			    // relies on being called after UPDTIMET which sets updtime
 				strftime(sval, sizeof(sval), "%Y-%m-%dT%H:%M:%S", localtime(&updtime));
 			}
 			else
@@ -141,6 +143,10 @@ public:
 	}
 	void update(asynPortDriver* driver) const
 	{
+        if (read_chan_status != READCHAN_SUCCESS)
+        {
+            return; // don't update if not read a sensible value
+        }
 		if (type == "float")
 		{
 			driver->setDoubleParam(param_id, fval);

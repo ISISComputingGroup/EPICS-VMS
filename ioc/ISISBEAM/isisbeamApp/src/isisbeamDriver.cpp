@@ -225,3 +225,4 @@ extern "C" {
 
 time_t BeamParam::updtime = 0;   // used by UPDTIME and UPDTIMET
 unsigned long BeamParam::error_count = 0;
+const int BeamParam::READCHAN_SUCCESS = 0x1;  /* on VMS 1 is success, errors are even numbers */

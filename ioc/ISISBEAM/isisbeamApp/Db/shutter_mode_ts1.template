@@ -3,7 +3,7 @@
 record(mbbi, "$(P)BL:$(BL):SHTR:MODE")
 {
    field(DESC, "Shutter mode on BL $(BL)")
-   field(VAL, 0)
+   field(VAL, 1)
    field(PINI, "YES")
    field(ZRVL, 0)
    field(ONVL, 1)
