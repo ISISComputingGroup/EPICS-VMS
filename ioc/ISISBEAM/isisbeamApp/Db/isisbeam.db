@@ -532,3 +532,23 @@ record(bi, "$(P)IN:OSIRIS:CRYOMAG")
    field(ONAM, "Rising")
    field(VAL, "0")
 }
+
+## fake muon shutter status
+record(mbbi, "$(P)BL:MUON:SHTR:STAT")
+{
+   field(DESC, "Fake Shutter status for MUONS")
+   field(VAL,  0)
+   field(PINI, "YES")
+   field(UNSV, "MINOR")
+   field(FRSV, "MINOR")
+   field(ZRVL, 0)
+   field(ONVL, 1)
+   field(TWVL, 2)
+   field(THVL, 3)
+   field(FRVL, 4)
+   field(ZRST, "DEACT")
+   field(ONST, "OPEN")
+   field(TWST, "CLOSED")
+   field(THST, "MOVING")
+   field(FRST, "FAULT")	
+}

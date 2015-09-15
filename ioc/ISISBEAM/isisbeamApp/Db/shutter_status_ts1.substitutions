@@ -19,3 +19,4 @@ pattern { BL, BIT, NS }
     { "S8", "B7", "S" }
     { "S9", "B8", "S" }
 
+# MUON dealt with separately, unlike with vat and shutter mode template
