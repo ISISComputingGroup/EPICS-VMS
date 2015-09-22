@@ -10,12 +10,14 @@ $ @'myroot'setup
 $ ARCH = f$getsyi("ARCH_NAME")
 $! we cannot use broadcasts on VMS if we run non-privileged
 $! so turn off auto addressing
-$ define/nolog EPICS_CA_AUTO_ADDR_LIST "NO"
 $! We need to define beacon address as all the possible isis clients machines
 $! that might connect to use. We can either set EPICS_CA_ADDR_LIST 
 $! or EPICS_CAS_BEACON_ADDR_LIST to achieve this
 $! 130.246.39.24 is isis nagios monitoring server, the others are the ISIS beam gateways
+$ define/nolog EPICS_CA_AUTO_ADDR_LIST "NO"
 $ define/nolog EPICS_CA_ADDR_LIST "130.246.39.24 130.246.39.152 130.246.51.171 130.246.54.107"
+$ define/nolog EPICS_CAS_AUTO_BEACON_ADDR_LIST "NO"
+$ define/nolog EPICS_CAS_BEACON_ADDR_LIST "130.246.39.24 130.246.39.152 130.246.51.171 130.246.54.107"
 $ set def 'myprocdir'
 $loop:
 $ write sys$output "$Id: run_isisbeam.com 58 2014-06-29 23:58:46Z FreddieAkeroyd $"
