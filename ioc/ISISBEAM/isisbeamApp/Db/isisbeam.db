@@ -536,7 +536,7 @@ record(bi, "$(P)IN:OSIRIS:CRYOMAG")
 ## fake muon shutter status
 record(mbbi, "$(P)BL:MUON:SHTR:STAT")
 {
-   field(DESC, "Fake Shutter status for MUONS")
+   field(DESC, "Fake MUON Shutter status")
    field(VAL,  0)
    field(PINI, "YES")
    field(UNSV, "MINOR")
