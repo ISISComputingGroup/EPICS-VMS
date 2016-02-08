@@ -26,6 +26,7 @@
 #include <limits>
 #include <stdexcept>
 #include <stdio.h>
+#include <limits.h> /* seem to need this as well as <limits> on IA64 */
 
 #define epicsExportSharedSymbols
 #include "ipAddrToAsciiAsynchronous.h"
