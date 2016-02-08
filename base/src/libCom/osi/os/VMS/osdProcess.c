@@ -65,7 +65,7 @@ epicsShareFunc osiGetUserNameReturn epicsShareAPI osiGetUserName (char *pBuf, un
     item_list[2].pBuf = 0;
     item_list[2].pRetSize = 0;
 
-    status = sys$getjpiw (
+    status = SYS$GETJPIW (
                 NULL,
                 NULL,
                 NULL,
@@ -110,7 +110,7 @@ epicsShareFunc osiSpawnDetachedProcessReturn epicsShareAPI osiSpawnDetachedProce
     int             status;
     unsigned long   pid;
 
-    status = sys$creprc (
+    status = SYS$CREPRC (
                                     &pid,
                                     &image,
                                     NULL,       /* input (none) */
@@ -124,7 +124,7 @@ epicsShareFunc osiSpawnDetachedProcessReturn epicsShareAPI osiSpawnDetachedProce
                                     NULL,
                                     PRC$M_DETACH);
     if (status != SS$_NORMAL){
-        lib$signal (status);
+        LIB$SIGNAL (status);
         return osiSpawnDetachedProcessFail;
     }
     return osiSpawnDetachedProcessSuccess;

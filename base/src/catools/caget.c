@@ -253,7 +253,7 @@ int caget (pv *pvs, int nPvs, RequestT request, OutputT format,
 		snprintf(value,sizeof(value),"%s",
 				val2str(pvs[n].value, pvs[n].dbrType, 0));
 		value_d.dsc$w_length = strlen(value);
-		lib$set_symbol(&symbol_d, &value_d, NULL);
+		LIB$SET_SYMBOL(&symbol_d, &value_d, NULL);
 }
 #endif
 

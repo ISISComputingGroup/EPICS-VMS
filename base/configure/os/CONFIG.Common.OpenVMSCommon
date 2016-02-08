@@ -67,7 +67,8 @@ CODE_CPPFLAGS = -D_REENTRANT
 #--------------------------------------------------
 # Operating system definitions
 OP_SYS_CPPFLAGS += -DVMS -DODS5
-OP_SYS_CXXFLAGS += -Wc/TEMPLATE_DEFINE=IMPLICIT_LOCAL
+OP_SYS_CXXFLAGS += -Wc/TEMPLATE_DEFINE=IMPLICIT_LOCAL -names_as_is_short
+OP_SYS_CFLAGS += -names_as_is_short
 OP_SYS_LDLIBS =
 OP_SYS_LDFLAGS  += -pthread
 

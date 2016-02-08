@@ -597,13 +597,13 @@ void epicsThreadSleep(double seconds)
 
 #if 0
 #if __IEEE_FLOAT
-    rc = lib$wait(&seconds_f,&(int)LIB$K_NOWAKE,&(int)LIB$K_IEEE_S);
+    rc = LIB$WAIT(&seconds_f,&(int)LIB$K_NOWAKE,&(int)LIB$K_IEEE_S);
 #else
-    rc = lib$wait(&seconds_f,&(int)LIB$K_NOWAKE,&(int)LIB$K_VAX_F);
+    rc = LIB$WAIT(&seconds_f,&(int)LIB$K_NOWAKE,&(int)LIB$K_VAX_F);
 #endif
 
     if ( !(rc&1) ) {
-	lib$signal( rc );
+	LIB$SIGNAL( rc );
     }
     return;
 #endif

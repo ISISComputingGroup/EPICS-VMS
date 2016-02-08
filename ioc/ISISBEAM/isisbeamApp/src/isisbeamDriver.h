@@ -9,6 +9,9 @@
 #ifndef ISISBEAMDRIVER_H
 #define ISISBEAMDRIVER_H
 
+#define read_chan READ_CHAN
+#define user_initialize_nofins USER_INITIALIZE_NOFINS
+
 #if defined(__VMS) && !defined(TESTING)
 extern "C" {
 #include    <vsys$include:vdb_descrip.h>
