@@ -1,4 +1,3 @@
-# TS1 shutter is only open or closed, but we emulate the same staets as TS2 for uniformity
 record(mbbi, "$(P)BL:$(BL):SHTR:STAT")
 {
    field(DESC, "Shutter status on BL $(BL)")
@@ -17,10 +16,42 @@ record(mbbi, "$(P)BL:$(BL):SHTR:STAT")
    field(FRST, "FAULT")	
 }
 
-record(calc, "$(P)BL:$(BL):SHTR:STAT:CALC")
+## old method, just kept for comparison, only displayed open or closed
+record(calc, "$(P)BL:$(BL):SHTR:STAT:_CALC")
 {
    field(INPA, "$(P)BL:SHTR:SHUT$(NS).$(BIT) CP")
    field(CALC, "A = 0 ? 2 : 1")
+#   field(FLNK, "$(P)BL:$(BL):SHTR:STAT.PROC")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+}
+
+## map TS1 status code to TS2 status code
+record(calc, "$(P)BL:$(BL):SHTR:STAT:CALC")
+{
+   field(INPA, "$(P)BL:$(BL):SHTR:_STAT CP")
+   field(CALC, "A = 0 ? 2 : (A = 2 ? 4 : (A = 4 ? 0 : A))")
    field(FLNK, "$(P)BL:$(BL):SHTR:STAT.PROC")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+}
+
+record(mbbi, "$(P)BL:$(BL):SHTR:_STAT")
+{
+   field(DESC, "Shutter status on BL $(BL)")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)$(BL)_shut")
+   field(SCAN, "I/O Intr")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(UNSV, "MINOR")
+   field(TWSV, "MINOR")
+   field(ZRVL, 0)
+   field(ONVL, 1)
+   field(TWVL, 2)
+   field(THVL, 3)
+   field(FRVL, 4)
+   field(ZRST, "CLOSED")
+   field(ONST, "OPEN")
+   field(TWST, "FAULT")
+   field(THST, "MOVING")
+   field(FRST, "INVALID")	
 }
