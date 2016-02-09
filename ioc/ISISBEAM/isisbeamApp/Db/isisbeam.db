@@ -419,6 +419,18 @@ record(ai, "$(P)TG:TS2:DMOD:BEAM")
    field(DESC, "DMOD uAh")
 }
 
+record(ai, "$(P)TG:TS2:DMOD:FILLMASS")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn(isisbeam,0,0)dmod_fill_mass")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(EGU, "g")
+   field(DESC, "DMOD Fill Mass")
+}
+
 record(bi, "$(P)BL:MUON:KICKR:STAT")
 {
    field(DTYP, "asynInt32")
