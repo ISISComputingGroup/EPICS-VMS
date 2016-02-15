@@ -82,7 +82,8 @@ record(ai, "$(P)TG:TS1:MOD:METH:TEMP")
    field(ADEL, "0.1")
 }
 
-## use ADEL of 0.11 as it seems to bobble around 0.1 as the read value looks to have only one decimal place
+## use ADEL of 0.11 as it seems to bobble around 0.1 
+## as the read value looks to have only one decimal place
 record(ai, "$(P)TG:TS1:MOD:HDGN:TEMP")
 {
    field(DTYP, "asynFloat64")
@@ -99,21 +100,6 @@ record(ai, "$(P)TG:TS1:MOD:HDGN:TEMP")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(ADEL, "0.11")
-}
-
-record(ai, "$(P)AC:TS1:FREQ")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(isisbeam,0,0)FREQSYNCH")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
-   field(DESC, "TS1 Frequency")
-   field(EGU, "Hz")
-   field(HOPR, "50")
-   field(LOPR, "0")
-   field(LOW, "1")
-   field(LSV, "MINOR")
 }
 
 record(bi, "$(P)AC:SYNCH:MODE")
@@ -187,7 +173,8 @@ record(ai, "$(P)AC:TS1:FREQ")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-# today and yesterday refer to the ISIS accounting dat which starts at 0830
+# today and yesterday refer to the ISIS 
+# accounting day which starts at 0830
 record(ai, "$(P)AC:TS1:BEAM:_TOTAL")
 {
    field(DTYP, "asynFloat64")
@@ -205,7 +192,8 @@ record(ai, "$(P)AC:TS1:BEAM:_TOTAL")
    field(FLNK, "$(P)AC:TS1:BEAM:TOTAL")
 }
 
-# today and yesterday refer to the ISIS accounting dat which starts at 0830
+# today and yesterday refer to the ISIS 
+# accounting day which starts at 0830
 record(calc, "$(P)AC:TS1:BEAM:TOTAL")
 {
    field(INPA,  "$(P)AC:TS1:BEAM:_TOTAL NPP")
@@ -217,7 +205,8 @@ record(calc, "$(P)AC:TS1:BEAM:TOTAL")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-# today and yesterday refer to the ISIS accounting dat which starts at 0830
+# today and yesterday refer to the ISIS 
+# accounting day which starts at 0830
 record(ai, "$(P)AC:TS1:BEAM:_YEST")
 {
    field(DTYP, "asynFloat64")
@@ -235,7 +224,8 @@ record(ai, "$(P)AC:TS1:BEAM:_YEST")
    field(FLNK, "$(P)AC:TS1:BEAM:YEST")
 }
 
-# today and yesterday refer to the ISIS accounting dat which starts at 0830
+# today and yesterday refer to the ISIS 
+# accounting day which starts at 0830
 record(calc, "$(P)AC:TS1:BEAM:YEST")
 {
    field(INPA,  "$(P)AC:TS1:BEAM:_YEST NPP")
@@ -265,7 +255,8 @@ record(ai, "$(P)AC:TS2:FREQ")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-# today and yesterday refer to the ISIS accounting dat which starts at 0830
+# today and yesterday refer to the ISIS 
+# accounting day which starts at 0830
 record(ai, "$(P)AC:TS2:BEAM:_TOTAL")
 {
    field(DTYP, "asynFloat64")
@@ -284,10 +275,11 @@ record(ai, "$(P)AC:TS2:BEAM:_TOTAL")
    field(FLNK, "$(P)AC:TS2:BEAM:TOTAL")
 }
 
-# today and yesterday refer to the ISIS accounting dat which starts at 0830
+# today and yesterday refer to the ISIS 
+# accounting dat which starts at 0830
 record(calc, "$(P)AC:TS2:BEAM:TOTAL")
 {
-   field(INPA,  "$(P)AC:TS2:BEAM:_TOTAL NPP")
+   field(INPA, "$(P)AC:TS2:BEAM:_TOTAL NPP")
    field(CALC, "A * 24.0")
    field(PREC, "3")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
@@ -296,7 +288,8 @@ record(calc, "$(P)AC:TS2:BEAM:TOTAL")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-# today and yesterday refer to the ISIS accounting dat which starts at 0830
+# today and yesterday refer to the ISIS 
+# accounting dat which starts at 0830
 record(ai, "$(P)AC:TS2:BEAM:_YEST")
 {
    field(DTYP, "asynFloat64")
@@ -315,7 +308,8 @@ record(ai, "$(P)AC:TS2:BEAM:_YEST")
    field(FLNK, "$(P)AC:TS2:BEAM:YEST")
 }
 
-# today and yesterday refer to the ISIS accounting dat which starts at 0830
+# today and yesterday refer to the ISIS 
+# accounting dat which starts at 0830
 record(calc, "$(P)AC:TS2:BEAM:YEST")
 {
    field(INPA,  "$(P)AC:TS2:BEAM:_YEST NPP")
