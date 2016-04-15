@@ -511,6 +511,15 @@ record(longin, "$(P)TG:UPDTIMET")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
+## number of read errros from accelerator vista control system
+record(longin, "$(P)CS:ERRCNT")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)ERRCNT")
+   field(SCAN, "I/O Intr")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+}
+
 record(waveform, "$(P)TG:TS1:INST")
 {
    field(DTYP, "asynOctetRead")
@@ -529,14 +538,6 @@ record(waveform, "$(P)TG:TS2:INST")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(FTVL, "CHAR")
    field(NELM, "512")
-}
-
-record(bi, "$(P)IN:OSIRIS:CRYOMAG")
-{
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
-   field(ZNAM, "Idle State")
-   field(ONAM, "Rising")
-   field(VAL, "0")
 }
 
 ## fake muon shutter status

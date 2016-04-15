@@ -183,10 +183,11 @@ extern "C" {
 		fclose(f);
 		std::cout << "Loaded " << params.size() << " parameters from " << paramFile << std::endl;
 		// now  create our special parameters
-		params.push_back(new BeamParam("UPDTIMET", "long", ""));   // must be created before UPDTIME so it is processed first in loop
+		params.push_back(new BeamParam("UPDTIMET", "long", ""));
 		params.push_back(new BeamParam("UPDTIME", "string", ""));
 		params.push_back(new BeamParam("INSTTS1", "string", ""));
 		params.push_back(new BeamParam("INSTTS2", "string", ""));
+		params.push_back(new BeamParam("ERRCNT", "long", ""));
 		try
 		{
 			new isisbeamDriver(portName, params, pollTime);
@@ -223,6 +224,7 @@ extern "C" {
 
 }
 
-time_t BeamParam::updtime = 0;   // used by UPDTIME and UPDTIMET
 unsigned long BeamParam::error_count = 0;
 const int BeamParam::READCHAN_SUCCESS = 0x1;  /* on VMS 1 is success, errors are even numbers */
+
+time_t BeamParam::g_updtime = 0;
