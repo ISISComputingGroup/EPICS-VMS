@@ -18,13 +18,13 @@ isisbeam_registerRecordDeviceDriver(pdbbase)
 ## portName, paramFile, pollTime
 isisbeamConfigure("isisbeam","${TOP}/iocBoot/${IOC}/params.txt",3.0)
 
-#epicsEnvSet("MYPVPREFIX", "faa59:")
+#epicsEnvSet("MYPVPREFIX", "f:")
 epicsEnvSet("MYPVPREFIX", "")
 
 ## Load record instances
-dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db","IOC=ICS:IB:IOCSTATS")
+dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db","IOC=$(MYPVPREFIX)ICS:IB:IOCSTATS")
 dbLoadRecords("db/isisbeam.db","P=$(MYPVPREFIX)")
-dbLoadRecords("db/beam.db","P=$(MYPVPREFIX),IOC=ICS:IB:IOCSTATS")
+dbLoadRecords("db/beam.db","P=$(MYPVPREFIX),IOC=$(MYPVPREFIX)ICS:IB:IOCSTATS")
 dbLoadRecords("db/shutter_mode.db","P=$(MYPVPREFIX)")
 dbLoadRecords("db/shutter_mode_ts1.db","P=$(MYPVPREFIX)")
 dbLoadRecords("db/shutter_status.db","P=$(MYPVPREFIX)")
