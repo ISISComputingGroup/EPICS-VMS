@@ -45,7 +45,7 @@ static const char *driverName="isisbeamDriver";
 isisbeamDriver::isisbeamDriver(const char *portName, const std::list<BeamParam*>& params, double pollTime) 
 	: asynPortDriver(portName, 
 	1, /* maxAddr */ 
-	params.size(),
+	params.size() + NUM_IB_DRIVER_PARAMS,
 	asynInt32Mask | asynFloat64Mask | asynOctetMask | asynDrvUserMask, /* Interface mask */
 	asynInt32Mask | asynFloat64Mask | asynOctetMask,  /* Interrupt mask */
 	ASYN_CANBLOCK, /* asynFlags.  This driver can block but it is not multi-device */
@@ -63,7 +63,7 @@ isisbeamDriver::isisbeamDriver(const char *portName, const std::list<BeamParam*>
 		m_pollTime = 3.0;
 		errlogPrintf("%s:%s: invalid poll time %f using %f seconds\n", driverName, functionName, pollTime, m_pollTime);
 	}
-	m_driverParamString = new asynParamString_t[m_params.size()];
+	m_driverParamString.resize(m_params.size() + NUM_IB_DRIVER_PARAMS);
 	for(std::list<BeamParam*>::iterator it=m_params.begin(); it != m_params.end(); ++it, ++i)
 	{
 		if ((*it)->type == "float")
@@ -92,7 +92,11 @@ isisbeamDriver::isisbeamDriver(const char *portName, const std::list<BeamParam*>
 			errlogPrintf("%s:%s: unknown type %s for parameter %s\n", driverName, functionName, (*it)->type.c_str(), (*it)->param_name.c_str());
 		}
 	}
-
+	m_driverParamString[i].param = P_chanErrCnt = i;
+	m_driverParamString[i].paramString = P_chanErrCntString;
+	setIntegerParam(i, 0);
+	++i;
+	
 	// Create the thread for background tasks 
 	if (epicsThreadCreate("isisbeamPoller",
 		epicsThreadPriorityMedium,
@@ -114,7 +118,7 @@ asynStatus isisbeamDriver::drvUserCreate(asynUser *pasynUser, const char *drvInf
 	const char **pptypeName, size_t *psize)
 {
 	return this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize,
-		m_driverParamString, m_params.size());
+		&(m_driverParamString[0]), m_driverParamString.size());
 }
 
 void isisbeamDriver::pollerThreadC(void* arg)
@@ -130,7 +134,6 @@ isisbeamDriver::~isisbeamDriver()
 	{
 		epicsThreadSleep(0.5); // wait for pollerThread() to exit
 	}
-	delete []m_driverParamString;
 	for(std::list<BeamParam*>::iterator it=m_params.begin(); it != m_params.end(); ++it)
 	{
 		delete *it;
@@ -140,20 +143,24 @@ isisbeamDriver::~isisbeamDriver()
 void isisbeamDriver::pollerThread()
 {
 	//    static const char* functionName = "isisbeamPoller";
-#if defined(__VMS) && !defined(TESTING)
 	user_initialize_nofins();
-#endif /* defined(__VMS) && !defined(TESTING) */
+    int chan_err_cnt;
 	while(!m_shutdown)
 	{
+	    chan_err_cnt = 0;
 		for(std::list<BeamParam*>::iterator it=m_params.begin(); it != m_params.end(); ++it)
 		{
-			(*it)->read();
+			if ( !(*it)->read() )
+			{
+			    ++chan_err_cnt;
+			}
 		}
 		lock();
 		for(std::list<BeamParam*>::const_iterator it=m_params.begin(); it != m_params.end(); ++it)
 		{
 			(*it)->update(this);
 		}
+		setIntegerParam(P_chanErrCnt, chan_err_cnt);
 		callParamCallbacks();
 		unlock();
 		epicsThreadSleep(m_pollTime);
@@ -169,25 +176,26 @@ extern "C" {
 	{
 		std::list<BeamParam*> params; // a copy of this list's contents will be kept by isisbeamDriver when we go out of scope
 		char param_name[129], param_type[129], vista_name[129];
+		int update_freq;
 		FILE* f = fopen(paramFile, "r"); // VMS does not support "rt"
 		if (f == NULL)
 		{
 			errlogPrintf("isisbeamDriver:isisbeamConfigure: cannot open paramFile \"%s\"", paramFile);
 			return(asynError);
 		}
-		while(fscanf(f, " %128s %128s %128s ", param_name, param_type, vista_name) == 3)
+		while(fscanf(f, " %128s %128s %d %128s ", param_name, param_type, &update_freq, vista_name) == 4)
 		{
-			std::cout << "Adding parameter " << param_name << " (" << param_type << ") -> " << vista_name << std::endl;
-			params.push_back(new BeamParam(param_name, param_type, vista_name));
+			std::cout << "Adding parameter " << param_name << " (" << param_type << ") -> " << vista_name << "(expected update freq = " << update_freq << "s)" << std::endl;
+			params.push_back(new BeamParam(param_name, param_type, vista_name, update_freq));
 		}
 		fclose(f);
 		std::cout << "Loaded " << params.size() << " parameters from " << paramFile << std::endl;
 		// now  create our special parameters
-		params.push_back(new BeamParam("UPDTIMET", "long", ""));
-		params.push_back(new BeamParam("UPDTIME", "string", ""));
-		params.push_back(new BeamParam("INSTTS1", "string", ""));
-		params.push_back(new BeamParam("INSTTS2", "string", ""));
-		params.push_back(new BeamParam("ERRCNT", "long", ""));
+		params.push_back(new BeamParam("UPDTIMET", "long", "(UPDTIMET)", 10));
+		params.push_back(new BeamParam("UPDTIME", "string", "(UPDTIME)", 10));
+		params.push_back(new BeamParam("INSTTS1", "string", "(INSTTS1)", 0));
+		params.push_back(new BeamParam("INSTTS2", "string", "(INSTTS2)", 0));
+		params.push_back(new BeamParam("ERRCNT", "long", "(ERRCNT)", 0));
 		try
 		{
 			new isisbeamDriver(portName, params, pollTime);

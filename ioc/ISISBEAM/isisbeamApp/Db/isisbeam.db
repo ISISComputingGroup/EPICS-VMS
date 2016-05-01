@@ -511,13 +511,44 @@ record(longin, "$(P)TG:UPDTIMET")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
 }
 
-## number of read errros from accelerator vista control system
+## number of channels currently in error
+record(longin, "$(P)CS:CHANERRCNT")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)CHANERRCNT")
+   field(SCAN, "I/O Intr")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+}
+
+## total number of read errors to date from accelerator vista control system
 record(longin, "$(P)CS:ERRCNT")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn(isisbeam,0,0)ERRCNT")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
+}
+
+## error rate
+
+# this version of base does not support assignment in calc expressions
+record(calcout, "$(P)CS:ERRRATE")
+{
+    field(DESC, "Error read rate")
+	field(INPA, "$(P)CS:ERRCNT:PREV NPP")
+	field(INPB, "$(P)CS:ERRCNT NPP")
+	field(CALC, "B - A")
+	field(OCAL, "B")
+    field(HIGH, "10")
+    field(HSV, "MINOR")
+	field(SCAN, "10 second")
+	field(OUT, "$(P)CS:ERRCNT:PREV PP")
+	field(OOPT, "Every Time")
+	field(DOPT, "Use OCAL")
+}
+
+record(longin, "$(P)CS:ERRCNT:PREV")
+{
 }
 
 record(waveform, "$(P)TG:TS1:INST")
