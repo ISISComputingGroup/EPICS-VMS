@@ -141,6 +141,7 @@ public:
 	std::string param_name;
 	std::string type;
 	std::string vista_name;
+	std::string opts;
 	int update_freq;
 	int param_id;
 	long lval;
@@ -153,8 +154,8 @@ public:
     static const int READCHAN_SUCCESS;
 	bool chan_ok;
 	char sval[SVAL_SIZE];
-	BeamParam(const char* pn, const char* t, const char* vn, int uf) :
-	    param_name(pn), type(t), vista_name(vn), update_freq(uf), param_id(-1), lval(0), 
+	BeamParam(const char* pn, const char* t, const char* vn, const char* po, int uf) :
+	    param_name(pn), type(t), vista_name(vn), opts(po), update_freq(uf), param_id(-1), lval(0), 
         fval(0.0), updtime(0), updtime_old(0), updtimev(0), chan_ok(true)
 	{
 		sval[0] = '\0';
@@ -210,15 +211,22 @@ public:
 			errlogPrintf("isisbeamDriver:BeamParam:getChan: read_chan error %d on reading value for channel \"%s\"\n", read_chan_status, vista_name.c_str());
 		    return false;
 		}
-		memset(tval, 0, sizeof(tval));
-		read_chan_status = read_chan(&vista_ts_dsc, &tval_dsc);
-		if (read_chan_status != READCHAN_SUCCESS)
+		if (opts.find('t') != std::string::npos)
 		{
-			errlogPrintf("isisbeamDriver:BeamParam:getChan: read_chan error %d on reading timestamp for channel \"%s\"\n", read_chan_status, vista_name.c_str());
-		    return false;
+		    memset(tval, 0, sizeof(tval));
+		    read_chan_status = read_chan(&vista_ts_dsc, &tval_dsc);
+		    if (read_chan_status != READCHAN_SUCCESS)
+		    {
+			    errlogPrintf("isisbeamDriver:BeamParam:getChan: read_chan error %d on reading timestamp for channel \"%s\"\n", read_chan_status, vista_name.c_str());
+		        return false;
+		    }
+		    tval[sizeof(tval)-1] = '\0';
+		    VMSToTimeT(updtime, tval);
 		}
-		tval[sizeof(tval)-1] = '\0';
-		VMSToTimeT(updtime, tval);
+		else
+		{
+		    time(&updtime); // no @TIMESTAMP field present
+		}
 #if !defined(__VMS) || defined(TESTING)
 		time(&updtime);
 #endif

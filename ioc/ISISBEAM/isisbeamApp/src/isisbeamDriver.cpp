@@ -175,7 +175,7 @@ extern "C" {
 	int isisbeamConfigure(const char *portName, const char* paramFile, double pollTime)
 	{
 		std::list<BeamParam*> params; // a copy of this list's contents will be kept by isisbeamDriver when we go out of scope
-		char param_name[129], param_type[129], vista_name[129];
+		char param_name[129], param_type[129], param_opts[129], vista_name[129];
 		int update_freq;
 		FILE* f = fopen(paramFile, "r"); // VMS does not support "rt"
 		if (f == NULL)
@@ -183,19 +183,19 @@ extern "C" {
 			errlogPrintf("isisbeamDriver:isisbeamConfigure: cannot open paramFile \"%s\"", paramFile);
 			return(asynError);
 		}
-		while(fscanf(f, " %128s %128s %d %128s ", param_name, param_type, &update_freq, vista_name) == 4)
+		while(fscanf(f, " %128s %128s %128s %d %128s ", param_name, param_type, param_opts, &update_freq, vista_name) == 5)
 		{
 			std::cout << "Adding parameter " << param_name << " (" << param_type << ") -> " << vista_name << "(expected update freq = " << update_freq << "s)" << std::endl;
-			params.push_back(new BeamParam(param_name, param_type, vista_name, update_freq));
+			params.push_back(new BeamParam(param_name, param_type, param_opts, vista_name, update_freq));
 		}
 		fclose(f);
 		std::cout << "Loaded " << params.size() << " parameters from " << paramFile << std::endl;
 		// now  create our special parameters
-		params.push_back(new BeamParam("UPDTIMET", "long", "(UPDTIMET)", 10));
-		params.push_back(new BeamParam("UPDTIME", "string", "(UPDTIME)", 10));
-		params.push_back(new BeamParam("INSTTS1", "string", "(INSTTS1)", 0));
-		params.push_back(new BeamParam("INSTTS2", "string", "(INSTTS2)", 0));
-		params.push_back(new BeamParam("ERRCNT", "long", "(ERRCNT)", 0));
+		params.push_back(new BeamParam("UPDTIMET", "long", "(UPDTIMET)", "n", 10));
+		params.push_back(new BeamParam("UPDTIME", "string", "(UPDTIME)", "n", 10));
+		params.push_back(new BeamParam("INSTTS1", "string", "(INSTTS1)", "n", 0));
+		params.push_back(new BeamParam("INSTTS2", "string", "(INSTTS2)", "n", 0));
+		params.push_back(new BeamParam("ERRCNT", "long", "(ERRCNT)", "n", 0));
 		try
 		{
 			new isisbeamDriver(portName, params, pollTime);
