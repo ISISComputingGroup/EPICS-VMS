@@ -238,6 +238,7 @@ public:
 	    time_t now;
 		bool non_zero = false;
 		updtime_old = updtime;
+		bool old_chan_ok = chan_ok;
 		chan_ok = true;
 		if (type == "float")
 		{
@@ -341,25 +342,38 @@ public:
 		}
 		else if ( (now - updtime) > 10 ) // vista timestamp should always update
 		{
-			errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" timestamp not updating\n", vista_name.c_str());
+		    if (old_chan_ok)
+			{
+			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" timestamp not updating\n", vista_name.c_str());
+			}
 			chan_ok = false;
             ++error_count;
 		}
 		else if ( (update_freq > 0) && ((now - updtimev) > update_freq) )
 		{
-			errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" value not updating\n", vista_name.c_str());
+		    if (old_chan_ok)
+			{
+			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" value not updating\n", vista_name.c_str());
+			}
 			chan_ok = false;
-            ++error_count;
+//            ++error_count;
 		}
 		else if ( (update_freq < 0) && non_zero && ((now - updtimev) > (-update_freq)) )
 		{
-			errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" value not updating and non-zero\n", vista_name.c_str());
+		    if (old_chan_ok)
+			{
+			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" value not updating and non-zero\n", vista_name.c_str());
+			}
 			chan_ok = false;
-            ++error_count;
+//            ++error_count;
 		}
 		else if (updtime > g_updtime)
 		{
 		    g_updtime = updtime;
+		}
+		if (!old_chan_ok && chan_ok)
+		{
+			errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" OK\n", vista_name.c_str());
 		}
 		return chan_ok;
 	}

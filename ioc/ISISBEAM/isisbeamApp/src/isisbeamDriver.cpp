@@ -92,10 +92,10 @@ isisbeamDriver::isisbeamDriver(const char *portName, const std::list<BeamParam*>
 			errlogPrintf("%s:%s: unknown type %s for parameter %s\n", driverName, functionName, (*it)->type.c_str(), (*it)->param_name.c_str());
 		}
 	}
-	m_driverParamString[i].param = P_chanErrCnt = i;
-	m_driverParamString[i].paramString = P_chanErrCntString;
-	setIntegerParam(i, 0);
-	++i;
+	P_chanErrCnt = i++;
+	m_driverParamString[P_chanErrCnt].param = P_chanErrCnt;
+	m_driverParamString[P_chanErrCnt].paramString = P_chanErrCntString;
+	setIntegerParam(P_chanErrCnt, 0);
 	
 	// Create the thread for background tasks 
 	if (epicsThreadCreate("isisbeamPoller",
