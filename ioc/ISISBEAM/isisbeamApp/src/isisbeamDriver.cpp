@@ -186,7 +186,7 @@ extern "C" {
 		while(fscanf(f, " %128s %128s %128s %d %128s ", param_name, param_type, param_opts, &update_freq, vista_name) == 5)
 		{
 			std::cout << "Adding parameter " << param_name << " (" << param_type << ") -> " << vista_name << "(expected update freq = " << update_freq << "s)" << std::endl;
-			params.push_back(new BeamParam(param_name, param_type, param_opts, vista_name, update_freq));
+			params.push_back(new BeamParam(param_name, param_type, vista_name, param_opts, update_freq));
 		}
 		fclose(f);
 		std::cout << "Loaded " << params.size() << " parameters from " << paramFile << std::endl;
