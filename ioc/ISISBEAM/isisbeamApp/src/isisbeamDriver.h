@@ -9,8 +9,11 @@
 #ifndef ISISBEAMDRIVER_H
 #define ISISBEAMDRIVER_H
 
+// these defines are needed as we have to compile with -name_as_is_short for itanium
 #define read_chan READ_CHAN
+#define vdbc_channel_index VDBC_CHANNEL_INDEX 
 #define user_initialize_nofins USER_INITIALIZE_NOFINS
+#define check_hardware_error CHECK_HARDWARE_ERROR
 
 extern "C" {
 #if defined(__VMS) && !defined(TESTING)
