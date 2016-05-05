@@ -15,6 +15,8 @@
 #define user_initialize_nofins USER_INITIALIZE_NOFINS
 #define check_hardware_error CHECK_HARDWARE_ERROR
 
+#include <math.h>
+
 extern "C" {
 #if defined(__VMS) && !defined(TESTING)
 
@@ -251,7 +253,7 @@ public:
 				    time(&updtimev);
 				}
 			}
-			if (fval != 0.0)
+			if (fabs(fval_old) > 1e-10 && fabs(fval) > 1e-10)
 			{
 			    non_zero = true;
 			}
@@ -288,7 +290,7 @@ public:
 					}
 			    }
 			}
-			if (lval != 0.0)
+			if (lval_old != 0 && lval != 0)
 			{
 			    non_zero = true;
 			}
@@ -329,7 +331,7 @@ public:
 			    }
 			}
 			sval[sizeof(sval)-1] = '\0';
-			if (strlen(sval) > 0)
+			if (strlen(sval_old) > 0 && strlen(sval) > 0)
 			{
 			    non_zero = true;
 			}
@@ -340,7 +342,7 @@ public:
 			errlogPrintf("isisbeamDriver:BeamParam:read: Error reading channel \"%s\"\n", vista_name.c_str());
             ++error_count;
 		}
-		else if ( (now - updtime) > 10 ) // vista timestamp should always update
+		else if ( (now - updtime) > 30 ) // vista timestamp should always update
 		{
 		    if (old_chan_ok)
 			{
