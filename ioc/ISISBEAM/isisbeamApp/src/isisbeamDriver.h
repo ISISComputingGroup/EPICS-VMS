@@ -61,6 +61,16 @@ static int vdbc_channel_index(char* name, vista_chix* chix)
     return 0; 
 }
 
+static int printError(const char *pformat, ...)
+{
+    int ret;
+    va_list pvar;
+	va_start(pvar, pformat);
+    ret = errlogVprintf(pformat, pvar);
+	va_end(pvar);
+	return ret;
+}
+
 static int check_hardware_error(vista_chix* chix) 
 {
     if (chix->_dummy == 1234)
@@ -202,9 +212,10 @@ public:
 		tval_dsc.dsc_a_pointer = tval;
 		vista_chix chix;
 		vdbc_channel_index(const_cast<char*>(vista_name.c_str()), &chix);
-		if (check_hardware_error(&chix) != 0)
+		int hwerr = check_hardware_error(&chix);
+		if (hwerr != 0)
 		{
-			errlogPrintf("isisbeamDriver:BeamParam:getChan: hardware IO error on channel \"%s\"\n", vista_name.c_str());
+			errlogPrintf("isisbeamDriver:BeamParam:getChan: hardware IO error %d on channel \"%s\"\n", hwerr, vista_name.c_str());
 		    return false;
 		}	
 		int read_chan_status = read_chan(&vista_name_dsc, &value_dsc);
@@ -337,25 +348,26 @@ public:
 			}
 		}
 		time(&now);
+		int timestamp_update = 30;
 		if (!chan_ok)
 		{
 			errlogPrintf("isisbeamDriver:BeamParam:read: Error reading channel \"%s\"\n", vista_name.c_str());
             ++error_count;
 		}
-		else if ( (now - updtime) > 30 ) // vista timestamp should always update
+		else if ( (now - updtime) > timestamp_update ) // vista timestamp should always update
 		{
 		    if (old_chan_ok)
 			{
-			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" timestamp not updating\n", vista_name.c_str());
+			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" timestamp not updated for %d seconds\n", vista_name.c_str(), timestamp_update);
 			}
 			chan_ok = false;
-            ++error_count;
+//            ++error_count;
 		}
 		else if ( (update_freq > 0) && ((now - updtimev) > update_freq) )
 		{
 		    if (old_chan_ok)
 			{
-			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" value not updating\n", vista_name.c_str());
+			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" value not updated after %d seconds\n", vista_name.c_str(), update_freq);
 			}
 			chan_ok = false;
 //            ++error_count;
@@ -364,7 +376,7 @@ public:
 		{
 		    if (old_chan_ok)
 			{
-			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" value not updating and non-zero\n", vista_name.c_str());
+			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" value not updated after %d seconds and non-zero\n", vista_name.c_str(), -update_freq);
 			}
 			chan_ok = false;
 //            ++error_count;
