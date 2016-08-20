@@ -36,7 +36,7 @@ cd ${TOP}/iocBoot/${IOC}
 iocInit()
 
 ## list out PVs
-dbl
+#dbl
 
 ## Start any sequence programs
 #seq sncxxx,"user=faa59Host"
