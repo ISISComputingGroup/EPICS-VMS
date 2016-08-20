@@ -14,8 +14,35 @@ record(ai, "$(P)AC:$(BEAM):BEAM:CURR")
    field(SIOL, "10")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
-   field(FLNK, "$(P)AC:$(BEAM):BEAM:ONCALC")
+   field(FLNK, "$(P)AC:$(BEAM):BEAM:CHCALC")
    field(ADEL, "0.1")
+}
+
+record(ai, "$(P)AC:$(BEAM):BEAM:CURR:_OLD")
+{
+}
+
+# this version of base does not support assignment in calc expressions
+record(calcout, "$(P)AC:$(BEAM):BEAM:CHCALC")
+{
+	field(INPA, "$(P)AC:$(BEAM):BEAM:CURR:_OLD NPP")
+	field(INPB, "$(P)AC:$(BEAM):BEAM:CURR NPP")
+	field(INPC, "$(IOC):HEARTBEAT NPP")
+	field(CALC, "A#B?1:0")
+    field(OOPT,	"When Non-zero")
+	field(DOPT, "Use OCAL")
+	field(OCAL, "C")
+	field(OUT, "$(P)AC:$(BEAM):BEAMCH:ETIME PP")
+    field(FLNK, "$(P)AC:$(BEAM):BEAM:_UPDOLD")
+}
+
+record(ao, "$(P)AC:$(BEAM):BEAM:_UPDOLD")
+{
+    field(DTYP, "Soft Channel")
+	field(OMSL, "closed_loop")
+    field(DOL, "$(P)AC:$(BEAM):BEAM:CHCALC.B NPP")
+	field(OUT, "$(P)AC:$(BEAM):BEAM:CURR:_OLD PP")
+    field(FLNK, "$(P)AC:$(BEAM):BEAM:ONCALC")
 }
 
 record(calcout, "$(P)AC:$(BEAM):BEAM:ONCALC")
@@ -33,6 +60,21 @@ record(fanout, "$(P)AC:$(BEAM):BEAM:ONCALC:FAN")
     field(SELM, "Specified")
 	field(LNK1, "$(P)AC:$(BEAM):BEAMOFF:ETIME")
 	field(LNK2, "$(P)AC:$(BEAM):BEAMON:ETIME")
+}
+
+record(longin, "$(P)AC:$(BEAM):BEAMCH:ETIME")
+{
+   field(DESC, "$(BEAM) Beam change Time")
+   field(FLNK, "$(P)AC:$(BEAM):BEAMCH:TIME")
+}
+
+## time beam current value last changed
+record(stringin, "$(P)AC:$(BEAM):BEAMCH:TIME")
+{
+   field(DESC, "$(BEAM) Beam Change Time")
+   field(DTYP, "Soft Timestamp")
+   field(INP, "@%Y-%m-%dT%H:%M:%S")
+   field(PINI, "YES")
 }
 
 record(longin, "$(P)AC:$(BEAM):BEAMON:ETIME")
@@ -125,4 +167,27 @@ record(bi, "$(P)AC:$(BEAM):BEAM:STAT")
 	field(ZNAM, "OFF")
 	field(ONAM, "ON")
 	field(ZSV, "MINOR")
+}
+
+## is beam current value updating as regularly as it should?
+## no might indicate a hang in the sending system
+## will say True if beam is off as current will sit at 0 for some time then
+record(bi, "$(P)AC:$(BEAM):UPDATING")
+{
+    field(DESC, "$(BEAM) Beam Updating")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(ZSV, "MINOR")
+}
+
+## has beam current changed in last 30 seconds?
+record(calcout, "$(P)AC:$(BEAM):BEAM:_UPDCALC")
+{
+	field(INPA, "$(P)AC:$(BEAM):BEAM:STAT NPP")
+	field(INPB, "$(P)AC:$(BEAM):BEAMCH:ETIME NPP")
+	field(INPC, "$(IOC):HEARTBEAT NPP")
+	field(CALC, "A=0?1:(C-B<30?1:0)")
+    field(OOPT,	"On Change")
+	field(OUT, "$(P)AC:$(BEAM):UPDATING PP")
+	field(SCAN, "10 second")
 }

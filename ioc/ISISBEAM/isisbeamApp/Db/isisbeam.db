@@ -19,6 +19,21 @@ record(bo, "$(P)ISISBEAM:DISABLE")
     field(ONAM, "COMMS DISABLED")
 }
 
+## beam energy - usually 700 or 800 MeV
+record(longin, "$(P)AC:BEAM:ENERGY")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)beam_energy")
+   field(SCAN, "I/O Intr")
+   field(DESC, "Beam Energy")
+   field(EGU, "MeV")
+   field(HOPR, "800")
+   field(LOPR, "0")
+   field(SIOL, "800")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+}
+
 record(ai, "$(P)AC:INJ:EFF")
 {
    field(DTYP, "asynFloat64")
@@ -512,7 +527,7 @@ record(longin, "$(P)TG:UPDTIMET")
 }
 
 ## number of channels currently in error
-record(longin, "$(P)CS:CHANERRCNT")
+record(longin, "$(P)ICS:IB:CHANERRCNT")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn(isisbeam,0,0)CHANERRCNT")
@@ -521,7 +536,7 @@ record(longin, "$(P)CS:CHANERRCNT")
 }
 
 ## total number of read errors to date from accelerator vista control system
-record(longin, "$(P)CS:ERRCNT")
+record(longin, "$(P)ICS:IB:ERRCNT")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn(isisbeam,0,0)ERRCNT")
@@ -532,22 +547,22 @@ record(longin, "$(P)CS:ERRCNT")
 ## error rate
 
 # this version of base does not support assignment in calc expressions
-record(calcout, "$(P)CS:ERRRATE")
+record(calcout, "$(P)ICS:IB:ERRRATE")
 {
     field(DESC, "Error read rate")
-	field(INPA, "$(P)CS:ERRCNT:PREV NPP")
-	field(INPB, "$(P)CS:ERRCNT NPP")
+	field(INPA, "$(P)ICS:IB:ERRCNT:PREV NPP")
+	field(INPB, "$(P)ICS:IB:ERRCNT NPP")
 	field(CALC, "B - A")
 	field(OCAL, "B")
     field(HIGH, "10")
     field(HSV, "MINOR")
 	field(SCAN, "10 second")
-	field(OUT, "$(P)CS:ERRCNT:PREV PP")
+	field(OUT, "$(P)ICS:IB:ERRCNT:PREV PP")
 	field(OOPT, "Every Time")
 	field(DOPT, "Use OCAL")
 }
 
-record(longin, "$(P)CS:ERRCNT:PREV")
+record(longin, "$(P)ICS:IB:ERRCNT:PREV")
 {
 }
 
@@ -569,6 +584,16 @@ record(waveform, "$(P)TG:TS2:INST")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(FTVL, "CHAR")
    field(NELM, "512")
+}
+
+record(waveform, "$(P)AC:XML")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn(isisbeam,0,0)XML")
+   field(SCAN, "I/O Intr")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(FTVL, "CHAR")
+   field(NELM, "4000")
 }
 
 ## fake muon shutter status

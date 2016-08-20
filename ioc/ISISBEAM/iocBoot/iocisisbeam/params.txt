@@ -1,10 +1,11 @@
 beam_ions        float    t  0    IDTOR::IRT1:CURRENT
 beam_rfq         float    t  0    IDTOR::IRT3:CURRENT
 beam_linac       float    t  0    IDTOR::IHT5:CURRENT
-beam_sync        float    t  -15    LOCAL::BEAM:SYNCHROTRON
-beam_e1          float    t  -15    LOCAL::BEAM:EPB1
-beam_tgt         float    t  -15     LOCAL::BEAM:TARGET
-beam_tgt2        float    t  -15     LOCAL::BEAM:TARGET2
+beam_sync        float    t  -60    LOCAL::BEAM:SYNCHROTRON
+beam_e1          float    t  -60    LOCAL::BEAM:EPB1
+beam_tgt         float    t  -60     LOCAL::BEAM:TARGET
+beam_tgt2        float    t  -60     LOCAL::BEAM:TARGET2
+beam_energy      long     t  0     LOCAL::BEAM:ENERGY 
 inj_eff          float    t  0     LOCAL::intensity:inj_eff
 acc_eff          float    t  0     LOCAL::intensity:acc_eff
 ext_eff          float    t  0     LOCAL::intensity:ext_eff
@@ -15,8 +16,8 @@ gms1on           long     t  0     CTD::gms1:running
 gms2on           long     t  0     CTD::gms2:running
 shut_north       long     t  0     LOCAL::shutter:north
 shut_south       long     t  0     LOCAL::shutter:south
-mtemp            float    t  1800     LOCAL::methane:temp
-htemp            float    t  1800     LOCAL::hydrogen:temp
+mtemp            float    t  0     LOCAL::methane:temp
+htemp            float    t  0       LOCAL::hydrogen:temp
 muon_kicker      long     t  0    LOCAL::muon_kicker:status
 ts1_total        float    n  0     LOCAL::beam1:today
 ts1_total_yest   float    n  0      LOCAL::beam1:yesterday

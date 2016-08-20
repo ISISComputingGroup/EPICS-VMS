@@ -96,6 +96,14 @@ isisbeamDriver::isisbeamDriver(const char *portName, const std::list<BeamParam*>
 	m_driverParamString[P_chanErrCnt].param = P_chanErrCnt;
 	m_driverParamString[P_chanErrCnt].paramString = P_chanErrCntString;
 	setIntegerParam(P_chanErrCnt, 0);
+	P_errCnt = i++;
+	m_driverParamString[P_errCnt].param = P_errCnt;
+	m_driverParamString[P_errCnt].paramString = P_errCntString;
+	setIntegerParam(P_errCnt, 0);
+	P_xml = i++;
+	m_driverParamString[P_xml].param = P_xml;
+	m_driverParamString[P_xml].paramString = P_xmlString;
+	setStringParam(P_xml, "");
 	
 	// Create the thread for background tasks 
 	if (epicsThreadCreate("isisbeamPoller",
@@ -143,6 +151,7 @@ isisbeamDriver::~isisbeamDriver()
 void isisbeamDriver::pollerThread()
 {
 	//    static const char* functionName = "isisbeamPoller";
+	static char xml_buffer[6000];
 	user_initialize_nofins();
     int chan_err_cnt;
 	while(!m_shutdown)
@@ -161,12 +170,378 @@ void isisbeamDriver::pollerThread()
 			(*it)->update(this);
 		}
 		setIntegerParam(P_chanErrCnt, chan_err_cnt);
+		setIntegerParam(P_errCnt, BeamParam::error_count);
+		getXML(xml_buffer, sizeof(xml_buffer));
+		setStringParam(P_xml, xml_buffer);
 		callParamCallbacks();
 		unlock();
 		epicsThreadSleep(m_pollTime);
 	}
 	m_shutdown = false; // signal we have finished
 }	
+
+static const char* xml_format = 
+	"<?xml version=\"1.0\"?>" 
+	"<ISISBEAM>"
+	"<BEAMS>%.1f</BEAMS>"
+	"<BEAME1>%.1f</BEAME1>"
+	"<BEAMT>%.1f</BEAMT>"
+	"<BEAMT2>%.1f</BEAMT2>"
+	"<INJE>%.0f</INJE>"
+	"<ACCE>%.0f</ACCE>"
+	"<EXTE>%.0f</EXTE>"
+	"<REPR>%.1f</REPR>"
+	"<REPR2>%.1f</REPR2>"
+	"<MODE>%d</MODE>"
+	"<GMS1>%d</GMS1>"
+	"<GMS2>%d</GMS2>"
+	"<TS1ON>%s</TS1ON>"
+	"<TS1OFF>%s</TS1OFF>"
+	"<TS2ON>%s</TS2ON>"
+	"<TS2OFF>%s</TS2OFF>"
+	"<SHUTN>%d</SHUTN>"
+	"<SHUTS>%d</SHUTS>"
+	"<TS1SHUTTERS>"
+	  "<SANDALS>%s</SANDALS>" /* N1 */
+	  "<PRISMA>%s</PRISMA>" /* N2 */
+	  "<ALF>%s</ALF>" /* N2 */
+	  "<ROTAX>%s</ROTAX>" /* N2 */
+	  "<SURF>%s</SURF>" /* N3 */
+	  "<CRISP>%s</CRISP>" /* N4 */
+	  "<LOQ>%s</LOQ>" /* N5 */
+	  "<IRIS>%s</IRIS>" /* N6 */
+	  "<OSIRIS>%s</OSIRIS>" /* N6 */
+	  "<POLARIS>%s</POLARIS>" /* N7 */
+	  "<TOSCA>%s</TOSCA>" /* N8 */
+	  "<INES>%s</INES>" /* N8 */
+	  "<HET>%s</HET>" /* N9 */
+	  "<MAPS>%s</MAPS>" /* S1 */
+	  "<EVS>%s</EVS>" /* S2 */
+	  "<SXD>%s</SXD>" /* S3 */
+	  "<MERLIN>%s</MERLIN>" /* S4 */
+	  "<MARI>%s</MARI>" /* S6 */
+	  "<GEM>%s</GEM>" /* S7 */
+	  "<HRPD>%s</HRPD>" /* S8 */
+	  "<ENGINX>%s</ENGINX>" /* S8 */
+	  "<PEARL>%s</PEARL>" /* S9 */
+	"</TS1SHUTTERS>"
+	"<MTEMP>%.1f</MTEMP>"
+    "<HTEMP>%.1f</HTEMP>"
+	"<MUONKICKER>%d</MUONKICKER>"
+	"<TS1_TOTAL>%.1f</TS1_TOTAL>"
+    "<TS1_TOTAL_YEST>%.1f</TS1_TOTAL_YEST>"
+	"<TS2_TOTAL>%.1f</TS2_TOTAL>"
+    "<TS2_TOTAL_YEST>%.1f</TS2_TOTAL_YEST>"
+	"<TS2SHUTTERS>"
+	  "<ZOOM>%s</ZOOM>" /* E1 */
+	  "<SANS2D>%s</SANS2D>" /* E2 */
+	  "<POLREF>%s</POLREF>" /* E3 */
+	  "<INTER>%s</INTER>" /* E4 */
+	  "<OFFSPEC>%s</OFFSPEC>" /* E5 */
+	  "<LARMOR>%s</LARMOR>" /* E6 */
+	  "<WISH>%s</WISH>" /* E8 */
+	  "<CHIPIR>%s</CHIPIR>" /* W1 */
+	  "<IMAT>%s</IMAT>" /* W5 */
+	  "<LET>%s</LET>" /* W6 */
+	  "<NIMROD>%s</NIMROD>" /* W7 */
+	"</TS2SHUTTERS>"
+	"<T2MTEMP1>%.1f</T2MTEMP1>" /* decoupled methane, TE842 */
+	"<T2MTEMP2>%.1f</T2MTEMP2>" /* coupled methane, TE852 */ 
+	"<T2HTEMP1>%.1f</T2HTEMP1>" /* hydrogen TT706 */
+	"<BEAMI>%.1f</BEAMI>"
+	"<BEAMR>%.1f</BEAMR>"
+	"<BEAML>%.1f</BEAML>"
+	"<TS2VAT>"
+	  "<ZOOM>%s</ZOOM>" /* E1 */
+	  "<SANS2D>%s</SANS2D>" /* E2 */
+	  "<POLREF>%s</POLREF>" /* E3 */
+	  "<INTER>%s</INTER>" /* E4 */
+	  "<OFFSPEC>%s</OFFSPEC>" /* E5 */
+	  "<LARMOR>%s</LARMOR>" /* E6 */
+	  "<WISH>%s</WISH>" /* E8 */
+	  "<CHIPIR>%s</CHIPIR>" /* W1 */
+	  "<IMAT>%s</IMAT>" /* W5 */
+	  "<LET>%s</LET>" /* W6 */
+	  "<NIMROD>%s</NIMROD>" /* W7 */
+	"</TS2VAT>"
+	"<TS2SHUTTERMODES>"
+	  "<ZOOM>%s</ZOOM>" /* E1 */
+	  "<SANS2D>%s</SANS2D>" /* E2 */
+	  "<POLREF>%s</POLREF>" /* E3 */
+	  "<INTER>%s</INTER>" /* E4 */
+	  "<OFFSPEC>%s</OFFSPEC>" /* E5 */
+	  "<LARMOR>%s</LARMOR>" /* E6 */
+	  "<WISH>%s</WISH>" /* E8 */
+	  "<CHIPIR>%s</CHIPIR>" /* W1 */
+	  "<IMAT>%s</IMAT>" /* W5 */
+	  "<LET>%s</LET>" /* W6 */
+	  "<NIMROD>%s</NIMROD>" /* W7 */
+	"</TS2SHUTTERMODES>"
+    "<DMOD_RUNTIME>%d</DMOD_RUNTIME>"
+    "<DMOD_RUNTIME_LIM>%d</DMOD_RUNTIME_LIM>"
+    "<DMOD_UABEAM>%.1f</DMOD_UABEAM>"
+    "<DMOD_ANNLOW1>%d</DMOD_ANNLOW1>"
+    "<DMOD_FILL_MASS>%.1f</DMOD_FILL_MASS>"
+    "<BEAM_ENERGY>%d</BEAM_ENERGY>"
+	"<TIME>%u</TIME>"
+	"<TIMEF>%s</TIMEF>"
+	"</ISISBEAM>"; 
+
+static std::string as_iso(time_t t)
+{
+	char time_buffer[64];
+	struct tm* pstm = localtime(&t);
+	strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%dT%H:%M:%S", pstm);
+	return std::string(time_buffer);
+}
+
+static float floatParam(const std::string& name)
+{
+    return atof(BeamParam::paramValues[name].c_str());
+}	
+
+static int intParam(const std::string& name)
+{
+    return atoi(BeamParam::paramValues[name].c_str());
+}
+
+static const char* ts2_shutter_mode(const std::string& beamline)
+{
+	int stat = intParam(beamline + "_mode");
+    switch( stat )
+    {
+                case 0:
+                    return "DEACT"; // De-Activated
+                    break;
+                case 1:
+                    return "LOCAL-HMI"; // Manual (Control Room HMI)
+                    break;
+                case 2:
+                    return "REMOTE-HMI"; // Remote Manual (used for shutter scanning)
+                    break;
+                case 3:
+                    return "SHIELD-TOP"; // Shield Top Control (used for maintenance)
+                    break;
+                case 4:
+                    return "BEAMLINE"; // Opening (beam line request)
+                    break;
+                default:
+                    return "INVALID";
+                    break;
+
+    }	    
+    return "INVALID"; /*NOTREACHED*/
+}
+
+static const char* ts2_shutter_status(const std::string& beamline)
+{
+	int stat = intParam(beamline + "_shut");
+    switch( stat )
+    {
+    	case 0:
+    	    /* return "DEACTIVE"; */
+    	    return "DEACT";
+    	    break;
+    	case 1:
+    	    return "OPEN";
+    	    break;
+    	case 2:
+    	    return "CLOSED";
+    	    break;
+    	case 3:
+    	    return "MOVING";
+    	    break;
+    	case 4:
+    	    return "FAULT";
+    	    break;
+    	default:
+    	    return "INVALID";
+    	    break;
+    }	    
+    return "INVALID"; /*NOTREACHED*/
+}
+
+static const char* ts2_vat_status(const std::string& beamline)
+{
+	int stat = intParam(beamline + "_vat");
+    switch( stat )
+    {
+    	case 0:
+    	    /* return "DEACTIVE"; */
+    	    return "DEACT";
+    	    break;
+    	case 1:
+    	    return "OPEN";
+    	    break;
+    	case 2:
+    	    return "MOVING";
+    	    break;
+    	case 3:
+    	    return "CLOSED";
+    	    break;
+    	case 4:
+    	    return "FAULT";
+    	    break;
+    	default:
+    	    return "INVALID";
+    	    break;
+    }	    
+    return "INVALID"; /*NOTREACHED*/
+}
+
+static const char* ts1_shutter_status(const std::string& beamline)
+{
+	int stat = intParam(beamline + "_shut");
+    switch( stat )
+    {
+    	case 0:
+    	    return "CLOSED";
+    	    break;
+    	case 1:
+    	    return "OPEN";
+    	    break;
+    	case 2:
+    	    return "FAULT";
+    	    break;
+    	case 3:
+    	    return "MOVING";
+    	    break;
+    	case 4:
+    	    return "INVALID";
+    	    break;
+    	default:
+    	    return "INVALID";
+    	    break;
+    }	    
+    return "INVALID"; /*NOTREACHED*/
+}
+
+
+void isisbeamDriver::getXML(char* xml_buffer, int len)
+{
+    static time_t ts1_off, ts1_on, ts2_off, ts2_on;
+	static double beamt_old, beamt2_old;
+	double beamt, beamt2;
+	time_t timer;
+	beamt = floatParam("beam_tgt");
+	beamt2 = floatParam("beam_tgt2");
+	time(&timer);
+	memset(xml_buffer, 0, len);
+		if (beamt2 == 0.0 && beamt2_old > 0.0)
+		{
+			ts2_off = timer;
+		}
+		if (beamt == 0.0 && beamt_old > 0.0)
+		{
+			ts1_off = timer;
+		}
+		if (beamt2 > 0.0 && beamt2_old == 0.0)
+		{
+			ts2_on = timer;
+		}
+		if (beamt > 0.0 && beamt_old == 0.0)
+		{
+			ts1_on = timer;
+		}
+		beamt_old = beamt;
+		beamt2_old = beamt2;
+		snprintf(xml_buffer, len, xml_format, 
+		    floatParam("beam_sync"), 
+		    floatParam("beam_e1"), 
+		    floatParam("beam_tgt"), 
+		    floatParam("beam_tgt2"), 
+		    floatParam("inj_eff"), 
+		    floatParam("acc_eff"), 
+		    floatParam("ext_eff"), 
+		    floatParam("rep_rate"), 
+		    floatParam("rep_rate2"), 
+		    intParam("mode"), 
+		    intParam("gms1on"), 
+		    intParam("gms2on"), 
+			as_iso(ts1_on).c_str(),
+			as_iso(ts1_off).c_str(),
+			as_iso(ts2_on).c_str(),
+			as_iso(ts2_off).c_str(),
+			intParam("shut_north"),
+			intParam("shut_south"),
+			ts1_shutter_status("n1"),
+			ts1_shutter_status("n2"),
+			ts1_shutter_status("n2"),
+			ts1_shutter_status("n2"),
+			ts1_shutter_status("n3"),
+			ts1_shutter_status("n4"),
+			ts1_shutter_status("n5"),
+			ts1_shutter_status("n6"),
+			ts1_shutter_status("n6"),
+			ts1_shutter_status("n7"),
+			ts1_shutter_status("n8"),
+			ts1_shutter_status("n8"),
+			ts1_shutter_status("n9"),
+			ts1_shutter_status("s1"),
+			ts1_shutter_status("s2"),
+			ts1_shutter_status("s3"),
+			ts1_shutter_status("s4"),
+			ts1_shutter_status("s6"),
+			ts1_shutter_status("s7"),
+			ts1_shutter_status("s8"),
+			ts1_shutter_status("s8"),
+			ts1_shutter_status("s9"),
+			floatParam("mtemp"),
+			floatParam("htemp"),
+			intParam("muon_kicker"),
+			floatParam("ts1_total"),
+			floatParam("ts1_total_yest"),
+			floatParam("ts2_total"),
+			floatParam("ts2_total_yest"),
+			ts2_shutter_status("e1"),
+			ts2_shutter_status("e2"),
+			ts2_shutter_status("e3"),
+			ts2_shutter_status("e4"),
+			ts2_shutter_status("e5"),
+			ts2_shutter_status("e6"),
+			ts2_shutter_status("e8"),
+			ts2_shutter_status("w1"),
+			ts2_shutter_status("w5"),
+			ts2_shutter_status("w6"),
+			ts2_shutter_status("w7"),
+			floatParam("t2_mtemp1"),
+			floatParam("t2_mtemp2"),
+			floatParam("t2_htemp1"),
+			floatParam("beam_ions"),  
+			floatParam("beam_rfq"),  
+			floatParam("beam_linac"),  
+			ts2_vat_status("e1"),
+			ts2_vat_status("e2"),
+			ts2_vat_status("e3"),
+			ts2_vat_status("e4"),
+			ts2_vat_status("e5"),
+			ts2_vat_status("e6"),
+			ts2_vat_status("e8"),
+			ts2_vat_status("w1"),
+			ts2_vat_status("w5"),
+			ts2_vat_status("w6"),
+			ts2_vat_status("w7"),
+			ts2_shutter_mode("e1"),
+			ts2_shutter_mode("e2"),
+			ts2_shutter_mode("e3"),
+			ts2_shutter_mode("e4"),
+			ts2_shutter_mode("e5"),
+			ts2_shutter_mode("e6"),
+			ts2_shutter_mode("e8"),
+			ts2_shutter_mode("w1"),
+			ts2_shutter_mode("w5"),
+			ts2_shutter_mode("w6"),
+			ts2_shutter_mode("w7"),
+			intParam("dmod_runtime"),
+			intParam("dmod_runtime_lim"),
+			floatParam("dmod_uabeam"),
+			intParam("dmod_annlow1"),
+			floatParam("dmod_fill_mass"),
+			intParam("beam_energy"),
+			(unsigned)intParam("UPDTIMET"),
+			BeamParam::paramValues["UPDTIME"].c_str());			
+	xml_buffer[len-1] = '\0';
+}
 
 extern "C" {
 
@@ -195,7 +570,6 @@ extern "C" {
 		params.push_back(new BeamParam("UPDTIME", "string", "(UPDTIME)", "n", 10));
 		params.push_back(new BeamParam("INSTTS1", "string", "(INSTTS1)", "n", 0));
 		params.push_back(new BeamParam("INSTTS2", "string", "(INSTTS2)", "n", 0));
-		params.push_back(new BeamParam("ERRCNT", "long", "(ERRCNT)", "n", 0));
 		try
 		{
 			new isisbeamDriver(portName, params, pollTime);
@@ -234,5 +608,5 @@ extern "C" {
 
 unsigned long BeamParam::error_count = 0;
 const int BeamParam::READCHAN_SUCCESS = 0x1;  /* on VMS 1 is success, errors are even numbers */
-
-time_t BeamParam::g_updtime = 0;
+time_t BeamParam::g_updtime = time(NULL);
+std::map<std::string,std::string> BeamParam::paramValues; 

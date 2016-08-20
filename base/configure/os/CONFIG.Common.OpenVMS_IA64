@@ -10,6 +10,8 @@
 include $(CONFIG)/os/CONFIG.Common.OpenVMSCommon
 
 ARCH_CLASS = IA64
+#OP_SYS_CXXFLAGS += -ieee
+#OP_SYS_CFLAGS += -ieee
 
 ifeq ($(BUILD_CLASS),CROSS)
 -include $(CONFIG)/os/CONFIG_SITE.Common.OpenVMS_IA64

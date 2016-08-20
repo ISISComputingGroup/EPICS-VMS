@@ -32,6 +32,7 @@ extern "C" {
 #define DSC$K_CLASS_S 1
 #define DSC$K_DTYPE_L 8
 #define DSC$K_DTYPE_F 10
+#define DSC$K_DTYPE_FS 100 /* not sure */
 #define DSC$K_DTYPE_T 14
 
 struct vdb_descrip_v
@@ -106,6 +107,7 @@ static int read_chan(struct vdb_descrip_s* name, struct vdb_descrip_v* value)
 			break;
 
 		case DSC$K_DTYPE_F:
+		case DSC$K_DTYPE_FS:
 			if (value->dsc_w_length != sizeof(float))
 			{
 				return 0;
@@ -130,6 +132,7 @@ static int read_chan(struct vdb_descrip_s* name, struct vdb_descrip_v* value)
 #include <list>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "asynPortDriver.h"
 
@@ -164,6 +167,7 @@ public:
 	static time_t g_updtime; // global timestamp
     static unsigned long error_count;
     static const int READCHAN_SUCCESS;
+	static std::map<std::string,std::string> paramValues; 
 	bool chan_ok;
 	char sval[SVAL_SIZE];
 	BeamParam(const char* pn, const char* t, const char* vn, const char* po, int uf) :
@@ -177,7 +181,11 @@ public:
 			throw std::runtime_error("Invalid parameter data type in input file");
 		}
 		fval_dsc.dsc_w_length = sizeof(float);
+#if __IEEE_FLOAT
+		fval_dsc.dsc_b_dtype = DSC$K_DTYPE_FS;
+#else
 		fval_dsc.dsc_b_dtype = DSC$K_DTYPE_F;
+#endif /* __IEEE_FLOAT */
 		fval_dsc.dsc_b_class =  DSC$K_CLASS_S;
 		fval_dsc.dsc_a_pointer = &fval;
 		lval_dsc.dsc_w_length = sizeof(long);
@@ -188,6 +196,8 @@ public:
 		sval_dsc.dsc_b_dtype = DSC$K_DTYPE_T;
 		sval_dsc.dsc_b_class =  DSC$K_CLASS_S;
 		sval_dsc.dsc_a_pointer = sval;
+
+		paramValues[param_name] = "";
 	}
 	
 	// true if channel OK, false if in error
@@ -238,7 +248,8 @@ public:
 		}
 		else
 		{
-		    time(&updtime); // no @TIMESTAMP field present
+//		    time(&updtime); // no @TIMESTAMP field present
+			updtime = g_updtime; // no @TIMESTAMP field present
 		}
 #if !defined(__VMS) || defined(TESTING)
 		time(&updtime);
@@ -276,15 +287,6 @@ public:
 			{
                 updtime = g_updtime;
 				lval = updtime;
-				if (lval != lval_old)
-				{
-					time(&updtimev);
-				}
-			}
-			else if (param_name == "ERRCNT")
-			{
-                updtime = g_updtime;
-				lval = error_count;
 				if (lval != lval_old)
 				{
 					time(&updtimev);
@@ -348,7 +350,7 @@ public:
 			}
 		}
 		time(&now);
-		int timestamp_update = 30;
+		int timestamp_update = 60;
 		if (!chan_ok)
 		{
 			errlogPrintf("isisbeamDriver:BeamParam:read: Error reading channel \"%s\"\n", vista_name.c_str());
@@ -394,6 +396,7 @@ public:
 	
 	bool update(asynPortDriver* driver) const
 	{
+	    char buffer[16];
         if (!chan_ok)
         {
             return false; // don't update if not read a sensible value
@@ -405,14 +408,19 @@ public:
 		if (type == "float")
 		{
 			driver->setDoubleParam(param_id, fval);
+			sprintf(buffer, "%g", fval);
+			paramValues[param_name] = buffer; 
 		}
 		else if (type == "long")
 		{
 			driver->setIntegerParam(param_id, lval);
+			sprintf(buffer, "%ld", lval);
+			paramValues[param_name] = buffer; 
 		}
 		else if (type == "string")
 		{
 			driver->setStringParam(param_id, sval);
+			paramValues[param_name] = sval; 
 		}
 		return true;
 	}
@@ -460,17 +468,23 @@ public:
 
 private:
 	std::list<BeamParam*> m_params;
-#define FIRST_IB_DRIVER_PARAM P_chanErrCnt
+#define FIRST_IB_DRIVER_PARAM P_xml
+    // the XML ones are for compatibility with old 1st_nd_post program
+	int P_xml;
 	int P_chanErrCnt; // int, number of channels in error
-#define LAST_IB_DRIVER_PARAM P_chanErrCnt
+	int P_errCnt; // int, number of channels in error
+#define LAST_IB_DRIVER_PARAM P_errCnt
 	std::vector<asynParamString_t> m_driverParamString;
 	double m_pollTime;
 	bool m_shutdown;  ///< false initially, set to true to request shutdown, and then wait until it goes false again
 	void pollerThread();
+	void getXML(char* xml_buffer, int len);
 };
 
 #define NUM_IB_DRIVER_PARAMS (&LAST_IB_DRIVER_PARAM - &FIRST_IB_DRIVER_PARAM + 1)	
 
 #define P_chanErrCntString  "CHANERRCNT"
+#define P_errCntString  "ERRCNT"
+#define P_xmlString  "XML"
 
 #endif /* ISISBEAMDRIVER_H */

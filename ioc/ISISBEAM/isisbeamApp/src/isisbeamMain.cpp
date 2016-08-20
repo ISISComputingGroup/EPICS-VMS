@@ -39,6 +39,6 @@ int main(int argc,char *argv[])
 	{
         iocsh(NULL);
 	}
-	epicsExit(EXIT_SUCCESS);
+//	epicsExit(EXIT_SUCCESS);
     return(0);
 }
