@@ -460,6 +460,28 @@ record(ai, "$(P)BL:MUON:KICKR")
    field(PREC, "3")
 }
 
+record(bi, "$(P)BL:MUON:KICKR:OFFWITHBEAM")
+{
+   field(DTYP, "Soft Channel")
+   field(ZNAM, "NO")
+   field(ONAM, "YES")
+   field(DESC, "Muon kicker status")
+   field(OSV, "MINOR")
+   field(VAL, 0)
+   field(PINI, "YES")
+}
+
+record(calcout, "$(P)BL:MUON:KICKR:_OFFCALC")
+{
+	field(INPA, "$(P)BL:MUON:KICKR:STAT NPP")
+	field(INPB, "$(P)AC:EPB1:BEAMON:DUR NPP")
+	field(CALC, "(A=0)&&(B>1800)?1:0")
+    field(OOPT,	"On Change")
+	field(DOPT, "Use CALC")
+	field(OUT, "$(P)BL:MUON:KICKR:OFFWITHBEAM PP")
+	field(SCAN, "10 second")
+}
+
 record(bi, "$(P)TG:TS2:DMOD:ANNPLOW:STAT")
 {
    field(DTYP, "asynInt32")
