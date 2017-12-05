@@ -46,7 +46,7 @@ isisbeam_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 # ISIS specific linker options
 ifneq ($(TESTING),YES) 
-isisbeam_LDFLAGS_VMS += -input_to_ld ../isisbeam.opt -Wl/threads=upcalls
+isisbeam_LDFLAGS_VMS += -input_to_ld ../isisbeam.opt -Wl/threads
 endif
 
 #===========================
