@@ -72,7 +72,7 @@ record(ai, "$(P)AC:ACC:EFF")
    field(INP,  "@asyn(isisbeam,0,0)acc_eff")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
-   field(DESC, "Acceleration Efficiency")
+   field(DESC, "Accel Efficiency")
    field(EGU, "%")
    field(HOPR, "100")
    field(LOPR, "0")
@@ -112,6 +112,50 @@ record(ai, "$(P)TG:TS1:MOD:METH:TEMP")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(ADEL, "0.1")
+}
+
+record(bi, "$(P)TG:TS1:MOD:METH:TRANS")
+{
+   field(DESC, "TS1 Meth transfer")
+   field(SIOL, "0")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(ZNAM, "NO")
+   field(ONAM, "YES")
+   field(OSV, "MINOR")
+   field(VAL, 0)
+}
+
+# "TGT1 - Methane -  Auto transfer in 5 minutes" 
+record(bi, "$(P)TG:TS1:MOD:METH:TRANS:WARN")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)ch4_transfer")
+   field(SCAN, "I/O Intr")
+   field(DESC, "TS1 Meth trans 5 min warn")
+   field(SIOL, "0")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(ZNAM, "NO")
+   field(ONAM, "YES")
+   field(OSV, "MINOR")
+   field(VAL, 0)
+   field(FLNK, "$(P)TG:TS1:MOD:METH:TRANS:_WARN")
+}
+
+record(calcout, "$(P)TG:TS1:MOD:METH:TRANS:_WARN")
+{
+	field(INPA, "$(P)TG:TS1:MOD:METH:TRANS:WARN NPP")
+	field(CALC, "A")
+    field(OOPT,	"Transition To Non-zero")
+	field(OUT, "$(P)TG:TS1:MOD:METH:TRANS:WARN:TIME.PROC PP")
+}
+
+record(stringin, "$(P)TG:TS1:MOD:METH:TRANS:WARN:TIME")
+{
+   field(DESC, "TS1 Meth trans 5m warn time")
+   field(DTYP, "Soft Timestamp")
+   field(INP, "@%Y-%m-%dT%H:%M:%S")
 }
 
 ## use ADEL of 0.11 as it seems to bobble around 0.1 
@@ -492,9 +536,11 @@ record(calcout, "$(P)BL:MUON:KICKR:_OFFCALC")
 {
 	field(INPA, "$(P)BL:MUON:KICKR:STAT NPP")
 	field(INPB, "$(P)AC:EPB1:BEAMON:DUR NPP")
-        field(INPC, "$(P)BL:MUON:KICKR:OFFWITHBEAM NPP")
-        field(CALC, "(A=1)?0:((B>1800)?1:C)")
-         field(OOPT,	"On Change")
+	field(INPC, "$(P)BL:MUON:KICKR:OFFWITHBEAM NPP")
+	# if beam is off and time less than 1800 seconds, leave OFFWITBEAM unchanged
+	# to avoid flapping situation
+	field(CALC, "(A=1)?0:((B>1800)?1:C)")
+    field(OOPT,	"On Change")
 	field(DOPT, "Use CALC")
 	field(OUT, "$(P)BL:MUON:KICKR:OFFWITHBEAM PP")
 	field(SCAN, "10 second")
@@ -654,4 +700,16 @@ record(mbbi, "$(P)BL:MUON:SHTR:STAT")
    field(TWST, "CLOSED")
    field(THST, "MOVING")
    field(FRST, "FAULT")	
+}
+
+record(ai, "$(P)HA:R4WATER:TEMP")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn(isisbeam,0,0)r4water")
+    field(SCAN, "I/O Intr")
+    field(SDIS, "$(P)ISISBEAM:DISABLE")
+    field(EGU, "C")
+    field(DESC, "R4 water temperature")
+    field(ADEL, 0.2)
+    field(PREC, 1)
 }

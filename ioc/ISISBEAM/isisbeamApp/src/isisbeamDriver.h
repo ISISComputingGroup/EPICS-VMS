@@ -99,6 +99,7 @@ static int read_chan(struct vdb_descrip_s* name, struct vdb_descrip_v* value)
     switch(value->dsc_b_dtype)
 	{
 	    case DSC$K_DTYPE_L:
+	    case DSC$K_DTYPE_LU:
 			if (value->dsc_w_length != sizeof(long))
 			{
 				return 0;
