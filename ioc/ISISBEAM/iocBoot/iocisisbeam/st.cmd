@@ -6,6 +6,7 @@
 < envPaths
 
 # 130.246.39.152 is ISIS beam gateway
+epicsEnvSet("EPICS_IOC_LOG_PORT", "7006")
 epicsEnvSet("EPICS_IOC_LOG_INET", "130.246.39.152")
 iocLogInit()
 
