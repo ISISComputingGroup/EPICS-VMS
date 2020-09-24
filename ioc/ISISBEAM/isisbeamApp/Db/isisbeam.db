@@ -19,6 +19,23 @@ record(bo, "$(P)ISISBEAM:DISABLE")
     field(ONAM, "COMMS DISABLED")
 }
 
+# "TGT1 - Methane -  Auto transfer in 5 minutes" 
+record(bi, "$(P)TG:TS1:MOD:METH:TRANS")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(isisbeam,0,0)ch4_transfer")
+   field(SCAN, "I/O Intr")
+   field(DESC, "TS1 Meth transfer 5 min warn")
+   field(SIOL, "0")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(ZNAM, "NO")
+   field(ONAM, "YES")
+   field(OSV, "MINOR")
+   field(VAL, 0)   
+}
+
+
 ## beam energy - usually 700 or 800 MeV
 record(longin, "$(P)AC:BEAM:ENERGY")
 {
@@ -475,8 +492,9 @@ record(calcout, "$(P)BL:MUON:KICKR:_OFFCALC")
 {
 	field(INPA, "$(P)BL:MUON:KICKR:STAT NPP")
 	field(INPB, "$(P)AC:EPB1:BEAMON:DUR NPP")
-	field(CALC, "(A=0)&&(B>1800)?1:0")
-    field(OOPT,	"On Change")
+        field(INPC, "$(P)BL:MUON:KICKR:OFFWITHBEAM NPP")
+        field(CALC, "(A=1)?0:((B>1800)?1:C)")
+         field(OOPT,	"On Change")
 	field(DOPT, "Use CALC")
 	field(OUT, "$(P)BL:MUON:KICKR:OFFWITHBEAM PP")
 	field(SCAN, "10 second")
