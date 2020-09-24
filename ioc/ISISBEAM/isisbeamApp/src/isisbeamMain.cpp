@@ -27,18 +27,24 @@ int main(int argc,char *argv[])
         iocsh(argv[1]);
         epicsThreadSleep(.2);
     }
-	if (non_interactive)
-	{
-        while(BeamParam::error_count < 20)
-        {
+    if (non_interactive)
+    {
+        // g_chan_err_cnt includes timestamp not updating errors
+        double tdiff;
+        do {
             epicsThreadSleep(10.0);
-        }
-        errlogPrintf("Exiting IOC as error count=%lu too high\n", BeamParam::error_count);
-	}
-	else
-	{
+            tdiff = difftime(time(NULL), BeamParam::g_updtime);
+        } while(BeamParam::error_count < 20 && tdiff < 300.0 /* && isisbeamDriver::g_chan_err_cnt < 20 */ )
+
+        errlogPrintf("Exiting IOC: total error count=%lu, chan error count=%lu, TIMET diff=%f\n", 
+                       BeamParam::error_count, isisbeamDriver::g_chan_err_cnt, tdiff);
+        //_exit(EXIT_SUCCESS);
+        sys$delprc(0, 0, DELPRC$M_NOEXIT);
+    }
+    else
+    {
         iocsh(NULL);
-	}
-//	epicsExit(EXIT_SUCCESS);
+    }
+//  epicsExit(EXIT_SUCCESS);
     return(0);
 }
