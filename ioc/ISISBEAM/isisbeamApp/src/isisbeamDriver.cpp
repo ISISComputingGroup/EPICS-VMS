@@ -153,15 +153,14 @@ void isisbeamDriver::pollerThread()
 	//    static const char* functionName = "isisbeamPoller";
 	static char xml_buffer[6000];
 	user_initialize_nofins();
-    int chan_err_cnt;
 	while(!m_shutdown)
 	{
-	    chan_err_cnt = 0;
+	    g_chan_err_cnt = 0;
 		for(std::list<BeamParam*>::iterator it=m_params.begin(); it != m_params.end(); ++it)
 		{
 			if ( !(*it)->read() )
 			{
-			    ++chan_err_cnt;
+			    ++g_chan_err_cnt;
 			}
 		}
 		lock();
@@ -169,7 +168,7 @@ void isisbeamDriver::pollerThread()
 		{
 			(*it)->update(this);
 		}
-		setIntegerParam(P_chanErrCnt, chan_err_cnt);
+		setIntegerParam(P_chanErrCnt, g_chan_err_cnt);
 		setIntegerParam(P_errCnt, BeamParam::error_count);
 		getXML(xml_buffer, sizeof(xml_buffer));
 		setStringParam(P_xml, xml_buffer);
@@ -283,6 +282,8 @@ static const char* xml_format =
     "<DMOD_ANNLOW1>%d</DMOD_ANNLOW1>"
     "<DMOD_FILL_MASS>%.1f</DMOD_FILL_MASS>"
     "<BEAM_ENERGY>%d</BEAM_ENERGY>"
+	"<TS1CH4TRANS>%d</TS1CH4TRANS>"
+	"<TS1CH4TRANSW>%s</TS1CH4TRANSW>"
 	"<TIME>%u</TIME>"
 	"<TIMEF>%s</TIMEF>"
 	"</ISISBEAM>"; 
@@ -419,13 +420,21 @@ static const char* ts1_shutter_status(const std::string& beamline)
 
 void isisbeamDriver::getXML(char* xml_buffer, int len)
 {
-    static time_t ts1_off, ts1_on, ts2_off, ts2_on;
+    static time_t ts1_off, ts1_on, ts2_off, ts2_on, ch4_transfer_warn;
 	static double beamt_old, beamt2_old;
+	static int ch4_transfer_old;
 	double beamt, beamt2;
+	int ch4_transfer;
 	time_t timer;
 	beamt = floatParam("beam_tgt");
 	beamt2 = floatParam("beam_tgt2");
+	ch4_transfer = intParam("ch4_transfer");
 	time(&timer);
+	if (ch4_transfer_old == 0 && ch4_transfer == 1)
+    {
+	    ch4_transfer_warn = timer;
+    }
+    ch4_transfer_old = ch4_transfer;	
 	memset(xml_buffer, 0, len);
 		if (beamt2 == 0.0 && beamt2_old > 0.0)
 		{
@@ -538,6 +547,8 @@ void isisbeamDriver::getXML(char* xml_buffer, int len)
 			intParam("dmod_annlow1"),
 			floatParam("dmod_fill_mass"),
 			intParam("beam_energy"),
+			ch4_transfer,
+			as_iso(ch4_transfer_warn).c_str(),
 			(unsigned)intParam("UPDTIMET"),
 			BeamParam::paramValues["UPDTIME"].c_str());			
 	xml_buffer[len-1] = '\0';
@@ -606,6 +617,7 @@ extern "C" {
 
 }
 
+unsigned long isisbeamDriver::g_chan_err_cnt = 0;
 unsigned long BeamParam::error_count = 0;
 const int BeamParam::READCHAN_SUCCESS = 0x1;  /* on VMS 1 is success, errors are even numbers */
 time_t BeamParam::g_updtime = time(NULL);
