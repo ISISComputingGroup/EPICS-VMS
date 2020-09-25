@@ -36,7 +36,7 @@ ACC_SHRLIB_CFLAGS_YES =
 ACC_SHRLIB_LDFLAGS_YES = -shared
 
 # Configure OS vendor C++ compiler
-CCC = cxx
+CCC = c++
 CCC_NORMAL = $(CCC)
 CCC_STRICT = $(CCC)
 CCC_TEMPL_INST_FLAG = -DEXPL_TEMPL

@@ -60,8 +60,6 @@ $ if HOSTTYPE .EQS. "IA64"
 $ then
 $   cmd = "declare -x HOSTTYPE=IA64;" + -
 	  "declare -x EPICS_HOST_ARCH=OpenVMS_IA64;" + -
-	  "declare -x SHELL=/GNU/BIN/BASH.EXE;" + -
-	  "declare -x MAKE=/GNU/BIN/MAKE.EXE;" + -
 	  "declare -x EPICS_BASE=/EPICS_BASE;"
 $   if f$search("EPICS_ROOT:[BASE.CXX_REPOSITORY]OpenVMS_IA64.DIR") .EQS. "" then -
 	CREATE/DIR EPICS_ROOT:[base.cxx_repository.OpenVMS_IA64]

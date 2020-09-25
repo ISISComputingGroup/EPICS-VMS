@@ -29,7 +29,7 @@ include $(CONFIG)/os/CONFIG.Common.UnixCommon
 OS_CLASS = VMS
 
 CC=cc
-CCC=cxx
+CCC=c++
 CPP=$(CC) -x c -E
 AR = ar cr
 
