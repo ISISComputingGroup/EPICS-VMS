@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdexcept>
 
-#include <startlet.h>
+#include <starlet.h>
 #include <delprcsymdef.h>
 
 #include "epicsThread.h"
