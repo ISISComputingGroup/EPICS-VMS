@@ -4,7 +4,7 @@ Basically you need to be using an ODS5 filesystem with GNV and perl installed
 
     unpack kit (using GNV tar/zip, not vmstar or VMS zip as these will replace . with _ in some extracted path names)
     @setup
-	set def EPICS_ROOT:[000000]  ! optional, but mean directory tree can be relocated later
+    set def EPICS_ROOT:[000000]  ! optional, but mean directory tree can be relocated later
     bash
     make MakefileInclude
     make

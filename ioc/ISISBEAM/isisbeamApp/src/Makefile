@@ -24,7 +24,7 @@ PROD_IOC = isisbeam
 ifeq ($(TESTING),YES) 
 USR_CXXFLAGS += -DTESTING
 else
-USR_CXXFLAGS_VMS += -Wc/warn -Wc/reentrancy=multithread
+USR_CXXFLAGS_VMS += -Wc/warn -Wc/reentrancy=multithread -D__NEW_STARLET=1
 endif
 
 DBD += isisbeam.dbd
@@ -46,7 +46,7 @@ isisbeam_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 # ISIS specific linker options
 ifneq ($(TESTING),YES) 
-isisbeam_LDFLAGS_VMS += -input_to_ld ../isisbeam.opt -Wl/threads
+isisbeam_LDFLAGS_VMS += -input_to_ld ../isisbeam.opt
 endif
 
 #===========================
