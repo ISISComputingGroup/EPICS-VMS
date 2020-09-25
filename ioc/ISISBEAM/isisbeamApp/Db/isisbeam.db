@@ -19,23 +19,6 @@ record(bo, "$(P)ISISBEAM:DISABLE")
     field(ONAM, "COMMS DISABLED")
 }
 
-# "TGT1 - Methane -  Auto transfer in 5 minutes" 
-record(bi, "$(P)TG:TS1:MOD:METH:TRANS")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn(isisbeam,0,0)ch4_transfer")
-   field(SCAN, "I/O Intr")
-   field(DESC, "TS1 Meth transfer 5 min warn")
-   field(SIOL, "0")
-   field(SIML, "$(P)ISISBEAM:SIM")
-   field(SDIS, "$(P)ISISBEAM:DISABLE")
-   field(ZNAM, "NO")
-   field(ONAM, "YES")
-   field(OSV, "MINOR")
-   field(VAL, 0)   
-}
-
-
 ## beam energy - usually 700 or 800 MeV
 record(longin, "$(P)AC:BEAM:ENERGY")
 {
@@ -713,3 +696,28 @@ record(ai, "$(P)HA:R4WATER:TEMP")
     field(ADEL, 0.2)
     field(PREC, 1)
 }
+
+record(ai, "$(P)AC:BUNCH:LEN")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn(isisbeam,0,0)bunch_length")
+    field(SCAN, "I/O Intr")
+    field(SDIS, "$(P)ISISBEAM:DISABLE")
+    field(EGU, "ns")
+    field(DESC, "Bunch Length")
+#    field(ADEL, 0.2)
+    field(PREC, 1)
+}
+
+record(longin, "$(P)AC:EXTRACT:DELAY")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn(isisbeam,0,0)extractdelay")
+    field(SCAN, "I/O Intr")
+    field(SDIS, "$(P)ISISBEAM:DISABLE")
+    field(EGU, "ns")
+    field(DESC, "Extract delay")
+}
+
+
+
