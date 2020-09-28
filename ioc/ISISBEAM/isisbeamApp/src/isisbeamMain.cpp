@@ -41,7 +41,8 @@ int main(int argc,char *argv[])
         errlogPrintf("Exiting IOC: total error count=%lu, chan error count=%lu, TIMET diff=%f\n", 
                        BeamParam::error_count, isisbeamDriver::g_chan_err_cnt, tdiff);
         //_exit(EXIT_SUCCESS);
-        sys$delprc(NULL, NULL, DELPRC$M_NOEXIT);
+        //sys$delprc(NULL, NULL, DELPRC$M_NOEXIT);
+        sys$delprc(NULL, NULL, 0); // this is equivalent to a DCL stop/id
     }
     else
     {
