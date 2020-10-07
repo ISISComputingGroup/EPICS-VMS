@@ -164,7 +164,7 @@ void isisbeamDriver::pollerThread()
 			}
 		}
 		lock();
-		for(std::list<BeamParam*>::const_iterator it=m_params.begin(); it != m_params.end(); ++it)
+		for(std::list<BeamParam*>::iterator it=m_params.begin(); it != m_params.end(); ++it)
 		{
 			(*it)->update(this);
 		}

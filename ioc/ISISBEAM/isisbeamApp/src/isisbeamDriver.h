@@ -30,6 +30,7 @@ extern "C" {
 #else
 
 #define DSC$K_CLASS_S 1
+#define DSC$K_DTYPE_LU 4
 #define DSC$K_DTYPE_L 8
 #define DSC$K_DTYPE_F 10
 #define DSC$K_DTYPE_FS 100 /* not sure */
@@ -395,7 +396,7 @@ public:
 		return chan_ok;
 	}
 	
-	bool update(asynPortDriver* driver) const
+	bool update(asynPortDriver* driver)
 	{
 	    char buffer[16];
         if (!chan_ok)
