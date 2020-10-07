@@ -28,7 +28,7 @@ $ spawn/nowait/input=NL:/proc=CAREPEATER -
 $! Finally start real server
 $! We need to use spawn to create the process as we want to exit it using sys$delprc()
 $ define/user sys$input sys$command
-$ spawn/wait/input=sys$command/proc=isisbeam_1 -
+$ spawn/wait/proc=isisbeam_1 -
     mc [-.-.bin.OpenVMS_'ARCH']isisbeam.exe st.cmd
 $ wait 00:00:30
 $ goto loop
