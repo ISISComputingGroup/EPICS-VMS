@@ -171,10 +171,11 @@ public:
     static const int READCHAN_SUCCESS;
 	static std::map<std::string,std::string> paramValues; 
 	bool chan_ok;
+    bool first_read;
 	char sval[SVAL_SIZE];
 	BeamParam(const char* pn, const char* t, const char* vn, const char* po, int uf) :
 	    param_name(pn), type(t), vista_name(vn), opts(po), update_freq(uf), param_id(-1), lval(0), 
-        fval(0.0), updtime(0), updtime_old(0), updtimev(0), chan_ok(true)
+        fval(0.0), updtime(0), updtime_old(0), updtimev(0), chan_ok(true), first_read(true)
 	{
 		sval[0] = '\0';
 		bool valid_type = (type == "long" || type == "float" || type == "string");
@@ -358,7 +359,7 @@ public:
 			errlogPrintf("isisbeamDriver:BeamParam:read: Error reading channel \"%s\"\n", vista_name.c_str());
             ++error_count;
 		}
-		else if ( (now - updtime) > timestamp_update ) // vista timestamp should always update
+		else if ( ((now - updtime) > timestamp_update) && !first_read ) // vista timestamp should always update
 		{
 		    if (old_chan_ok)
 			{
@@ -367,7 +368,7 @@ public:
 			chan_ok = false;
 //            ++error_count;
 		}
-		else if ( (update_freq > 0) && ((now - updtimev) > update_freq) )
+		else if ( (update_freq > 0) && ((now - updtimev) > update_freq) && !first_read )
 		{
 		    if (old_chan_ok)
 			{
@@ -376,7 +377,7 @@ public:
 			chan_ok = false;
 //            ++error_count;
 		}
-		else if ( (update_freq < 0) && non_zero && ((now - updtimev) > (-update_freq)) )
+		else if ( (update_freq < 0) && non_zero && ((now - updtimev) > (-update_freq)) && !first_read )
 		{
 		    if (old_chan_ok)
 			{
@@ -393,6 +394,7 @@ public:
 		{
 			errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" OK\n", vista_name.c_str());
 		}
+        first_read = false;
 		return chan_ok;
 	}
 	
