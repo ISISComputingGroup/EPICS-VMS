@@ -8,8 +8,12 @@
 #include <stdio.h>
 #include <stdexcept>
 
+#ifdef __VMS
 #include <starlet.h>
 #include <delprcsymdef.h>
+#else
+#define        sys$delprc(a, b, c)
+#endif
 
 #include "epicsThread.h"
 #include "epicsExit.h"
