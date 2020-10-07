@@ -400,9 +400,18 @@ public:
 	    char buffer[16];
         if (!chan_ok)
         {
-            return false; // don't update if not read a sensible value
+            if (opts.find('z') != std::string::npos) // do we set zero when we cannot read  
+            {
+                lval = 0;
+                fval = 0.0;
+                sval[0] = '\0';                
+            }
+            else
+            {
+                return false; // don't update if not read a sensible value
+            }
         }
-		if (updtime <= updtime_old)
+		if (chan_ok && updtime <= updtime_old)
 		{
 		    return false; // don't update if timestamp not changed
 		}
