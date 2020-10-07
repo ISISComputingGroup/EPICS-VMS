@@ -26,8 +26,10 @@ $! start a caRepeater
 $ spawn/nowait/input=NL:/proc=CAREPEATER -
     run EPICS_ROOT:[BASE.BIN.OpenVMS_'ARCH']caRepeater.exe
 $! Finally start real server
+$! We need to use spawn to create the process as we want to exit it using sys$delprc()
 $ define/user sys$input sys$command
-$ mc [-.-.bin.OpenVMS_'ARCH']isisbeam.exe st.cmd
+$ spawn/wait/input=sys$command/proc=isisbeam_1 -
+    mc [-.-.bin.OpenVMS_'ARCH']isisbeam.exe st.cmd
 $ wait 00:00:30
 $ goto loop
 $!
