@@ -34,6 +34,7 @@ dbLoadRecords("db/vat.db","P=$(MYPVPREFIX)")
 dbLoadRecords("db/vat_ts1.db","P=$(MYPVPREFIX)")
 
 cd ${TOP}/iocBoot/${IOC}
+asSetFilename("default.acf")
 iocInit()
 
 ## list out PVs
