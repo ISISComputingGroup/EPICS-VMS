@@ -292,6 +292,10 @@ public:
 		    }
 		    tval[sizeof(tval)-1] = '\0';
 		    VMSToTimeT(updtime, tval);
+            if (simulate)
+            {
+                time(&updtime);
+            }
 		}
 		else
 		{
