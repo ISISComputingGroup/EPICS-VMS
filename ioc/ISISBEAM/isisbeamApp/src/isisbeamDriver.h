@@ -27,6 +27,45 @@ extern "C" {
 #include    <include:hndlib.h>
 #include	<descrip.h>
 
+// READCHAN_SUCCESS on success, 0 on failure
+static long read_chan_simulate(struct vdb_descrip_s* name, struct vdb_descrip_v* value)
+{
+    if (value->dsc_b_class != DSC$K_CLASS_S)
+	{
+	    return 0;
+	}
+    switch(value->dsc_b_dtype)
+	{
+	    case DSC$K_DTYPE_L:
+	    case DSC$K_DTYPE_LU:
+			if (value->dsc_w_length != sizeof(long))
+			{
+				return 0;
+			}
+		    *((long*)value->dsc_a_pointer) = 0;
+			break;
+
+		case DSC$K_DTYPE_F:
+		case DSC$K_DTYPE_FS:
+			if (value->dsc_w_length != sizeof(float))
+			{
+				return 0;
+			}
+		    *((float*)value->dsc_a_pointer) = 0.0;
+			break;
+
+		case DSC$K_DTYPE_T:
+		    snprintf((char*)value->dsc_a_pointer, value->dsc_w_length, "%s", "");
+			break;
+
+		default:
+			return 0;
+	}
+	return 1; /* READCHAN_SUCCESS */
+}
+
+
+
 #else
 
 #define DSC$K_CLASS_S 1
@@ -91,7 +130,7 @@ static int user_initialize_nofins()
 }
 
 // READCHAN_SUCCESS on success, 0 on failure
-static int read_chan(struct vdb_descrip_s* name, struct vdb_descrip_v* value)
+static long read_chan(struct vdb_descrip_s* name, struct vdb_descrip_v* value)
 {
     if (value->dsc_b_class != DSC$K_CLASS_S)
 	{
@@ -204,13 +243,18 @@ public:
 	}
 	
 	// true if channel OK, false if in error
-	bool getChan(const std::string& vista_name, vdb_descrip_v& value_dsc, time_t& updtime)
+	bool getChan(const std::string& vista_name, vdb_descrip_v& value_dsc, time_t& updtime, bool simulate)
 	{
 		std::string vista_ts = vista_name + "@TIMESTAMP";
+        long (*my_read_chan)(struct vdb_descrip_s* name, struct vdb_descrip_v* value) = &read_chan;
 	    char tval[30]; // timestamp, which should change whether value does or not
 	    struct vdb_descrip_s vista_name_dsc;
 	    struct vdb_descrip_s vista_ts_dsc;
 	    struct vdb_descrip_v tval_dsc;
+        if (simulate)
+        {
+            my_read_chan = read_chan_simulate;
+        }
 		vista_name_dsc.dsc_w_length = vista_name.size();
 		vista_name_dsc.dsc_b_dtype = DSC$K_DTYPE_T;
 		vista_name_dsc.dsc_b_class =  DSC$K_CLASS_S;
@@ -226,12 +270,12 @@ public:
 		vista_chix chix;
 		vdbc_channel_index(const_cast<char*>(vista_name.c_str()), &chix);
 		int hwerr = check_hardware_error(&chix);
-		if (hwerr != 0)
+		if (!simulate && hwerr != 0)
 		{
 			errlogPrintf("isisbeamDriver:BeamParam:getChan: hardware IO error %d on channel \"%s\"\n", hwerr, vista_name.c_str());
 		    return false;
 		}	
-		int read_chan_status = read_chan(&vista_name_dsc, &value_dsc);
+		long read_chan_status = my_read_chan(&vista_name_dsc, &value_dsc);
 		if (read_chan_status != READCHAN_SUCCESS)
 		{
 			errlogPrintf("isisbeamDriver:BeamParam:getChan: read_chan error %d on reading value for channel \"%s\"\n", read_chan_status, vista_name.c_str());
@@ -240,7 +284,7 @@ public:
 		if (opts.find('t') != std::string::npos)
 		{
 		    memset(tval, 0, sizeof(tval));
-		    read_chan_status = read_chan(&vista_ts_dsc, &tval_dsc);
+		    read_chan_status = my_read_chan(&vista_ts_dsc, &tval_dsc);
 		    if (read_chan_status != READCHAN_SUCCESS)
 		    {
 			    errlogPrintf("isisbeamDriver:BeamParam:getChan: read_chan error %d on reading timestamp for channel \"%s\"\n", read_chan_status, vista_name.c_str());
@@ -260,7 +304,7 @@ public:
 		return true;
 	}
 	
-	bool read()
+	bool read(bool simulate)
 	{
 	    time_t now;
 		bool non_zero = false;
@@ -270,7 +314,7 @@ public:
 		if (type == "float")
 		{
 		    float fval_old = fval;
-			chan_ok = getChan(vista_name, fval_dsc, updtime);
+			chan_ok = getChan(vista_name, fval_dsc, updtime, simulate);
 			if (chan_ok)
 			{
 				if (fval != fval_old)
@@ -297,7 +341,7 @@ public:
 			}
 			else
 			{
-			    chan_ok = getChan(vista_name, lval_dsc, updtime);
+			    chan_ok = getChan(vista_name, lval_dsc, updtime, simulate);
 				if (chan_ok)
 				{
 					if (lval != lval_old)
@@ -337,7 +381,7 @@ public:
 			}
 			else
 			{
-				chan_ok = getChan(vista_name, sval_dsc, updtime);
+				chan_ok = getChan(vista_name, sval_dsc, updtime, simulate);
 				if (chan_ok)
 				{
 					if (strncmp(sval, sval_old, SVAL_SIZE))
@@ -471,7 +515,7 @@ public:
 class isisbeamDriver : public asynPortDriver 
 {
 public:
-	isisbeamDriver(const char* portName, const std::list<BeamParam*>& params, double pollTime);
+	isisbeamDriver(const char* portName, const std::list<BeamParam*>& params, double pollTime, bool simulate);
 	virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
 		const char **pptypeName, size_t *psize);
 
@@ -490,6 +534,7 @@ private:
 #define LAST_IB_DRIVER_PARAM P_errCnt
 	std::vector<asynParamString_t> m_driverParamString;
 	double m_pollTime;
+    bool m_simulate;
 	bool m_shutdown;  ///< false initially, set to true to request shutdown, and then wait until it goes false again
 	void pollerThread();
 	void getXML(char* xml_buffer, int len);

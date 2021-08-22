@@ -42,7 +42,7 @@ static const char *driverName="isisbeamDriver";
 /// Calls constructor for the asynPortDriver base class.
 /// \param[in] portName @copydoc initArg0
 /// \param[in] params parameter names to create
-isisbeamDriver::isisbeamDriver(const char *portName, const std::list<BeamParam*>& params, double pollTime) 
+isisbeamDriver::isisbeamDriver(const char *portName, const std::list<BeamParam*>& params, double pollTime, bool simulate)
 	: asynPortDriver(portName, 
 	1, /* maxAddr */ 
 	params.size() + NUM_IB_DRIVER_PARAMS,
@@ -52,7 +52,7 @@ isisbeamDriver::isisbeamDriver(const char *portName, const std::list<BeamParam*>
 	1, /* Autoconnect */
 	0, /* Default priority */
 	0),	/* Default stack size*/
-	m_params(params), m_pollTime(pollTime), m_shutdown(false)
+	m_params(params), m_pollTime(pollTime), m_shutdown(false), m_simulate(simulate)
 {
 
 	const char *functionName = "isisbeamDriver";
@@ -158,7 +158,7 @@ void isisbeamDriver::pollerThread()
 	    g_chan_err_cnt = 0;
 		for(std::list<BeamParam*>::iterator it=m_params.begin(); it != m_params.end(); ++it)
 		{
-			if ( !(*it)->read() )
+			if ( !(*it)->read(m_simulate) )
 			{
 			    ++g_chan_err_cnt;
 			}
@@ -558,7 +558,7 @@ extern "C" {
 
 	/// EPICS iocsh callable function to call constructor of isisbeamConfigure().
 	/// \param[in] portName @copydoc initArg0
-	int isisbeamConfigure(const char *portName, const char* paramFile, double pollTime)
+	int isisbeamConfigure(const char *portName, const char* paramFile, double pollTime, int simulate)
 	{
 		std::list<BeamParam*> params; // a copy of this list's contents will be kept by isisbeamDriver when we go out of scope
 		char param_name[129], param_type[129], param_opts[129], vista_name[129];
@@ -583,7 +583,7 @@ extern "C" {
 		params.push_back(new BeamParam("INSTTS2", "string", "(INSTTS2)", "n", 0));
 		try
 		{
-			new isisbeamDriver(portName, params, pollTime);
+			new isisbeamDriver(portName, params, pollTime, (simulate != 0));
 			return(asynSuccess);
 		}
 		catch(const std::exception& ex)
@@ -598,14 +598,15 @@ extern "C" {
 	static const iocshArg initArg0 = { "portName", iocshArgString};			///< The name of the asyn driver port we will create
 	static const iocshArg initArg1 = { "paramFile", iocshArgString};			///< The name of the asyn driver port we will create
 	static const iocshArg initArg2 = { "pollTime", iocshArgDouble};			///< poll time in seconds
+	static const iocshArg initArg3 = { "simulate", iocshArgInt};			///< simulate
 
-	static const iocshArg * const initArgs[] = { &initArg0, &initArg1, &initArg2 };
+	static const iocshArg * const initArgs[] = { &initArg0, &initArg1, &initArg2, &initArg3 };
 
 	static const iocshFuncDef initFuncDef = {"isisbeamConfigure", sizeof(initArgs) / sizeof(iocshArg*), initArgs};
 
 	static void initCallFunc(const iocshArgBuf *args)
 	{
-		isisbeamConfigure(args[0].sval, args[1].sval, args[2].dval);
+		isisbeamConfigure(args[0].sval, args[1].sval, args[2].dval, args[3].ival);
 	}
 
 	static void isisbeamRegister(void)

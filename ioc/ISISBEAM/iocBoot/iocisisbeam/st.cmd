@@ -8,6 +8,7 @@
 # 130.246.39.152 is ISIS beam gateway
 epicsEnvSet("EPICS_IOC_LOG_PORT", "7006")
 epicsEnvSet("EPICS_IOC_LOG_INET", "130.246.39.152")
+#epicsEnvSet("SIM_ISISBEAM", "1")
 iocLogInit()
 
 cd ${TOP}
@@ -17,7 +18,7 @@ dbLoadDatabase("dbd/isisbeam.dbd",0,0)
 isisbeam_registerRecordDeviceDriver(pdbbase)
 
 ## portName, paramFile, pollTime
-isisbeamConfigure("isisbeam","${TOP}/iocBoot/${IOC}/params.txt",3.0)
+isisbeamConfigure("isisbeam","${TOP}/iocBoot/${IOC}/params.txt",3.0,$(SIM_ISISBEAM=0))
 
 #epicsEnvSet("MYPVPREFIX", "f:")
 epicsEnvSet("MYPVPREFIX", "")
