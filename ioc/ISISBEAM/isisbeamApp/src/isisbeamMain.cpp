@@ -40,10 +40,10 @@ int main(int argc,char *argv[])
         do {
             epicsThreadSleep(10.0);
             tdiff = difftime(time(NULL), BeamParam::g_updtime);
-        } while(BeamParam::error_count < 20 && tdiff < 300.0 /* && isisbeamDriver::g_chan_err_cnt < 20 */ );
+        } while(isisbeamDriver::error_count < 40 && tdiff < 300.0 /* && isisbeamDriver::g_chan_err_cnt < 20 */ );
 
         errlogPrintf("Exiting IOC: total error count=%lu, chan error count=%lu, TIMET diff=%f\n", 
-                       BeamParam::error_count, isisbeamDriver::g_chan_err_cnt, tdiff);
+                       isisbeamDriver::error_count, isisbeamDriver::g_chan_err_cnt, tdiff);
         //_exit(EXIT_SUCCESS);
         //sys$delprc(NULL, NULL, DELPRC$M_NOEXIT);
         sys$delprc(NULL, NULL, 0); // this is equivalent to a DCL stop/id

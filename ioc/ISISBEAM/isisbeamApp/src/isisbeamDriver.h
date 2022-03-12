@@ -206,7 +206,7 @@ public:
 	time_t updtime_old;   // used by UPDTIME and UPDTIMET
 	time_t updtimev;  // time value last changed, calculated by actually comparing values read
 	static time_t g_updtime; // global timestamp
-    static unsigned long error_count;
+    unsigned long error_count;
     static const int READCHAN_SUCCESS;
 	static std::map<std::string,std::string> paramValues; 
 	bool chan_ok;
@@ -214,7 +214,8 @@ public:
 	char sval[SVAL_SIZE];
 	BeamParam(const char* pn, const char* t, const char* vn, const char* po, int uf) :
 	    param_name(pn), type(t), vista_name(vn), opts(po), update_freq(uf), param_id(-1), lval(0), 
-        fval(0.0), updtime(0), updtime_old(0), updtimev(0), chan_ok(true), first_read(true)
+        fval(0.0), updtime(0), updtime_old(0), updtimev(0), chan_ok(true), first_read(true),
+        error_count(0)
 	{
 		sval[0] = '\0';
 		bool valid_type = (type == "long" || type == "float" || type == "string");
@@ -443,6 +444,10 @@ public:
 			errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" OK\n", vista_name.c_str());
 		}
         first_read = false;
+        if (chan_ok)
+        {
+            error_count = 0;
+        }
 		return chan_ok;
 	}
 	

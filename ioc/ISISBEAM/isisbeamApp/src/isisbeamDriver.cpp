@@ -164,12 +164,14 @@ void isisbeamDriver::pollerThread()
 			}
 		}
 		lock();
+        g_error_count = 0;
 		for(std::list<BeamParam*>::iterator it=m_params.begin(); it != m_params.end(); ++it)
 		{
 			(*it)->update(this);
+            g_error_count += it->error_count;
 		}
 		setIntegerParam(P_chanErrCnt, g_chan_err_cnt);
-		setIntegerParam(P_errCnt, BeamParam::error_count);
+		setIntegerParam(P_errCnt, g_error_count);
 		getXML(xml_buffer, sizeof(xml_buffer));
 		setStringParam(P_xml, xml_buffer);
 		callParamCallbacks();
@@ -619,7 +621,7 @@ extern "C" {
 }
 
 unsigned long isisbeamDriver::g_chan_err_cnt = 0;
-unsigned long BeamParam::error_count = 0;
+unsigned long isisbeamDriver::g_error_count = 0; // number of current channel errors since last success
 const int BeamParam::READCHAN_SUCCESS = 0x1;  /* on VMS 1 is success, errors are even numbers */
 time_t BeamParam::g_updtime = time(NULL);
-std::map<std::string,std::string> BeamParam::paramValues; 
+std::map<std::string,std::string> BeamParam::paramValues;
