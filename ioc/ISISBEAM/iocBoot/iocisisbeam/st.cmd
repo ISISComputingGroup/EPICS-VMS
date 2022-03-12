@@ -9,6 +9,8 @@
 epicsEnvSet("EPICS_IOC_LOG_PORT", "7006")
 epicsEnvSet("EPICS_IOC_LOG_INET", "130.246.39.152")
 #epicsEnvSet("SIM_ISISBEAM", "1")
+epicsEnvSet("RESET_ERROR_COUNT", "200")
+epicsEnvSet("RESET_TIME_DIFF", "300")
 iocLogInit()
 
 cd ${TOP}

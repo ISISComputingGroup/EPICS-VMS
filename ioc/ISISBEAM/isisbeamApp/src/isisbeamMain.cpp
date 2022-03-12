@@ -29,6 +29,8 @@ int main(int argc,char *argv[])
 #else
     bool non_interactive = false;
 #endif
+    int reset_error_count = atoi(getenv("RESET_ERROR_COUNT") != NULL ? getenv("RESET_ERROR_COUNT") : "50");
+    double reset_time_diff = atof(getenv("RESET_TIME_DIFF") != NULL ? getenv("RESET_TIME_DIFF") : "300.0");
     if(argc>=2) {    
         iocsh(argv[1]);
         epicsThreadSleep(.2);
@@ -40,7 +42,7 @@ int main(int argc,char *argv[])
         do {
             epicsThreadSleep(10.0);
             tdiff = difftime(time(NULL), BeamParam::g_updtime);
-        } while(isisbeamDriver::error_count < 40 && tdiff < 300.0 /* && isisbeamDriver::g_chan_err_cnt < 20 */ );
+        } while(isisbeamDriver::error_count < reset_error_count && tdiff < reset_time_diff /* && isisbeamDriver::g_chan_err_cnt < 20 */ );
 
         errlogPrintf("Exiting IOC: total error count=%lu, chan error count=%lu, TIMET diff=%f\n", 
                        isisbeamDriver::error_count, isisbeamDriver::g_chan_err_cnt, tdiff);
