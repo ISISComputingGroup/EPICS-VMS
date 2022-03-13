@@ -168,7 +168,7 @@ void isisbeamDriver::pollerThread()
 		for(std::list<BeamParam*>::iterator it=m_params.begin(); it != m_params.end(); ++it)
 		{
 			(*it)->update(this);
-            g_error_count += it->error_count;
+            g_error_count += (*it)->error_count;
 		}
 		setIntegerParam(P_chanErrCnt, g_chan_err_cnt);
 		setIntegerParam(P_errCnt, g_error_count);

@@ -531,6 +531,7 @@ public:
 	static void pollerThreadC(void* arg);
 	static void epicsExitFunc(void* arg);
 	static unsigned long g_chan_err_cnt;
+	static unsigned long g_error_count;
 	~isisbeamDriver();
 
 private:
