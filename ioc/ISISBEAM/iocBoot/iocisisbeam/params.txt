@@ -61,7 +61,7 @@ w8_mode          long     t  0     t2shut::w8:mode
 w9_mode          long     t  0     t2shut::w9:mode
 t2_mtemp1        float    tz 1800     t2cryo::tt842:methane_temp
 t2_mtemp2        float    t  0        t2util::te852:read
-t2_htemp1        float    t  1800     t2cryo::tt706:h2loop_return_temp
+t2_htemp1        float    t  3600     t2cryo::tt706:h2loop_return_temp
 e1_vat           long     t  0    t2vac::e1vat:read_sta
 e2_vat           long     t  0    t2vac::e2vat:read_sta
 e3_vat           long     t  0    t2vac::e3vat:read_sta

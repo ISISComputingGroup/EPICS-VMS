@@ -210,12 +210,13 @@ public:
     static const int READCHAN_SUCCESS;
 	static std::map<std::string,std::string> paramValues; 
 	bool chan_ok;
+    int old_hwerr;
     bool first_read;
 	char sval[SVAL_SIZE];
 	BeamParam(const char* pn, const char* t, const char* vn, const char* po, int uf) :
 	    param_name(pn), type(t), vista_name(vn), opts(po), update_freq(uf), param_id(-1), lval(0), 
         fval(0.0), updtime(0), updtime_old(0), updtimev(0), chan_ok(true), first_read(true),
-        error_count(0)
+        error_count(0), old_hwerr(0)
 	{
 		sval[0] = '\0';
 		bool valid_type = (type == "long" || type == "float" || type == "string");
@@ -273,9 +274,19 @@ public:
 		int hwerr = check_hardware_error(&chix);
 		if (!simulate && hwerr != 0)
 		{
-			errlogPrintf("isisbeamDriver:BeamParam:getChan: hardware IO error %d on channel \"%s\"\n", hwerr, vista_name.c_str());
+            if (old_hwerr == 0)
+            {
+			    errlogPrintf("isisbeamDriver:BeamParam:getChan: hardware IO error %d present on channel \"%s\"\n", hwerr, vista_name.c_str());
+                old_hwerr = hwerr;
+            }
+            old_hwerr = hwerr;
 		    return false;
-		}	
+		}
+        if (old_hwerr != 0)
+        {
+			errlogPrintf("isisbeamDriver:BeamParam:getChan: hardware IO error %d cleared on channel \"%s\"\n", old_hwerr, vista_name.c_str());
+            old_hwerr = 0;
+        }
 		long read_chan_status = my_read_chan(&vista_name_dsc, &value_dsc);
 		if (read_chan_status != READCHAN_SUCCESS)
 		{
@@ -405,8 +416,13 @@ public:
 		int timestamp_update = 60;
 		if (!chan_ok)
 		{
-			errlogPrintf("isisbeamDriver:BeamParam:read: Error reading channel \"%s\"\n", vista_name.c_str());
-            ++error_count;
+            // don't increment for hardware errors to avoid unnecessary restarts
+            // a message will already have been printed for occurrence by previous function 
+            if (old_hwerr == 0)
+            {
+			    errlogPrintf("isisbeamDriver:BeamParam:read: Error reading channel \"%s\"\n", vista_name.c_str());
+                ++error_count;
+            }
 		}
 		else if ( ((now - updtime) > timestamp_update) && !first_read ) // vista timestamp should always update
 		{
