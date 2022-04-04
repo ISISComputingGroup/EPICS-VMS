@@ -437,6 +437,9 @@ record(ai, "$(P)TG:TS2:CMOD:HDGN:TEMP")
    field(ADEL, "0.1")
 }
 
+## changed from minute to min as unit as
+## longer name caused value to occasionally disappear
+## on ibex dashboard
 record(longin, "$(P)TG:TS2:DMOD:RTIME:DUR")
 {
    field(DTYP, "asynInt32")
@@ -445,7 +448,7 @@ record(longin, "$(P)TG:TS2:DMOD:RTIME:DUR")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(SIOL, "100")
-   field(EGU, "minute")
+   field(EGU, "min")
    field(DESC, "DMOD runtime")
 }
 
@@ -456,7 +459,7 @@ record(longin, "$(P)TG:TS2:DMOD:RTLIM")
    field(SCAN, "I/O Intr")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(SIML, "$(P)ISISBEAM:SIM")
-   field(EGU, "minute")
+   field(EGU, "min")
    field(DESC, "DMOD runtime limit")
 }
 
