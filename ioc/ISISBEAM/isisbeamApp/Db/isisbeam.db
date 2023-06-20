@@ -475,6 +475,16 @@ record(ai, "$(P)TG:TS2:DMOD:BEAM")
    field(DESC, "DMOD uAh")
 }
 
+record(ai, "$(P)TG:TS2:DMOD:BEAM:LIM")
+{
+   field(VAL, "660")
+   field(PREC, "3")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(EGU, "uAh")
+   field(DESC, "DMOD uAh Limit")
+}
+
 record(ai, "$(P)TG:TS2:DMOD:FILLMASS")
 {
    field(DTYP, "asynFloat64")
