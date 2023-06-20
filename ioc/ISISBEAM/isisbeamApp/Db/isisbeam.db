@@ -475,15 +475,48 @@ record(ai, "$(P)TG:TS2:DMOD:BEAM")
    field(DESC, "DMOD uAh")
 }
 
-record(ai, "$(P)TG:TS2:DMOD:BEAM:LIM")
+record(ao, "$(P)TG:TS2:DMOD:BEAM:LIM")
 {
    field(VAL, "660")
-   field(PREC, "3")
+   field(OUT, "$(P)TG:TS2:DMOD:BEAM:LIM:_PUSH PP")
+   field(PREC, "1")
+   field(EGU, "uAh")
+   field(DESC, "DMOD uAh Limit")
+   field(PINI, "YES")
+}
+
+record(ao, "$(P)TG:TS2:DMOD:CHRGCHNG:TIME")
+{
+   field(VAL, "5")
+   field(EGU, "hour")
+   field(DESC, "DMOD Charge Change Time")
+   field(PREC, "1")
+   field(PINI, "YES")
+   field(OUT, "$(P)TG:TS2:DMOD:CHRGCHNG:_PUSH PP")
+}
+
+# push charge change time to lower level
+record(ao, "$(P)TG:TS2:DMOD:CHRGCHNG:_PUSH")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn(isisbeam,0,0)DMODCHRGCHNGTIME")
+   field(PREC, "1")
+   field(SDIS, "$(P)ISISBEAM:DISABLE")
+   field(SIML, "$(P)ISISBEAM:SIM")
+   field(EGU, "hour")
+   field(DESC, "DMOD Charge Change Time")
+}
+record(ao, "$(P)TG:TS2:DMOD:BEAM:LIM:_PUSH")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn(isisbeam,0,0)DMODBEAMLIM")
+   field(PREC, "1")
    field(SDIS, "$(P)ISISBEAM:DISABLE")
    field(SIML, "$(P)ISISBEAM:SIM")
    field(EGU, "uAh")
    field(DESC, "DMOD uAh Limit")
 }
+
 
 record(ai, "$(P)TG:TS2:DMOD:FILLMASS")
 {

@@ -100,6 +100,14 @@ isisbeamDriver::isisbeamDriver(const char *portName, const std::list<BeamParam*>
 	m_driverParamString[P_errCnt].param = P_errCnt;
 	m_driverParamString[P_errCnt].paramString = P_errCntString;
 	setIntegerParam(P_errCnt, 0);
+        P_dmodChargeChangeTime = i++;
+	m_driverParamString[P_dmodChargeChangeTime].param = P_dmodChargeChangeTime;
+	m_driverParamString[P_dmodChargeChangeTime].paramString = P_dmodChargeChangeTimeString;
+	setDoubleParam(P_dmodChargeChangeTime, 0.0);
+        P_dmodBeamLimit = i++;
+	m_driverParamString[P_dmodBeamLimit].param = P_dmodBeamLimit;
+	m_driverParamString[P_dmodBeamLimit].paramString = P_dmodBeamLimitString;
+	setDoubleParam(P_dmodBeamLimit, 0.0);
 	P_xml = i++;
 	m_driverParamString[P_xml].param = P_xml;
 	m_driverParamString[P_xml].paramString = P_xmlString;
@@ -281,6 +289,8 @@ static const char* xml_format =
     "<DMOD_RUNTIME>%d</DMOD_RUNTIME>"
     "<DMOD_RUNTIME_LIM>%d</DMOD_RUNTIME_LIM>"
     "<DMOD_UABEAM>%.1f</DMOD_UABEAM>"
+    "<DMOD_UABEAM_LIM>%.1f</DMOD_UABEAM_LIM>"
+    "<DMOD_CC_TIME>%.1f</DMOD_CC_TIME>"
     "<DMOD_ANNLOW1>%d</DMOD_ANNLOW1>"
     "<DMOD_FILL_MASS>%.1f</DMOD_FILL_MASS>"
     "<BEAM_ENERGY>%d</BEAM_ENERGY>"
@@ -437,6 +447,9 @@ void isisbeamDriver::getXML(char* xml_buffer, int len)
 	    ch4_transfer_warn = timer;
     }
     ch4_transfer_old = ch4_transfer;	
+        double dmodChargeChangeTime, dmodBeamLimit;
+	getDoubleParam(P_dmodChargeChangeTime, &dmodChargeChangeTime);
+	getDoubleParam(P_dmodBeamLimit, &dmodBeamLimit);
 	memset(xml_buffer, 0, len);
 		if (beamt2 == 0.0 && beamt2_old > 0.0)
 		{
@@ -546,6 +559,8 @@ void isisbeamDriver::getXML(char* xml_buffer, int len)
 			intParam("dmod_runtime"),
 			intParam("dmod_runtime_lim"),
 			floatParam("dmod_uabeam"),
+			dmodBeamLimit,
+                        dmodChargeChangeTime,
 			intParam("dmod_annlow1"),
 			floatParam("dmod_fill_mass"),
 			intParam("beam_energy"),

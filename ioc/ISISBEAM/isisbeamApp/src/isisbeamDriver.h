@@ -167,6 +167,8 @@ static long read_chan(struct vdb_descrip_s* name, struct vdb_descrip_v* value)
 	return 1; /* READCHAN_SUCCESS */
 }
 
+#define read_chan_simulate READ_CHAN
+
 #endif /* defined(__VMS) && !defined(TESTING) */
 }
 
@@ -556,6 +558,8 @@ private:
     // the XML ones are for compatibility with old 1st_nd_post program
 	int P_xml;
 	int P_chanErrCnt; // int, number of channels in error
+        int P_dmodChargeChangeTime;
+        int P_dmodBeamLimit;
 	int P_errCnt; // int, number of channels in error
 #define LAST_IB_DRIVER_PARAM P_errCnt
 	std::vector<asynParamString_t> m_driverParamString;
@@ -570,6 +574,8 @@ private:
 
 #define P_chanErrCntString  "CHANERRCNT"
 #define P_errCntString  "ERRCNT"
+#define P_dmodChargeChangeTimeString  "DMODCHRGCHNGTIME"
+#define P_dmodBeamLimitString  "DMODBEAMLIM"
 #define P_xmlString  "XML"
 
 #endif /* ISISBEAMDRIVER_H */
