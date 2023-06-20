@@ -17,7 +17,7 @@ gms2on           long     t  0     CTD::gms2:running
 shut_north       long     t  0     LOCAL::shutter:north
 shut_south       long     t  0     LOCAL::shutter:south
 mtemp            float    t  0     LOCAL::methane:temp
-htemp            float    t  0       LOCAL::hydrogen:temp
+htemp            float    t  0      EPICSTS1::TGT1:CRYO:H2CBX:TS55:TEMPERATURE
 muon_kicker      long     t  0    LOCAL::muon_kicker:status
 ts1_total        float    n  0     LOCAL::beam1:today
 ts1_total_yest   float    n  0      LOCAL::beam1:yesterday
@@ -105,7 +105,6 @@ s8_shut          long     t  0     t1shut::s8_overview:sta
 s9_shut          long     t  0     t1shut::s9_overview:sta
 rotax_shut       long     t  0    t1shut::n2_overview:sta
 ines_shut        long     t  0    t1shut::ines_overview:sta
-ch4_transfer     long     t  0    tch4::transfer_auto_warn:sta
 r4water          float    t  0    R4WATER::SECONDARY:RETURN_TEMP
 bunch_length     float    n  0    EDPOS::EVM1:LENGTH
 extractdelay     long     n  0    RETD::EXTRACT:DELAY
