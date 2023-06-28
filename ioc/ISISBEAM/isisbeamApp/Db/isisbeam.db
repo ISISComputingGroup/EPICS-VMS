@@ -485,14 +485,23 @@ record(ao, "$(P)TG:TS2:DMOD:BEAM:LIM")
    field(PINI, "YES")
 }
 
-record(ao, "$(P)TG:TS2:DMOD:CHRGCHNG:TIME")
+record(calcout, "$(P)TG:TS2:DMOD:CHRGCHNG:TIME")
 {
-   field(VAL, "5")
-   field(EGU, "hour")
-   field(DESC, "DMOD Charge Change Time")
-   field(PREC, "1")
-   field(PINI, "YES")
-   field(OUT, "$(P)TG:TS2:DMOD:CHRGCHNG:_PUSH PP")
+	field(INPA, "$(P)TG:TS2:DMOD:RTIME:DUR")
+	field(INPB, "$(P)TG:TS2:DMOD:BEAM")
+	field(INPC, "$(P)AC:TS2:BEAM:CURR")
+        field(INPD, "$(P)TG:TS2:DMOD:RTLIM")
+	field(INPE, "$(P)TG:TS2:DMOD:BEAM:LIM")
+	
+	# Returns the minimum of (DMOD_runtime_limit - DMOD_runtime)/60 and
+        # (660 - DMOD_uah)/(beam current)
+	# If Beam Current, C, is 0; it will return the first expression	
+	field(CALC, "MIN((D-A)/60,(C#0?(E-B)/C:1E39))")
+	field(SCAN, "5 second")
+	field(EGU, "hours")
+        field(DESC, "DMOD charge change time")
+        field(PREC, "1")	
+        field(OUT, "$(P)TG:TS2:DMOD:CHRGCHNG:_PUSH PP")
 }
 
 # push charge change time to lower level
@@ -506,6 +515,7 @@ record(ao, "$(P)TG:TS2:DMOD:CHRGCHNG:_PUSH")
    field(EGU, "hour")
    field(DESC, "DMOD Charge Change Time")
 }
+
 record(ao, "$(P)TG:TS2:DMOD:BEAM:LIM:_PUSH")
 {
    field(DTYP, "asynFloat64")
