@@ -294,6 +294,8 @@ static const char* xml_format =
     "<DMOD_ANNLOW1>%d</DMOD_ANNLOW1>"
     "<DMOD_FILL_MASS>%.1f</DMOD_FILL_MASS>"
     "<BEAM_ENERGY>%d</BEAM_ENERGY>"
+    "<BUNCH_LENGTH>%.1f</BUNCH_LENGTH>"
+    "<EXTRACT_DELAY>%d</EXTRACT_DELAY>"
 	"<TS1CH4TRANS>%d</TS1CH4TRANS>"
 	"<TS1CH4TRANSW>%s</TS1CH4TRANSW>"
 	"<TIME>%u</TIME>"
@@ -513,10 +515,10 @@ void isisbeamDriver::getXML(char* xml_buffer, int len)
 			floatParam("mtemp"),
 			floatParam("htemp"),
 			intParam("muon_kicker"),
-			floatParam("ts1_total"),
-			floatParam("ts1_total_yest"),
-			floatParam("ts2_total"),
-			floatParam("ts2_total_yest"),
+			floatParam("ts1_total") * 24.0,
+			floatParam("ts1_total_yest") * 24.0,
+			floatParam("ts2_total") * 24.0,
+			floatParam("ts2_total_yest") * 24.0,
 			ts2_shutter_status("e1"),
 			ts2_shutter_status("e2"),
 			ts2_shutter_status("e3"),
@@ -560,10 +562,12 @@ void isisbeamDriver::getXML(char* xml_buffer, int len)
 			intParam("dmod_runtime_lim"),
 			floatParam("dmod_uabeam"),
 			dmodBeamLimit,
-                        dmodChargeChangeTime,
+			dmodChargeChangeTime,
 			intParam("dmod_annlow1"),
 			floatParam("dmod_fill_mass"),
 			intParam("beam_energy"),
+			floatParam("bunch_length"),
+			intParam("extractdelay"),
 			ch4_transfer,
 			as_iso(ch4_transfer_warn).c_str(),
 			(unsigned)intParam("UPDTIMET"),

@@ -487,21 +487,26 @@ record(ao, "$(P)TG:TS2:DMOD:BEAM:LIM")
 
 record(calcout, "$(P)TG:TS2:DMOD:CHRGCHNG:TIME")
 {
-	field(INPA, "$(P)TG:TS2:DMOD:RTIME:DUR")
-	field(INPB, "$(P)TG:TS2:DMOD:BEAM")
-	field(INPC, "$(P)AC:TS2:BEAM:CURR")
-        field(INPD, "$(P)TG:TS2:DMOD:RTLIM")
-	field(INPE, "$(P)TG:TS2:DMOD:BEAM:LIM")
-	
-	# Returns the minimum of (DMOD_runtime_limit - DMOD_runtime)/60 and
-        # (660 - DMOD_uah)/(beam current)
-	# If Beam Current, C, is 0; it will return the first expression	
-	field(CALC, "MIN((D-A)/60,(C#0?(E-B)/C:1E39))")
-	field(SCAN, "5 second")
-	field(EGU, "hours")
-        field(DESC, "DMOD charge change time")
-        field(PREC, "1")	
-        field(OUT, "$(P)TG:TS2:DMOD:CHRGCHNG:_PUSH PP")
+    field(INPA, "$(P)TG:TS2:DMOD:RTIME:DUR")
+    field(INPB, "$(P)TG:TS2:DMOD:BEAM")
+    field(INPC, "$(P)AC:TS2:BEAM:CURR:LAST")
+    field(INPD, "$(P)TG:TS2:DMOD:RTLIM")
+    field(INPE, "$(P)TG:TS2:DMOD:BEAM:LIM")
+    field(INPF, "20")
+    # Returns the minimum of (DMOD_runtime_limit - DMOD_runtime)/60 and
+    # (660 - DMOD_uah)/(beam current)
+    # If Beam Current, C, is 0; it will return the first expression
+    # however we now use last good beam value to smooth oput short beam offs but
+    # still need to trap beam as 0 for startup
+    # also change process takes about 15 minutes with runtime limit resetting first them ua beam
+    # so leave time to change as 0 for first 20 minutes of runtime lim or else we see it
+    # resetting to 2 hours for 15 minutes then to 18 hours
+    field(CALC, "A<F?0:MIN((D-A)/60,(C#0?(E-B)/C:1E39))")
+    field(SCAN, "5 second")
+    field(EGU, "hours")
+    field(DESC, "DMOD charge change time")
+    field(PREC, "1")
+    field(OUT, "$(P)TG:TS2:DMOD:CHRGCHNG:_PUSH PP")
 }
 
 # push charge change time to lower level

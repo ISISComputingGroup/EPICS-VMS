@@ -279,7 +279,6 @@ public:
             if (old_hwerr == 0)
             {
 			    errlogPrintf("isisbeamDriver:BeamParam:getChan: hardware IO error %d present on channel \"%s\"\n", hwerr, vista_name.c_str());
-                old_hwerr = hwerr;
             }
             old_hwerr = hwerr;
 		    return false;

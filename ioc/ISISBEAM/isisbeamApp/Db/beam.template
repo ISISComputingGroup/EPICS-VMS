@@ -18,6 +18,19 @@ record(ai, "$(P)AC:$(BEAM):BEAM:CURR")
    field(ADEL, "0.1")
 }
 
+# last "beam on" current value
+record(ai, "$(P)AC:$(BEAM):BEAM:CURR:LAST")
+{
+}
+
+record(calcout, "$(P)AC:$(BEAM):BEAM:LASTCALC")
+{
+	field(INPA, "$(P)AC:$(BEAM):BEAM:CURR NPP")
+	field(CALC, "A")
+    field(OOPT,	"When Non-zero")
+	field(OUT, "$(P)AC:$(BEAM):BEAM:CURR:LAST PP")
+}
+
 record(ai, "$(P)AC:$(BEAM):BEAM:CURR:_OLD")
 {
 }
