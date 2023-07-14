@@ -489,7 +489,7 @@ record(calcout, "$(P)TG:TS2:DMOD:CHRGCHNG:TIME")
 {
     field(INPA, "$(P)TG:TS2:DMOD:RTIME:DUR")
     field(INPB, "$(P)TG:TS2:DMOD:BEAM")
-    field(INPC, "$(P)AC:TS2:BEAM:CURR:LAST")
+    field(INPC, "$(P)AC:TS2:BEAM:CURR:LAST:AVG")
     field(INPD, "$(P)TG:TS2:DMOD:RTLIM")
     field(INPE, "$(P)TG:TS2:DMOD:BEAM:LIM")
     field(INPF, "20")

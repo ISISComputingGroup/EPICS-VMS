@@ -18,17 +18,44 @@ record(ai, "$(P)AC:$(BEAM):BEAM:CURR")
    field(ADEL, "0.1")
 }
 
+record(compress, "$(P)AC:$(BEAM):BEAM:CURR:AVG")
+{
+    field(INP, "$(P)AC:$(BEAM):BEAM:CURR CP")
+    field(ALG, "N to 1 Average")
+    field(N, "5")
+    field(EGU, "uA")
+    field(PREC, "3")
+    field(HOPR, "$(HOPR)")
+    field(LOPR, "$(LOPR)")
+}
+
 # last "beam on" current value
 record(ai, "$(P)AC:$(BEAM):BEAM:CURR:LAST")
 {
+    field(EGU, "uA")
+    field(ADEL, "0.1")
+    field(PREC, "3")
+    field(HOPR, "$(HOPR)")
+    field(LOPR, "$(LOPR)")
+}
+
+record(compress, "$(P)AC:$(BEAM):BEAM:CURR:LAST:AVG")
+{
+    field(INP, "$(P)AC:$(BEAM):BEAM:CURR:LAST CP")
+    field(ALG, "N to 1 Average")
+    field(N, "5")
+    field(EGU, "uA")
+    field(PREC, "3")
+    field(HOPR, "$(HOPR)")
+    field(LOPR, "$(LOPR)")
 }
 
 record(calcout, "$(P)AC:$(BEAM):BEAM:LASTCALC")
 {
-	field(INPA, "$(P)AC:$(BEAM):BEAM:CURR CP")
-	field(CALC, "A")
+    field(INPA, "$(P)AC:$(BEAM):BEAM:CURR CP")
+    field(CALC, "A")
     field(OOPT,	"When Non-zero")
-	field(OUT, "$(P)AC:$(BEAM):BEAM:CURR:LAST PP")
+    field(OUT, "$(P)AC:$(BEAM):BEAM:CURR:LAST PP")
 }
 
 record(ai, "$(P)AC:$(BEAM):BEAM:CURR:_OLD")
