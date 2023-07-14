@@ -25,7 +25,7 @@ record(ai, "$(P)AC:$(BEAM):BEAM:CURR:LAST")
 
 record(calcout, "$(P)AC:$(BEAM):BEAM:LASTCALC")
 {
-	field(INPA, "$(P)AC:$(BEAM):BEAM:CURR NPP")
+	field(INPA, "$(P)AC:$(BEAM):BEAM:CURR CP")
 	field(CALC, "A")
     field(OOPT,	"When Non-zero")
 	field(OUT, "$(P)AC:$(BEAM):BEAM:CURR:LAST PP")
