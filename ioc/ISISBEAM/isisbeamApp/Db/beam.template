@@ -18,11 +18,12 @@ record(ai, "$(P)AC:$(BEAM):BEAM:CURR")
    field(ADEL, "0.1")
 }
 
+# there is a new value every 3 seconds, so 10 values is a 30 second average
 record(compress, "$(P)AC:$(BEAM):BEAM:CURR:AVG")
 {
     field(INP, "$(P)AC:$(BEAM):BEAM:CURR CP")
-    field(ALG, "N to 1 Average")
-    field(N, "5")
+    field(ALG, "N to 1 Median")
+    field(N, "10")
     field(EGU, "uA")
     field(PREC, "3")
     field(HOPR, "$(HOPR)")
@@ -39,11 +40,12 @@ record(ai, "$(P)AC:$(BEAM):BEAM:CURR:LAST")
     field(LOPR, "$(LOPR)")
 }
 
+# there is a new value every 3 seconds, so 10 values is a 30 second average
 record(compress, "$(P)AC:$(BEAM):BEAM:CURR:LAST:AVG")
 {
     field(INP, "$(P)AC:$(BEAM):BEAM:CURR:LAST CP")
-    field(ALG, "N to 1 Average")
-    field(N, "5")
+    field(ALG, "N to 1 Median")
+    field(N, "10")
     field(EGU, "uA")
     field(PREC, "3")
     field(HOPR, "$(HOPR)")
