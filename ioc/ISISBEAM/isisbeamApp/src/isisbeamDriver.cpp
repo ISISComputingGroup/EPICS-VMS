@@ -210,30 +210,7 @@ static const char* xml_format =
 	"<TS2OFF>%s</TS2OFF>"
 	"<SHUTN>%d</SHUTN>"
 	"<SHUTS>%d</SHUTS>"
-	"<TS1SHUTTERS>"
-	  "<SANDALS>%s</SANDALS>" /* N1 */
-	  "<PRISMA>%s</PRISMA>" /* N2 */
-	  "<ALF>%s</ALF>" /* N2 */
-	  "<ROTAX>%s</ROTAX>" /* N2 */
-	  "<SURF>%s</SURF>" /* N3 */
-	  "<CRISP>%s</CRISP>" /* N4 */
-	  "<LOQ>%s</LOQ>" /* N5 */
-	  "<IRIS>%s</IRIS>" /* N6 */
-	  "<OSIRIS>%s</OSIRIS>" /* N6 */
-	  "<POLARIS>%s</POLARIS>" /* N7 */
-	  "<TOSCA>%s</TOSCA>" /* N8 */
-	  "<INES>%s</INES>" /* N8 */
-	  "<HET>%s</HET>" /* N9 */
-	  "<MAPS>%s</MAPS>" /* S1 */
-	  "<EVS>%s</EVS>" /* S2 */
-	  "<SXD>%s</SXD>" /* S3 */
-	  "<MERLIN>%s</MERLIN>" /* S4 */
-	  "<MARI>%s</MARI>" /* S6 */
-	  "<GEM>%s</GEM>" /* S7 */
-	  "<HRPD>%s</HRPD>" /* S8 */
-	  "<ENGINX>%s</ENGINX>" /* S8 */
-	  "<PEARL>%s</PEARL>" /* S9 */
-	"</TS1SHUTTERS>"
+	"<TS1SHUTTERS>%s</TS1SHUTTERS>"
 	"<MTEMP>%.1f</MTEMP>"
     "<HTEMP>%.1f</HTEMP>"
 	"<MUONKICKER>%d</MUONKICKER>"
@@ -302,6 +279,33 @@ static const char* xml_format =
 	"<TIMEF>%s</TIMEF>"
 	"</ISISBEAM>"; 
 
+static const char* xml_ts1_shutters_format = 
+	  "<SANDALS>%s</SANDALS>" /* N1 */
+	  "<PRISMA>%s</PRISMA>" /* N2 */
+	  "<ALF>%s</ALF>" /* N2 */
+	  "<ROTAX>%s</ROTAX>" /* N2 */
+	  "<SURF>%s</SURF>" /* N3 */
+	  "<CRISP>%s</CRISP>" /* N4 */
+	  "<LOQ>%s</LOQ>" /* N5 */
+	  "<IRIS>%s</IRIS>" /* N6 */
+	  "<OSIRIS>%s</OSIRIS>" /* N6 */
+	  "<POLARIS>%s</POLARIS>" /* N7 */
+	  "<TOSCA>%s</TOSCA>" /* N8 */
+	  "<INES>%s</INES>" /* N8 */
+	  "<HET>%s</HET>" /* N9 */
+	  "<MAPS>%s</MAPS>" /* S1 */
+	  "<EVS>%s</EVS>" /* S2 */
+	  "<SXD>%s</SXD>" /* S3 */
+	  "<MERLIN>%s</MERLIN>" /* S4 */
+	  "<MARI>%s</MARI>" /* S6 */
+	  "<GEM>%s</GEM>" /* S7 */
+	  "<HRPD>%s</HRPD>" /* S8 */
+	  "<ENGINX>%s</ENGINX>" /* S8 */
+	  "<PEARL>%s</PEARL>" /* S9 */
+      "";
+
+
+
 static std::string as_iso(time_t t)
 {
 	char time_buffer[64];
@@ -310,7 +314,7 @@ static std::string as_iso(time_t t)
 	return std::string(time_buffer);
 }
 
-static float floatParam(const std::string& name)
+static double floatParam(const std::string& name)
 {
     return atof(BeamParam::paramValues[name].c_str());
 }	
@@ -431,6 +435,37 @@ static const char* ts1_shutter_status(const std::string& beamline)
     return "INVALID"; /*NOTREACHED*/
 }
 
+static const char* get_ts1_shutter_status()
+{
+    static char xml_buffer[2048];
+    unsigned len = sizeof(xml_buffer);
+    snprintf(xml_buffer, len, xml_ts1_shutters_format,    
+			ts1_shutter_status("n1"),
+			ts1_shutter_status("n2"),
+			ts1_shutter_status("n2"),
+			ts1_shutter_status("n2"),
+			ts1_shutter_status("n3"),
+			ts1_shutter_status("n4"),
+			ts1_shutter_status("n5"),
+			ts1_shutter_status("n6"),
+			ts1_shutter_status("n6"),
+			ts1_shutter_status("n7"),
+			ts1_shutter_status("n8"),
+			ts1_shutter_status("n8"),
+			ts1_shutter_status("n9"),
+			ts1_shutter_status("s1"),
+			ts1_shutter_status("s2"),
+			ts1_shutter_status("s3"),
+			ts1_shutter_status("s4"),
+			ts1_shutter_status("s6"),
+			ts1_shutter_status("s7"),
+			ts1_shutter_status("s8"),
+			ts1_shutter_status("s8"),
+			ts1_shutter_status("s9")
+    );
+    xml_buffer[len-1] = '\0';
+    return xml_buffer;
+}
 
 void isisbeamDriver::getXML(char* xml_buffer, int len)
 {
@@ -490,28 +525,7 @@ void isisbeamDriver::getXML(char* xml_buffer, int len)
 			as_iso(ts2_off).c_str(),
 			intParam("shut_north"),
 			intParam("shut_south"),
-			ts1_shutter_status("n1"),
-			ts1_shutter_status("n2"),
-			ts1_shutter_status("n2"),
-			ts1_shutter_status("n2"),
-			ts1_shutter_status("n3"),
-			ts1_shutter_status("n4"),
-			ts1_shutter_status("n5"),
-			ts1_shutter_status("n6"),
-			ts1_shutter_status("n6"),
-			ts1_shutter_status("n7"),
-			ts1_shutter_status("n8"),
-			ts1_shutter_status("n8"),
-			ts1_shutter_status("n9"),
-			ts1_shutter_status("s1"),
-			ts1_shutter_status("s2"),
-			ts1_shutter_status("s3"),
-			ts1_shutter_status("s4"),
-			ts1_shutter_status("s6"),
-			ts1_shutter_status("s7"),
-			ts1_shutter_status("s8"),
-			ts1_shutter_status("s8"),
-			ts1_shutter_status("s9"),
+            get_ts1_shutter_status(),
 			floatParam("mtemp"),
 			floatParam("htemp"),
 			intParam("muon_kicker"),

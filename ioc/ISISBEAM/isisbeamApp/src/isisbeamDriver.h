@@ -491,7 +491,7 @@ public:
 		if (type == "float")
 		{
 			driver->setDoubleParam(param_id, fval);
-			sprintf(buffer, "%g", fval);
+			sprintf(buffer, "%g", static_cast<double>(fval));
 			paramValues[param_name] = buffer; 
 		}
 		else if (type == "long")
