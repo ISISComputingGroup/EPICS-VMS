@@ -218,19 +218,7 @@ static const char* xml_format =
     "<TS1_TOTAL_YEST>%.1f</TS1_TOTAL_YEST>"
 	"<TS2_TOTAL>%.1f</TS2_TOTAL>"
     "<TS2_TOTAL_YEST>%.1f</TS2_TOTAL_YEST>"
-	"<TS2SHUTTERS>"
-	  "<ZOOM>%s</ZOOM>" /* E1 */
-	  "<SANS2D>%s</SANS2D>" /* E2 */
-	  "<POLREF>%s</POLREF>" /* E3 */
-	  "<INTER>%s</INTER>" /* E4 */
-	  "<OFFSPEC>%s</OFFSPEC>" /* E5 */
-	  "<LARMOR>%s</LARMOR>" /* E6 */
-	  "<WISH>%s</WISH>" /* E8 */
-	  "<CHIPIR>%s</CHIPIR>" /* W1 */
-	  "<IMAT>%s</IMAT>" /* W5 */
-	  "<LET>%s</LET>" /* W6 */
-	  "<NIMROD>%s</NIMROD>" /* W7 */
-	"</TS2SHUTTERS>"
+	"<TS2SHUTTERS>%s</TS2SHUTTERS>"
 	"<T2MTEMP1>%.1f</T2MTEMP1>" /* decoupled methane, TE842 */
 	"<T2MTEMP2>%.1f</T2MTEMP2>" /* coupled methane, TE852 */ 
 	"<T2HTEMP1>%.1f</T2HTEMP1>" /* hydrogen TT706 */
@@ -304,6 +292,19 @@ static const char* xml_ts1_shutters_format =
 	  "<PEARL>%s</PEARL>" /* S9 */
       "";
 
+static const char* xml_ts2_shutters_format = 
+	  "<ZOOM>%s</ZOOM>" /* E1 */
+	  "<SANS2D>%s</SANS2D>" /* E2 */
+	  "<POLREF>%s</POLREF>" /* E3 */
+	  "<INTER>%s</INTER>" /* E4 */
+	  "<OFFSPEC>%s</OFFSPEC>" /* E5 */
+	  "<LARMOR>%s</LARMOR>" /* E6 */
+	  "<WISH>%s</WISH>" /* E8 */
+	  "<CHIPIR>%s</CHIPIR>" /* W1 */
+	  "<IMAT>%s</IMAT>" /* W5 */
+	  "<LET>%s</LET>" /* W6 */
+	  "<NIMROD>%s</NIMROD>" /* W7 */
+      "";
 
 
 static std::string as_iso(time_t t)
@@ -467,6 +468,27 @@ static const char* get_ts1_shutter_status()
     return xml_buffer;
 }
 
+static const char* get_ts2_shutter_status()
+{
+    static char xml_buffer[2048];
+    unsigned len = sizeof(xml_buffer);
+    snprintf(xml_buffer, len, xml_ts2_shutters_format,    
+    		ts2_shutter_status("e1"),
+			ts2_shutter_status("e2"),
+			ts2_shutter_status("e3"),
+			ts2_shutter_status("e4"),
+			ts2_shutter_status("e5"),
+			ts2_shutter_status("e6"),
+			ts2_shutter_status("e8"),
+			ts2_shutter_status("w1"),
+			ts2_shutter_status("w5"),
+			ts2_shutter_status("w6"),
+			ts2_shutter_status("w7")
+    );
+    xml_buffer[len-1] = '\0';
+    return xml_buffer;
+}
+
 void isisbeamDriver::getXML(char* xml_buffer, int len)
 {
     static time_t ts1_off, ts1_on, ts2_off, ts2_on, ch4_transfer_warn;
@@ -533,17 +555,7 @@ void isisbeamDriver::getXML(char* xml_buffer, int len)
 			floatParam("ts1_total_yest") * 24.0,
 			floatParam("ts2_total") * 24.0,
 			floatParam("ts2_total_yest") * 24.0,
-			ts2_shutter_status("e1"),
-			ts2_shutter_status("e2"),
-			ts2_shutter_status("e3"),
-			ts2_shutter_status("e4"),
-			ts2_shutter_status("e5"),
-			ts2_shutter_status("e6"),
-			ts2_shutter_status("e8"),
-			ts2_shutter_status("w1"),
-			ts2_shutter_status("w5"),
-			ts2_shutter_status("w6"),
-			ts2_shutter_status("w7"),
+            get_ts2_shutter_status(),
 			floatParam("t2_mtemp1"),
 			floatParam("t2_mtemp2"),
 			floatParam("t2_htemp1"),
