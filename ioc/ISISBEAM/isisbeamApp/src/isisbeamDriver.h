@@ -212,12 +212,13 @@ public:
     static const int READCHAN_SUCCESS;
 	static std::map<std::string,std::string> paramValues; 
 	bool chan_ok;
+	bool chan_ts_ok;
     int old_hwerr;
     bool first_read;
 	char sval[SVAL_SIZE];
 	BeamParam(const char* pn, const char* t, const char* vn, const char* po, int uf) :
 	    param_name(pn), type(t), vista_name(vn), opts(po), update_freq(uf), param_id(-1), lval(0), 
-        fval(0.0), updtime(0), updtime_old(0), updtimev(0), chan_ok(true), first_read(true),
+        fval(0.0), updtime(0), updtime_old(0), updtimev(0), chan_ok(true), chan_ts_ok(true), first_read(true),
         error_count(0), old_hwerr(0)
 	{
 		sval[0] = '\0';
@@ -327,7 +328,8 @@ public:
 		bool non_zero = false;
 		updtime_old = updtime;
 		bool old_chan_ok = chan_ok;
-		chan_ok = true;
+		bool old_chan_ts_ok = chan_ts_ok;
+		chan_ok = chan_ts_ok = true;
 		if (type == "float")
 		{
 		    float fval_old = fval;
@@ -427,10 +429,11 @@ public:
 		}
 		else if ( ((now - updtime) > timestamp_update) && !first_read ) // vista timestamp should always update
 		{
-		    if (old_chan_ok)
+		    if (old_chan_ts_ok)
 			{
-			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" vista timestamp not updated for %d seconds\n", vista_name.c_str(), timestamp_update);
+			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" vista timestamp not updated for %d seconds\n", vista_name.c_str(), (int)(now - updtime));
 			}
+			chan_ts_ok = false;
 //			chan_ok = false; // we have seen issue with timestamp field and value OK
 //            ++error_count;
 		}
@@ -452,13 +455,17 @@ public:
 			chan_ok = false;
 //            ++error_count;
 		}
-		else if (updtime > g_updtime)
+		else if (chan_ts_ok && updtime > g_updtime)
 		{
 		    g_updtime = updtime;
 		}
 		if (!old_chan_ok && chan_ok)
 		{
 			errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" OK\n", vista_name.c_str());
+		}
+		if (!old_chan_ts_ok && chan_ts_ok)
+		{
+			errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" vista timestamp OK\n", vista_name.c_str());
 		}
         first_read = false;
         if (chan_ok)
@@ -484,7 +491,7 @@ public:
                 return false; // don't update if not read a sensible value
             }
         }
-		if (chan_ok && updtime <= updtime_old)
+		if (chan_ok && chan_ts_ok && updtime <= updtime_old)
 		{
 		    return false; // don't update if timestamp not changed
 		}
