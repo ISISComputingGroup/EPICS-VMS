@@ -429,9 +429,9 @@ public:
 		{
 		    if (old_chan_ok)
 			{
-			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" timestamp not updated for %d seconds\n", vista_name.c_str(), timestamp_update);
+			    errlogPrintf("isisbeamDriver:BeamParam:read: channel \"%s\" vista timestamp not updated for %d seconds\n", vista_name.c_str(), timestamp_update);
 			}
-			chan_ok = false;
+//			chan_ok = false; // we have seen issue with timestamp field and value OK
 //            ++error_count;
 		}
 		else if ( (update_freq > 0) && ((now - updtimev) > update_freq) && !first_read )
