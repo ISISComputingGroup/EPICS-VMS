@@ -6,3 +6,4 @@ pattern { BEAM, PARAM, LOW, LOPR, HOPR }
 { "IONS", "beam_ions", "0", "0", "300" }
 { "RFQ", "beam_rfq", "0", "0", "300" }
 { "LINAC", "beam_linac", "0", "0", "300" }
+{ "MUON", "beam_muon", "0", "0", "10" }
