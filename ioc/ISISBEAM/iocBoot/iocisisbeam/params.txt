@@ -1,12 +1,12 @@
-beam_ions        float    t  0    IDTOR::IRT1:CURRENT
-beam_rfq         float    t  0    IDTOR::IRT3:CURRENT
-beam_linac       float    t  0    IDTOR::IHT5:CURRENT
+beam_ions        float    t  0    IDINT::IRT1:CURRENT
+beam_rfq         float    t  0    IDINT::IRT3:CURRENT
+beam_linac       float    t  0    IDINT::IHT5:CURRENT
 beam_sync        float    t  -60    LOCAL::BEAM:SYNCHROTRON
 beam_e1          float    t  -60    LOCAL::BEAM:EPB1
 beam_tgt         float    t  -60     LOCAL::BEAM:TARGET
 beam_tgt2        float    t  -60     LOCAL::BEAM:TARGET2
+beam_muon        float    t  -60     INTENSITY::MUON:CURRENT
 beam_energy      long     t  0     LOCAL::BEAM:ENERGY 
-beam_muon        float    t  0     INTENSITY::MUON:CURRENT
 inj_eff          float    t  0     LOCAL::intensity:inj_eff
 acc_eff          float    t  0     LOCAL::intensity:acc_eff
 ext_eff          float    t  0     LOCAL::intensity:ext_eff
